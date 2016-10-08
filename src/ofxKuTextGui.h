@@ -1,0 +1,206 @@
+﻿#pragma once
+
+//Textual GUI
+#include "ofMain.h"
+
+
+struct ofxKuTextGui {
+	ofxKuTextGui();
+
+	void loadFromFile(const string &fileName);
+	void saveToFile(const string &fileName);
+
+	void addPage(const string &pageName);
+	void addTab();
+
+	//adding to current page/tab
+	void addFloat(string name, float &var, float defV, float minV, float maxV, 
+		int numSteps1, int numSteps2);
+	void addInt(string name, int &var, int defV, int minV, int maxV,
+		int step1, int step2);
+	void addString(string name, string &var, const string &defV);
+
+	void addVar(string name);	//adding existing var
+
+	struct Var;
+	Var *findVar(const string &name);
+
+
+	//edit
+	void gotoPrevTab();
+	void gotoNextTab();
+	void gotoPrevValue();
+	void gotoNextValue();
+	void decreaseValue(int speed);	//0-slow,1-fast
+	void increaseValue(int speed);	//0-slow,1-fast
+
+	void setActive( bool active );
+
+
+	void setPage( const string &name );
+
+	void draw( float X, float Y );	//generic draw
+	float draw_tabW;	//Distance between tabs
+	float draw_yStep;	//Distance between lines
+	
+	//-------------------------------------------------------------------
+	struct VarFloat {
+		string name;
+		float *var;
+		float minV, maxV;
+		float step[2];
+		float def;
+		VarFloat() { var = 0; step[0]=step[1]=0; }
+		VarFloat(string name0, float &var0, float defV, float minV0, float maxV0,
+		int numSteps1, int numSteps2) {
+			name = name0;
+			var = &var0;
+			step[0] = (maxV0-minV0)/numSteps1;
+			step[1] = (maxV0-minV0)/numSteps2;
+			minV = minV0;
+			maxV = maxV0;
+			def = defV;
+			setValue( defV );
+		}
+		void setValue(float v) {
+			*var = min(max(v,minV),maxV);
+		}
+		void inc(int dir, int speed) { //speed=0,1
+			speed = min(max(speed,0),1);
+			setValue( *var + dir*step[speed] );
+		}		
+		void reset() {
+			setValue(def);
+		}
+	};
+	
+	struct VarInt {
+		string name;
+		int *var;
+		int minV, maxV;
+		int step[2];
+		int def;
+		VarInt() { var = 0; step[0]=step[1]=0; }
+		VarInt(string name0, int &var0, int defV, int minV0, int maxV0,
+		int step1, int step2) {
+			name = name0;
+			var = &var0;
+			step[0] = step1;
+			step[1] = step2;
+			minV = minV0;
+			maxV = maxV0;
+			setValue( defV );
+			def = defV;
+		}
+		void setValue(int v) {
+			*var = min(max(v,minV),maxV);
+		}
+		void inc(int dir, int speed) { //speed=0,1
+			speed = min(max(speed,0),1);
+			setValue( *var + dir*step[speed] );
+		}		
+		void reset() {
+			setValue(def);
+		}
+	};
+	struct VarString {
+		string name;
+		string *var;
+		string def;
+		VarString() {}
+		VarString(const string &name0, string &var0, const string &defV) {
+			name = name0;
+			var = &var0;
+			def = defV;
+			setValue( defV );
+		}
+		void setValue(string v) {
+			*var = v;
+		}
+		void inc(int dir, int speed) { //speed=0,1
+		}		
+		void reset() {
+			setValue(def);
+		}
+	};
+	
+	struct Var {
+		VarFloat vfloat;
+		VarInt vint;
+		VarString vstring;
+		int index;	//0 - vfloat, 1-vint, 2-string
+		void setValue( const string &v ) {
+			if (index == 0) vfloat.setValue(ofToFloat(v));
+			if (index == 1) vint.setValue(ofToInt(v));
+			if (index == 2) vstring.setValue(v);
+		}
+		void inc(int dir, int speed) {
+			if (index == 0) vfloat.inc(dir,speed);
+			if (index == 1) vint.inc(dir,speed);
+			if (index == 2) vstring.inc(dir,speed);
+		}
+		string value() {
+			if (index == 0) return ofToString(*vfloat.var);
+			if (index == 1) return ofToString(*vint.var);
+			if (index == 2) return *vstring.var;
+			return "";
+		}
+		string name() {
+			if (index == 0) return vfloat.name;
+			if (index == 1) return vint.name;
+			if (index == 2) return vstring.name;
+			return "???";
+		}
+		void reset() {
+			if (index == 0) vfloat.reset();
+			if (index == 1) vint.reset();
+			if (index == 2) vint.reset();
+		}
+	};
+
+	struct Tab {
+		vector<Var> var;
+		int selVar;
+		Tab() {
+			selVar = 0;
+		}
+		bool validVar() { return selVar >= 0 && selVar < var.size(); }
+	};
+
+	struct Page {
+		string name;
+		vector<Tab> tab;
+		int selTab;
+
+		Page() {
+			selTab = 0;
+		}
+		void addTab() {
+			tab.push_back(Tab());
+		}
+		Var *addVar( Var &var ) {
+			if ( tab.empty() ) addTab();
+			vector<Var> &vars = tab[tab.size()-1].var;
+			vars.push_back(var);
+			return &vars[vars.size()-1];
+		}
+		bool validTab() { return selTab >= 0 && selTab < tab.size(); }
+	};
+
+	vector<Var *> getVars();
+
+
+private:
+	vector<Page> page_;
+	int selPage;	//selected page
+	bool validPage();
+
+	typedef map<string, Var *> StringVarMap;
+	StringVarMap vars_;	//index of vars
+
+	void addVar(Var &var);
+
+	void rebuildVars();
+	bool needRebuild_;
+};
+
