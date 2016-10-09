@@ -25,6 +25,7 @@ struct ofxKuTextGui {
 	struct Var;
 	Var *findVar(const string &name);
 
+	bool setValue(const string &name, const string &value);
 
 	//edit
 	void gotoPrevTab();

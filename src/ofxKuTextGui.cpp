@@ -94,6 +94,16 @@ void ofxKuTextGui::addVar(Var &var) {
 }
 
 //------------------------------------------------------------------------
+bool ofxKuTextGui::setValue(const string &name, const string &value) {
+	Var *var = findVar(name);
+	if (var) {
+		var->setValue(value);
+		return true;
+	}
+	return false;
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::rebuildVars() {
 	if (needRebuild_) {
 		needRebuild_ = false;
