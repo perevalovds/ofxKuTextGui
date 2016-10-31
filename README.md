@@ -1,5 +1,4 @@
-# ofxKuTextGui
-It's openFrameworks addon for creating a minimalistic GUI controlled by keyboard.
+# ofxKuTextGui - openFrameworks addon for creating textual GUI controlled by keyboard
 
 It supports integer, float and string values (string are read-only). 
 
