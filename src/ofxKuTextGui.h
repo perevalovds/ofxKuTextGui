@@ -15,9 +15,9 @@ struct ofxKuTextGui {
 
 	//adding to current page/tab
 	void addFloat(string name, float &var, float defV, float minV, float maxV, 
-		int numSteps1, int numSteps2);
+		int numStepsSlow, int numStepsFast);
 	void addInt(string name, int &var, int defV, int minV, int maxV,
-		int step1, int step2);
+		int stepSlow, int stepFast);
 	void addString(string name, string &var, const string &defV);
 
 	void addVar(string name);	//adding existing var
@@ -34,6 +34,7 @@ struct ofxKuTextGui {
 	void gotoNextValue();
 	void decreaseValue(int speed);	//0-slow,1-fast
 	void increaseValue(int speed);	//0-slow,1-fast
+	void editStringValue();
 
 	void setActive( bool active );
 
@@ -123,6 +124,9 @@ struct ofxKuTextGui {
 		void reset() {
 			setValue(def);
 		}
+		void editStringValue() {
+			*var = ofSystemTextBoxDialog(name, *var);
+		}
 	};
 	
 	struct Var {
@@ -139,6 +143,9 @@ struct ofxKuTextGui {
 			if (index == 0) vfloat.inc(dir,speed);
 			if (index == 1) vint.inc(dir,speed);
 			if (index == 2) vstring.inc(dir,speed);
+		}
+		void editStringValue() {
+			if (index == 2) vstring.editStringValue();
 		}
 		string value() {
 			if (index == 0) return ofToString(*vfloat.var);

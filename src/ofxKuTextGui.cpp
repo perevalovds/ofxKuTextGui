@@ -234,6 +234,17 @@ void ofxKuTextGui::increaseValue(int speed) {	//0-slow,1-fast
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::editStringValue() {
+	if (validPage()) {
+		Page &page = page_[selPage];
+		if (page.validTab()) {
+			Tab &tab = page.tab[page.selTab];
+			if (tab.validVar()) tab.var[tab.selVar].editStringValue();
+		}
+	}
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::setActive( bool active ) {
 
 }
