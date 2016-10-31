@@ -5,7 +5,7 @@ It supports integer, float and string values (string are read-only).
 
 Values can be edited using keyboard, and stored in a file.
 
-[https://www.youtube.com/edit?video_id=jVFbEZ22iPc]
+[![Video](http://img.youtube.com/vi/jVFbEZ22iPc/0.jpg)](http://www.youtube.com/watch?v=jVFbEZ22iPc)
 
 ##Installation
 
