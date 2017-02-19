@@ -155,6 +155,27 @@ void ofxKuTextGui::addString(string name, string &var, const string &defV) {
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::addStringList(string name, int &var, const vector<string> &title) {
+    if (page_.empty()) addPage("");
+    Var var_;
+    var_.index=3;
+    var_.vstringlist = VarStringList(name, var, 1, 1, title.size(), 1, 10, title);
+    addVar(var_);
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::addStringList(string name, int &var, int count...) {
+    vector<string> title(count);
+    va_list args;
+    va_start(args, count);
+    for (int i = 0; i < count; ++i) {
+        title[i] = va_arg(args, char*);
+    }
+    va_end(args);
+    addStringList(name,var,title);
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::addVar(string name) {	//adding existing var
 	Var *var = findVar(name);
 	if (var) {
@@ -281,6 +302,19 @@ void ofxKuTextGui::draw(float X, float Y) {	//generic draw
 			}
 		}
 	}
+}
+
+//------------------------------------------------------------------------
+bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
+    if (key == OF_KEY_LEFT)     { gotoPrevTab(); return true; }
+    if (key == OF_KEY_RIGHT)    { gotoNextTab(); return true; }
+    if (key == OF_KEY_UP)       { gotoPrevValue(); return true; }
+    if (key == OF_KEY_DOWN)     { gotoNextValue(); return true; }
+    if (key == '[')             { decreaseValue(0); return true; }
+    if (key == ']')             { increaseValue(0); return true; }
+    if (key == '{')             { decreaseValue(1); return true; }
+    if (key == '}')             { increaseValue(1); return true; }
+    return false;
 }
 
 //------------------------------------------------------------------------

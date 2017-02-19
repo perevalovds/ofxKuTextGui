@@ -2,6 +2,7 @@
 
 //Textual GUI
 #include "ofMain.h"
+#include <cstdarg>
 
 
 struct ofxKuTextGui {
@@ -9,6 +10,11 @@ struct ofxKuTextGui {
 
 	void loadFromFile(const string &fileName);
 	void saveToFile(const string &fileName);
+    bool keyPressed(int key);       //generic keyPressed handler
+    void draw( float X, float Y );	//generic draw
+    float draw_tabW;	//Distance between tabs
+    float draw_yStep;	//Distance between lines
+
 
 	void addPage(const string &pageName);
 	void addTab();
@@ -19,6 +25,8 @@ struct ofxKuTextGui {
 	void addInt(string name, int &var, int defV, int minV, int maxV,
 		int stepSlow, int stepFast);
 	void addString(string name, string &var, const string &defV);
+    void addStringList(string name, int &var, const vector<string> &title);
+    void addStringList(string name, int &var, int count...);
 
 	void addVar(string name);	//adding existing var
 
@@ -41,9 +49,6 @@ struct ofxKuTextGui {
 
 	void setPage( const string &name );
 
-	void draw( float X, float Y );	//generic draw
-	float draw_tabW;	//Distance between tabs
-	float draw_yStep;	//Distance between lines
 	
 	//-------------------------------------------------------------------
 	struct VarFloat {
@@ -128,21 +133,59 @@ struct ofxKuTextGui {
 			*var = ofSystemTextBoxDialog(name, *var);
 		}
 	};
+    struct VarStringList {
+        string name;
+        int *var;
+        int minV, maxV;
+        int step[2];
+        int def;
+        vector<string> titles;
+        VarStringList() { var = 0; step[0]=step[1]=0; }
+        VarStringList(string name0, int &var0, int defV, int minV0, int maxV0,
+               int step1, int step2, vector<string> titles0) {
+            name = name0;
+            var = &var0;
+            step[0] = step1;
+            step[1] = step2;
+            minV = minV0;
+            maxV = maxV0;
+            setValue( defV );
+            def = defV;
+            titles = titles0;
+        }
+        void setValue(int v) {
+            *var = min(max(v,minV),maxV);
+        }
+        void inc(int dir, int speed) { //speed=0,1
+            speed = min(max(speed,0),1);
+            setValue( *var + dir*step[speed] );
+        }
+        void reset() {
+            setValue(def);
+        }
+        string getValue() {
+            if (*var >= 1 && *var <= titles.size()) return titles[*var-1];
+            return "";
+        }
+    };
 	
 	struct Var {
 		VarFloat vfloat;
 		VarInt vint;
 		VarString vstring;
-		int index;	//0 - vfloat, 1-vint, 2-string
+        VarStringList vstringlist;
+		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist
 		void setValue( const string &v ) {
 			if (index == 0) vfloat.setValue(ofToFloat(v));
 			if (index == 1) vint.setValue(ofToInt(v));
 			if (index == 2) vstring.setValue(v);
+            if (index == 3) vstringlist.setValue(ofToInt(v));
 		}
 		void inc(int dir, int speed) {
 			if (index == 0) vfloat.inc(dir,speed);
 			if (index == 1) vint.inc(dir,speed);
 			if (index == 2) vstring.inc(dir,speed);
+            if (index == 3) vstringlist.inc(dir,speed);
 		}
 		void editStringValue() {
 			if (index == 2) vstring.editStringValue();
@@ -151,18 +194,21 @@ struct ofxKuTextGui {
 			if (index == 0) return ofToString(*vfloat.var);
 			if (index == 1) return ofToString(*vint.var);
 			if (index == 2) return *vstring.var;
+            if (index == 3) return vstringlist.getValue();
 			return "";
 		}
 		string name() {
 			if (index == 0) return vfloat.name;
 			if (index == 1) return vint.name;
 			if (index == 2) return vstring.name;
+            if (index == 3) return vstringlist.name;
 			return "???";
 		}
 		void reset() {
 			if (index == 0) vfloat.reset();
 			if (index == 1) vint.reset();
-			if (index == 2) vint.reset();
+			if (index == 2) vstring.reset();
+            if (index == 3) vstringlist.reset();
 		}
 	};
 
@@ -196,6 +242,8 @@ struct ofxKuTextGui {
 	};
 
 	vector<Var *> getVars();
+    
+    //-------------------------------------------------------------------
 
 
 private:
