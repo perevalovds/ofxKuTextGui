@@ -53,20 +53,7 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if (key == '1') gui.setPage("page1");
-	if (key == '2') gui.setPage("page2");
-
-	if (key == OF_KEY_LEFT) gui.gotoPrevTab();
-	if (key == OF_KEY_RIGHT) gui.gotoNextTab();
-	if (key == OF_KEY_UP) gui.gotoPrevValue();
-	if (key == OF_KEY_DOWN) gui.gotoNextValue();
-	if (key == '[') gui.decreaseValue(0);
-	if (key == ']') gui.increaseValue(0);
-	if (key == '{') gui.decreaseValue(1);
-	if (key == '}') gui.increaseValue(1);
-	//if (key == OF_KEY_RETURN) gui.editStringValue();
-
-
+    gui.keyPressed(key);
 }
 
 //--------------------------------------------------------------
