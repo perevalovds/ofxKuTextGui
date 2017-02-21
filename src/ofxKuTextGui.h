@@ -27,15 +27,19 @@ struct ofxKuTextGui {
 	void addString(string name, string &var, const string &defV);
     void addStringList(string name, int &var, const vector<string> &title);
     void addStringList(string name, int &var, int count...);
-
+    
+    
+    struct Var;
+    
 	void addVar(string name);	//adding existing var
-
-	struct Var;
-	Var *findVar(const string &name);
+    Var *findVar(const string &name);   //one var
+    vector<ofxKuTextGui::Var *> findVars(const string &name);   //all instances
 
 	bool setValue(const string &name, const string &value);
 
 	//edit
+    void gotoPrevPage();
+    void gotoNextPage();
 	void gotoPrevTab();
 	void gotoNextTab();
 	void gotoPrevValue();
@@ -44,11 +48,10 @@ struct ofxKuTextGui {
 	void increaseValue(int speed);	//0-slow,1-fast
 	void editStringValue();
 
-	void setActive( bool active );
-
-
-	void setPage( const string &name );
-
+	void setPage( const string &name ); //switch to page
+    void setPage( int index ); //switch to page
+    int pageIndex();
+    string pageTitle();
 	
 	//-------------------------------------------------------------------
 	struct VarFloat {
@@ -164,7 +167,7 @@ struct ofxKuTextGui {
             setValue(def);
         }
         string getValue() {
-            if (*var >= 1 && *var <= titles.size()) return titles[*var-1];
+            if (*var >= 0 && *var <= int(titles.size())-1) return titles[*var];
             return "";
         }
     };
@@ -210,6 +213,9 @@ struct ofxKuTextGui {
 			if (index == 2) vstring.reset();
             if (index == 3) vstringlist.reset();
 		}
+        void setTitles(vector<string> &titles) {
+            if (index == 3) vstringlist.titles = titles;
+        }
 	};
 
 	struct Tab {
@@ -241,7 +247,7 @@ struct ofxKuTextGui {
 		bool validTab() { return selTab >= 0 && selTab < tab.size(); }
 	};
 
-	vector<Var *> getVars();
+	vector<Var *> getVars();    //without repetitions
     
     //-------------------------------------------------------------------
 
@@ -250,6 +256,7 @@ private:
 	vector<Page> page_;
 	int selPage;	//selected page
 	bool validPage();
+    vector<string> pageTitles();
 
 	typedef map<string, Var *> StringVarMap;
 	StringVarMap vars_;	//index of vars
@@ -258,5 +265,6 @@ private:
 
 	void rebuildVars();
 	bool needRebuild_;
+    
 };
 
