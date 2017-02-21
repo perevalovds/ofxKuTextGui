@@ -252,7 +252,7 @@ struct ofxKuTextGui {
     //-------------------------------------------------------------------
 
 
-private:
+protected:
 	vector<Page> page_;
 	int selPage;	//selected page
 	bool validPage();
