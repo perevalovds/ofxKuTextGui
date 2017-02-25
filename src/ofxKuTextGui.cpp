@@ -81,7 +81,7 @@ void ofxKuTextGui::addPage(const string &pageName) {
     string pageVar = "[page]";
     if (page_.size() == 1) {
         string page_var = pageVar;
-        addStringList(page_var, selPage, selPage, 1, 1, 1, 10);
+        addStringList(page_var, selPage, selPage, 0);
     }
     else {
         addVar(pageVar);
@@ -171,16 +171,16 @@ void ofxKuTextGui::addString(string name, string &var, const string &defV) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addStringList(string name, int &var, const vector<string> &title) {
+void ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
     Var var_;
     var_.index=3;
-    var_.vstringlist = VarStringList(name, var, 0, 0, int(title.size())-1, 1, 10, title);
+    var_.vstringlist = VarStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
     addVar(var_);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addStringList(string name, int &var, int count...) {
+void ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) {
     vector<string> title(count);
     va_list args;
     va_start(args, count);
@@ -188,7 +188,7 @@ void ofxKuTextGui::addStringList(string name, int &var, int count...) {
         title[i] = va_arg(args, char*);
     }
     va_end(args);
-    addStringList(name,var,title);
+    addStringList(name,var,defV,title);
 }
 
 //------------------------------------------------------------------------

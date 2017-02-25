@@ -1,6 +1,6 @@
 # ofxKuTextGui - openFrameworks addon for creating textual GUI controlled by keyboard
 
-It supports integer, float and string values (string are read-only). 
+It supports integer, float, string values (string are read-only), and string list (represented as integer, with string output in GUI). 
 
 Values can be edited using keyboard, and stored in a file.
 
@@ -14,10 +14,12 @@ Addon works in openFrameworks 0.9.3, OSC/Windows/Linux.
 
 ##Usage
 
-Please, see example *example-basic* included in addon.
+See example *example-basic* included in addon.
 
+##Automatic generating .H and .CPP files for GUI
 
-
+*example-gui-generate* shows how to use GUI description stored in text file
+ for automatically generation .H and .CPP files containing this GUI.
 
 
 

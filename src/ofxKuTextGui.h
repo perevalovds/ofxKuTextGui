@@ -25,8 +25,8 @@ struct ofxKuTextGui {
 	void addInt(string name, int &var, int defV, int minV, int maxV,
 		int stepSlow, int stepFast);
 	void addString(string name, string &var, const string &defV);
-    void addStringList(string name, int &var, const vector<string> &title);
-    void addStringList(string name, int &var, int count...);
+    void addStringList(string name, int &var, int defV, const vector<string> &title);
+    void addStringList(string name, int &var, int defV, int count...);
     
     
     struct Var;
