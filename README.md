@@ -21,6 +21,21 @@ See example *example-basic* included in addon.
 *example-gui-generate* shows how to use GUI description stored in text file
  for automatically generation .H and .CPP files containing this GUI.
 
+For automatic generation, you are creating textual description of GUI in a separate file:
 
+‘PAGE screen’
+‘int *FPS=30 1:100 1,10’
+‘int *w=1024 1:2000 1,10’
+‘int *h=768 1:2000 1,10’
+‘TAB’
+‘float -fps=30 0:100 100,10’
+
+Then in the code you just link it to gui object:
+
+‘PRM setup_gui(gui);’
+
+And for access to parameters use PRM:
+‘ofSetFrameRate(PRM _FPS_);’
+‘PRM fps_ = ofGetFrameRate();’
 
 
