@@ -92,6 +92,7 @@ void ofxKuTextGui::addPage(const string &pageName) {
         var[i]->setTitles(titles);
         var[i]->vstringlist.maxV = int(titles.size())-1;
     }
+    selPage = 0;
     
 }
 
