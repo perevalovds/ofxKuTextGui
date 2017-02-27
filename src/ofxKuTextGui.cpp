@@ -326,6 +326,12 @@ bool ofxKuTextGui::validPage() {
 }
 
 //------------------------------------------------------------------------
+ofxKuTextGui::Page *ofxKuTextGui::currentPagePointer() {
+    if (validPage()) { return &page_[selPage]; }
+    return 0;
+}
+
+//------------------------------------------------------------------------
 vector<string> ofxKuTextGui::pageTitles() {
     int n = page_.size();
     vector<string> titles(n);

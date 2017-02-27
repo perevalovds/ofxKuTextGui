@@ -52,6 +52,9 @@ struct ofxKuTextGui {
     void setPage( int index ); //switch to page
     int pageIndex();
     string pageTitle();
+    bool validPage();   //is current page number valid
+    struct Page;
+    Page *currentPagePointer();
 	
 	//-------------------------------------------------------------------
 	struct VarFloat {
@@ -255,7 +258,6 @@ struct ofxKuTextGui {
 protected:
 	vector<Page> page_;
 	int selPage;	//selected page
-	bool validPage();
     vector<string> pageTitles();
 
 	typedef map<string, Var *> StringVarMap;
