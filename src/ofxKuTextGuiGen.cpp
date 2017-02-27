@@ -171,7 +171,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     if (!extern_var_name.empty()) {
         put("extern " + class_name + " " + extern_var_name + ";", f_h);
         if (!define_prefix_name.empty()) {
-            put("#define " + define_prefix_name + " params.", f_h);
+            put("#define " + define_prefix_name + " " + extern_var_name + ".", f_h);
         }
     }
 
