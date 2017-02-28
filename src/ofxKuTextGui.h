@@ -159,6 +159,20 @@ struct ofxKuTextGui {
             def = defV;
             titles = titles0;
         }
+        void setValueString(const string &s) {
+            if (!s.empty()) {
+                if (s[0]>='0' && s[0]<='9') {  //TODO it's so easy check for is-number
+                    setValue(ofToInt(s));
+                    return;
+                }
+                for (int i=0; i<titles.size(); i++) {
+                    if (titles[i] == s) {
+                        setValue(i);
+                        return;
+                    }
+                }
+            }
+        }
         void setValue(int v) {
             *var = min(max(v,minV),maxV);
         }
@@ -185,7 +199,7 @@ struct ofxKuTextGui {
 			if (index == 0) vfloat.setValue(ofToFloat(v));
 			if (index == 1) vint.setValue(ofToInt(v));
 			if (index == 2) vstring.setValue(v);
-            if (index == 3) vstringlist.setValue(ofToInt(v));
+            if (index == 3) vstringlist.setValueString(v);
 		}
 		void inc(int dir, int speed) {
 			if (index == 0) vfloat.inc(dir,speed);
