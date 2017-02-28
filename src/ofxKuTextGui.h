@@ -251,6 +251,7 @@ struct ofxKuTextGui {
 	};
 
 	vector<Var *> getVars();    //without repetitions
+    vector<Var *> getPageVars();
     
     //-------------------------------------------------------------------
 

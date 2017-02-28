@@ -23,6 +23,23 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
 }
 
 //------------------------------------------------------------------------
+vector<ofxKuTextGui::Var *> ofxKuTextGui::getPageVars() {
+    vector<ofxKuTextGui::Var *> vars;
+    ofxKuTextGui::Page *page = currentPagePointer();
+    if (page) {
+        for (int i=0; i<page->tab.size(); i++) {
+            ofxKuTextGui::Tab &tab = page->tab[i];
+            for (int j=0; j<tab.var.size(); j++) {
+                ofxKuTextGui::Var &var = tab.var[j];
+                vars.push_back(&var);
+            }
+        }
+    }
+    return vars;
+}
+
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::loadFromFile(const string &fileName) {
 	//read lines
 	vector<string> lines;
