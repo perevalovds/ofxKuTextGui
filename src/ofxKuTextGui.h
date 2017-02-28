@@ -48,6 +48,9 @@ struct ofxKuTextGui {
 	void increaseValue(int speed);	//0-slow,1-fast
 	void editStringValue();
 
+    void setTab(int index);
+    void setValue(int index);
+    
 	void setPage( const string &name ); //switch to page
     void setPage( int index ); //switch to page
     int pageIndex();

@@ -220,6 +220,7 @@ void ofxKuTextGui::addVar(string name) {	//adding existing var
 	}
 }
 
+
 //------------------------------------------------------------------------
 void ofxKuTextGui::setPage( int index ) {
     if (index >= 0 && index < page_.size()) {
@@ -235,6 +236,18 @@ void ofxKuTextGui::gotoPrevPage() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoNextPage() {
     setPage(selPage+1);
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setTab(int index) {
+    if (validPage()) {
+        Page &page = page_[selPage];
+        page.selTab = index;
+        if (page.selTab >= page.tab.size()) {
+            page.selTab = 0;
+        }
+    }
+    
 }
 
 //------------------------------------------------------------------------
@@ -257,6 +270,20 @@ void ofxKuTextGui::gotoNextTab() {
 			page.selTab = 0;
 		}
 	}
+}
+
+
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setValue(int index) {
+    if (validPage()){
+        Page &page = page_[selPage];
+        if (page.validTab()) {
+            Tab &tab = page.tab[page.selTab];
+            tab.selVar = index;
+            if (tab.selVar<0) tab.selVar = int(tab.var.size())-1;
+        }
+    }
 }
 
 //------------------------------------------------------------------------
