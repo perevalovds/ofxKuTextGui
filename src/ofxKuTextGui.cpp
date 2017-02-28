@@ -359,14 +359,14 @@ vector<string> ofxKuTextGui::pageTitles() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::draw(float X, float Y) {	//generic draw
+void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 	if (validPage()) {
 		Page &page = page_[selPage];
 		for (int t=0; t<page.tab.size(); t++) {
 			Tab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
 				Var &var = tab.var[i];
-				bool selected = (page.selTab==t && tab.selVar==i);
+				bool selected = (enabled && page.selTab==t && tab.selVar==i);
 				string name = var.name();
 				if ( selected ) name = ">" + name;
 				else name = " " + name;
