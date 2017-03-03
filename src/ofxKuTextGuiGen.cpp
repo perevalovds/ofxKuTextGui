@@ -23,7 +23,8 @@
  stringlist list=a [a,b,c]
  ------
  Here
- "*" means parameter used at start, "*FPS" is "_FPS_" in code
+ "*" means parameter used at start, "*FPS" is "FPS",
+ but changes only after restart
  "-" means read-only parameter, "-fps" is "fps_" in code
  
  
@@ -77,6 +78,8 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     vector<string> Decl;  //struct declaration
     vector<string> Constr;  //constructor
     vector<string> Setup;  //setup_gui
+    vector<string> AfterLoad;  //after_load
+    
     for (int i=0; i<lines.size(); i++) {
         string line = lines[i];
         ofStringReplace(line, "\t", " ");
@@ -95,6 +98,10 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
         Pair step_pair(step_s, ",");
         Name name_code(name_pair.a);
 
+        if (name_code.is_const) {
+            put("\t" + name_code.const_name + " = " + name_code.code_name + ";", AfterLoad);
+        }
+        
         if (type_s == "PAGE" && n>=2) {
             put("\tgui.addPage(\"" + name_s + "\");", Setup);
         }
@@ -102,6 +109,9 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
             put("\tgui.addTab();", Setup);
         }
         if (type_s == "int" || type_s == "float") {
+            if (name_code.is_const) {
+                put("\t" + type_s + " " + name_code.const_name + ";", Decl);
+            }
             put("\t" + type_s + " " + name_code.code_name + ";", Decl);
             put("\t" + name_code.code_name + "=" + name_pair.b + ";", Constr);
             if (type_s == "int") {
@@ -122,6 +132,9 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
             }
         }
         if (type_s == "string") {
+            if (name_code.is_const) {
+                put("\t" + type_s + " " + name_code.const_name + ";", Decl);
+            }
             //string send_host=localhost
             put("\t" + type_s + " " + name_code.code_name + ";", Decl);
             put("\t" + name_code.code_name + "=\"" + name_pair.b + "\";", Constr);
@@ -130,6 +143,10 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
                 Setup);
         }
         if (type_s == "stringlist") {
+            if (name_code.is_const) {
+                put("\tint " + name_code.const_name + ";", Decl);
+            }
+
             //stringlist list=a [a,b,c]
             put("\tint " + name_code.code_name + ";", Decl);
             vector<string> list = parse_stringlist_values(range_s);
@@ -164,7 +181,10 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     put("struct " + class_name + " {", f_h);
     insert(f_h, Decl);
     put("    " + class_name + "();", f_h);
-    put("    void setup_gui(ofxKuTextGui &gui);", f_h);
+    put("    void setup(ofxKuTextGui &gui, string fileName);", f_h);
+    put("    void save();", f_h);
+    put("    string fileName_;", f_h);
+    put("    ofxKuTextGui *gui_;", f_h);
     put("};", f_h);
     put("", f_h);
     
@@ -192,8 +212,17 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     put("}", f_cpp);
     put("", f_cpp);
     put("//--------------------------------------------------------------", f_cpp);
-    put("void " + class_name + "::setup_gui(ofxKuTextGui &gui) {", f_cpp);
+    put("void " + class_name + "::setup(ofxKuTextGui &gui, string fileName) {", f_cpp);
     insert(f_cpp, Setup);
+    put("\tfileName_ = fileName;", f_cpp);
+    put("\tgui_ = &gui;", f_cpp);
+    put("\tgui.loadFromFile(fileName);", f_cpp);
+    insert(f_cpp, AfterLoad);
+    put("}", f_cpp);
+    put("", f_cpp);
+    put("//--------------------------------------------------------------", f_cpp);
+    put("void " + class_name + "::save() {", f_cpp);
+    put("\tgui_->saveToFile(fileName_);", f_cpp);
     put("}", f_cpp);
     put("", f_cpp);
     put("//--------------------------------------------------------------", f_cpp);

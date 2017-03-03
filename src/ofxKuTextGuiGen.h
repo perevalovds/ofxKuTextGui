@@ -23,7 +23,8 @@
  stringlist list=a [a,b,c]
  ------
  Here
- "*" means parameter used at start, "*FPS" is "_FPS_" in code
+ "*" means parameter used at start, "*FPS" is "FPS",
+ but changes only after restart
  "-" means read-only parameter, "-fps" is "fps_" in code 
 
 
@@ -68,12 +69,19 @@ protected:
     };
     struct Name {
         string code_name, screen_name;
+        bool is_const;
+        string const_name;
         Name(string name) {
             screen_name = name;
             string prefix = (name.size()>=1)?name.substr(0,1):"";
             code_name = name;
             string short_name = (name.size()>=2)?name.substr(1):"";  //shorten
-            if (prefix == "*") code_name = "_" + short_name + "_";
+            is_const = false;
+            if (prefix == "*") {
+                code_name = "_" + short_name + "_";
+                const_name = short_name;
+                is_const = true;
+            }
             if (prefix == "-") code_name = short_name + "_";
         }
     };
