@@ -38,6 +38,33 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::getPageVars() {
     return vars;
 }
 
+//------------------------------------------------------------------------
+string ofxKuTextGui::toString() {
+    string s;
+    vector<Var *> vars = getVars();
+    for (int i=0; i<vars.size(); i++) {
+        if (i>0) s += " ";
+        s += vars[i]->name() + "=" + vars[i]->value();
+    }
+    return s;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setFromString(const string &s) {
+    vector<Var *> vars = getVars();
+    vector<string> lines = ofSplitString(s," ");
+    for (int k=0; k<lines.size(); k++) {
+        vector<string> item = ofSplitString(lines[k], "=", true, true);
+        if (item.size() >= 2) {
+            string name		= item[0];
+            string value	= item[1];
+            Var *var = findVar(name);
+            if (var) {
+                var->setValue(value);
+            }
+        }
+    }
+}
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::loadFromFile(const string &fileName) {

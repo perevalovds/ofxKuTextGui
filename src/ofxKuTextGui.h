@@ -15,6 +15,8 @@ struct ofxKuTextGui {
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
 
+    string toString();
+    void setFromString(const string &s);
 
 	void addPage(const string &pageName);
 	void addTab();
