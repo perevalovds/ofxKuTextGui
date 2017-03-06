@@ -1,4 +1,4 @@
-﻿#include "ofxKuTextGui.h"
+#include "ofxKuTextGui.h"
 
 
 //------------------------------------------------------------------------
@@ -7,8 +7,14 @@ ofxKuTextGui::ofxKuTextGui() {
 
 	draw_tabW = 150;
 	draw_yStep = 20;
+    cellW = draw_tabW-10;
+    cellH = draw_yStep-2;
+    cellDx = -10.5;
+    cellDy = -14.5;
 
 	needRebuild_ = true;
+    
+    drawSliderMode_ = false;
 }
 
 
@@ -415,6 +421,10 @@ vector<string> ofxKuTextGui::pageTitles() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 	if (validPage()) {
+        
+        float w = cellW;
+        float h = cellH;
+        
 		Page &page = page_[selPage];
 		for (int t=0; t<page.tab.size(); t++) {
 			Tab &tab = page.tab[t];
@@ -424,8 +434,26 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 				string name = var.name();
 				if ( selected ) name = ">" + name;
 				else name = " " + name;
-				ofDrawBitmapStringHighlight(name+" "+var.value(),
-					X + draw_tabW * t, Y + draw_yStep * i);
+                
+                float x = X + draw_tabW * t;
+                float y = Y + draw_yStep * i;
+                
+                if (drawSliderMode_) {
+                    if (selected) ofSetColor(200,200,0);
+                    else ofSetColor(128);
+                    ofNoFill();
+                    ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+                }
+				ofDrawBitmapStringHighlight(name+" "+var.value(), x, y);
+                if (drawSliderMode_) {
+                    ofFill();
+                    ofSetColor(255,60);
+                    ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
+                    if (selected) ofSetColor(255,255,0);
+                    else ofSetColor(200);
+                    ofNoFill();
+                    ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
+                }
 			}
 		}
 	}
@@ -469,6 +497,11 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::findVars(const string &name) {   //all
     }
     return vars;
     
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setDrawSliderMode(bool value) { //should we draw slider
+    drawSliderMode_ = value;
 }
 
 //------------------------------------------------------------------------

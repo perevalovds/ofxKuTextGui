@@ -14,12 +14,18 @@ struct ofxKuTextGui {
     void draw(float X, float Y, bool enabled=true);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
+    
+    void mousePressed(int x, int y, int button);
+    void mouseDragged(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
 
     string toString();
     void setFromString(const string &s);
 
 	void addPage(const string &pageName);
 	void addTab();
+    
+    void setDrawSliderMode(bool value); //should we draw slider
 
 	//adding to current page/tab
 	void addFloat(string name, float &var, float defV, float minV, float maxV, 
@@ -222,6 +228,14 @@ struct ofxKuTextGui {
             if (index == 3) return vstringlist.getValue();
 			return "";
 		}
+        float valueNormalized() {
+            if (index == 0) return ofMap(*vfloat.var, vfloat.minV, vfloat.maxV,0,1);
+            if (index == 1) return ofMap(*vint.var, vint.minV, vint.maxV,0,1);
+            if (index == 3) return ofMap(*vstringlist.var, vstringlist.minV, vstringlist.maxV,0,1);
+            
+            return 0;
+            
+        }
         int intValue() {
             if (index == 0) return 0;//int(*vfloat.var);
             if (index == 1) return *vint.var;
@@ -294,6 +308,12 @@ protected:
 
 	void rebuildVars();
 	bool needRebuild_;
+    
+    bool drawSliderMode_;
+    
+    bool mouseDrag_;
+    int mouseIndex_;
+    float cellW, cellH, cellDx, cellDy;
     
 };
 
