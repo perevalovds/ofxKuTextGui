@@ -21,6 +21,9 @@ struct ofxKuTextGui {
 
     string toString();
     void setFromString(const string &s);
+    
+    string drawToString();  //keeps current page, tabs, selected value
+    void drawFromString(const string &s, float x, float y); //gui can be empty, just use cellW, cellH params
 
 	void addPage(const string &pageName);
 	void addTab();

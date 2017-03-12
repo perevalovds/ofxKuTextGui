@@ -14,7 +14,7 @@ ofxKuTextGui::ofxKuTextGui() {
 
 	needRebuild_ = true;
     
-    drawSliderMode_ = false;
+    drawSliderMode_ = true;
 }
 
 
@@ -438,13 +438,17 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
                 float x = X + draw_tabW * t;
                 float y = Y + draw_yStep * i;
                 
+                ofFill();
+                ofSetColor(0);
+                ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 if (drawSliderMode_) {
                     if (selected) ofSetColor(200,200,0);
                     else ofSetColor(128);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
-				ofDrawBitmapStringHighlight(name+" "+var.value(), x, y);
+                ofSetColor(255);
+				ofDrawBitmapString(name+" "+var.value(), x, y);
                 if (drawSliderMode_) {
                     ofFill();
                     ofSetColor(255,60);
@@ -457,6 +461,72 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 			}
 		}
 	}
+}
+
+//------------------------------------------------------------------------
+string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected value
+    string s = "";
+    if (validPage()) {
+        Page &page = page_[selPage];
+        for (int t=0; t<page.tab.size(); t++) {
+            if (t>0) s += ";";
+            Tab &tab = page.tab[t];
+            for (int i=0; i<tab.var.size(); i++) {
+                Var &var = tab.var[i];
+                bool selected = (page.selTab==t && tab.selVar==i);
+                string name = var.name();
+                if ( selected ) name = ">" + name;
+                else name = " " + name;
+                
+                if (i>0) s+= ",";
+                s += name + "=" + var.value() + "=" + ofToString(var.valueNormalized());
+            }
+        }
+    }
+    return s;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
+    vector<string> tabs = ofSplitString(s, ";");
+    float w = cellW;
+    float h = cellH;
+        
+    for (int t=0; t<tabs.size(); t++) {
+        vector<string> tab = ofSplitString(tabs[t], ",");
+        for (int i=0; i<tab.size(); i++) {
+            vector<string> var = ofSplitString(tab[i],"=");
+            if (var.size()>=3) {
+                string name = var[0];
+                string value = var[1];
+                float valueNormalized = ofToFloat(var[2]);
+                bool selected = (!name.empty() && name[0] == '>');
+                float x = X + draw_tabW * t;
+                float y = Y + draw_yStep * i;
+                
+                ofFill();
+                ofSetColor(0);
+                ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+                if (drawSliderMode_) {
+                    if (selected) ofSetColor(200,200,0);
+                    else ofSetColor(128);
+                    ofNoFill();
+                    ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+                }
+                ofSetColor(255);
+                ofDrawBitmapString(name+" "+value, x, y);
+                if (drawSliderMode_) {
+                    ofFill();
+                    ofSetColor(255,60);
+                    ofDrawRectangle(x+cellDx,y+cellDy,w*valueNormalized,h);
+                    if (selected) ofSetColor(255,255,0);
+                    else ofSetColor(200);
+                    ofNoFill();
+                    ofDrawRectangle(x+cellDx,y+cellDy,w*valueNormalized,h);
+                }
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------
