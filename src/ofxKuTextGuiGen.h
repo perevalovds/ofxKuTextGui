@@ -38,8 +38,7 @@ Example of generator calling:
 */
 
 #include "ofMain.h"
-
-
+#include "ofxKuTextGui.h"
 
 
 struct ofxKuTextGuiGen {

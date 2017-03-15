@@ -65,7 +65,11 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     ifstream F(ofToDataPath(gui_file_in).c_str(),ios::in | ios::binary);
     string line;
     while (getline(F,line)) {
+#ifdef OFXKUTEXTGUI_074
+		//TODO
+#else
         ofTrim(line);
+#endif
         if (line=="") continue;         //skip empty line
         if (line[0] == '#') continue;   //comment
 

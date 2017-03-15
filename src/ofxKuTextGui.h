@@ -5,6 +5,14 @@
 #include <cstdarg>
 
 
+//Checking oF version
+#ifndef ofDrawLine
+#define OFXKUTEXTGUI_074
+#define ofDrawRectangle ofRect
+#define getArgAsInt getArgAsInt32
+#endif
+
+
 struct ofxKuTextGui {
 	ofxKuTextGui();
 

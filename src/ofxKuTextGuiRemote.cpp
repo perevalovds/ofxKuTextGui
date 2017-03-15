@@ -12,7 +12,11 @@ void ofxKuTextGuiRemoteServer::setup(int in_port, ofBaseApp *app, ofxKuTextGui *
 void ofxKuTextGuiRemoteServer::update() {
     while (receiver_.hasWaitingMessages()) {
         ofxOscMessage m;
-        receiver_.getNextMessage(m);
+#ifdef OFXKUTEXTGUI_074
+		receiver_.getNextMessage(&m);
+#else
+		receiver_.getNextMessage(m);
+#endif
         processMessage(m);
     }
     
@@ -102,7 +106,11 @@ void ofxKuTextGuiRemoteClient::update() {
     }
     while (receiver_.hasWaitingMessages()) {
         ofxOscMessage m;
-        receiver_.getNextMessage(m);
+#ifdef OFXKUTEXTGUI_074
+		receiver_.getNextMessage(&m);
+#else
+		receiver_.getNextMessage(m);
+#endif
         processMessage(m);
     }
 
