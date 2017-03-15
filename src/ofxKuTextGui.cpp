@@ -421,6 +421,7 @@ vector<string> ofxKuTextGui::pageTitles() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 	if (validPage()) {
+		ofEnableAlphaBlending();
         
         float w = cellW;
         float h = cellH;
@@ -449,7 +450,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
                 }
                 ofSetColor(255);
 				ofDrawBitmapString(name+" "+var.value(), x, y);
-                if (drawSliderMode_) {
+               if (drawSliderMode_) {
                     ofFill();
                     ofSetColor(255,60);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
