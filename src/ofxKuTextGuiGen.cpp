@@ -105,14 +105,20 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
         if (name_code.is_const) {
             put("\t" + name_code.const_name + " = " + name_code.code_name + ";", AfterLoad);
         }
-        
-        if (type_s == "PAGE" && n>=2) {
+
+		if (type_s == "PAGE" && n>=2) {
             put("\tgui.addPage(\"" + name_s + "\");", Setup);
         }
         if (type_s == "TAB") {
             put("\tgui.addTab();", Setup);
         }
-        if (type_s == "int" || type_s == "float") {
+        
+		if (type_s == "var") {
+			put("\tgui.addVar(\"" + name_code.screen_name + "\");",
+                    Setup);
+		}
+        
+		if (type_s == "int" || type_s == "float") {
             if (name_code.is_const) {
                 put("\t" + type_s + " " + name_code.const_name + ";", Decl);
             }
