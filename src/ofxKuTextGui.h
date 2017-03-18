@@ -19,7 +19,7 @@ struct ofxKuTextGui {
 	void loadFromFile(const string &fileName);
 	void saveToFile(const string &fileName);
     bool keyPressed(int key);       //generic keyPressed handler
-    void draw(float X, float Y, bool enabled=true, int alpha=255);	//generic draw
+    void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
     

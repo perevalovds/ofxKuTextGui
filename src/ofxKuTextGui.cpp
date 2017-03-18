@@ -419,7 +419,7 @@ vector<string> ofxKuTextGui::pageTitles() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha) {	//generic draw
+void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alpha_slider) {	//generic draw
 	if (validPage()) {
 		ofEnableAlphaBlending();
         
@@ -440,22 +440,22 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha) {	//generic d
                 float y = Y + draw_yStep * i;
                 
                 ofFill();
-                ofSetColor(0, alpha);
+                ofSetColor(0, alpha_slider);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 if (drawSliderMode_) {
-                    if (selected) ofSetColor(200,200,0,alpha);
-                    else ofSetColor(128, alpha);
+                    if (selected) ofSetColor(200,200,0,alpha_slider);
+                    else ofSetColor(128, alpha_slider);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
-                ofSetColor(255);
+                ofSetColor(255,alpha_text);
 				ofDrawBitmapString(name+" "+var.value(), x, y);
                if (drawSliderMode_) {
                     ofFill();
-                    ofSetColor(255,60.0/255.0*alpha);
+                    ofSetColor(255,60.0/255.0*alpha_slider);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
-                    if (selected) ofSetColor(255,255,0,alpha);
-                    else ofSetColor(200,alpha);
+                    if (selected) ofSetColor(255,255,0,alpha_slider);
+                    else ofSetColor(200,alpha_slider);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
                 }
@@ -542,6 +542,7 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
     if (key == ']')             { increaseValue(0); return true; }
     if (key == '{')             { decreaseValue(1); return true; }
     if (key == '}')             { increaseValue(1); return true; }
+	if (key == OF_KEY_RETURN)   { editStringValue(); return true; }
     return false;
 }
 
