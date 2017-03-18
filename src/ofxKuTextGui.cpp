@@ -419,7 +419,7 @@ vector<string> ofxKuTextGui::pageTitles() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
+void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha) {	//generic draw
 	if (validPage()) {
 		ofEnableAlphaBlending();
         
@@ -440,11 +440,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
                 float y = Y + draw_yStep * i;
                 
                 ofFill();
-                ofSetColor(0);
+                ofSetColor(0, alpha);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 if (drawSliderMode_) {
-                    if (selected) ofSetColor(200,200,0);
-                    else ofSetColor(128);
+                    if (selected) ofSetColor(200,200,0,alpha);
+                    else ofSetColor(128, alpha);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
@@ -452,10 +452,10 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled) {	//generic draw
 				ofDrawBitmapString(name+" "+var.value(), x, y);
                if (drawSliderMode_) {
                     ofFill();
-                    ofSetColor(255,60);
+                    ofSetColor(255,60.0/255.0*alpha);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
-                    if (selected) ofSetColor(255,255,0);
-                    else ofSetColor(200);
+                    if (selected) ofSetColor(255,255,0,alpha);
+                    else ofSetColor(200,alpha);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
                 }
