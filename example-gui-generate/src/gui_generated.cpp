@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2017-02-25-15-57-50-449
+//Auto-generated GUI file for ofxKuTextGui, 2017-03-26-12-20-35-170
 
 Parameters params;
 //--------------------------------------------------------------
@@ -14,7 +14,7 @@ Parameters::Parameters() {
 }
 
 //--------------------------------------------------------------
-void Parameters::setup_gui(ofxKuTextGui &gui) {
+void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addPage("screen");
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addInt("*w",_w_,1024,1,2000,1,10);
@@ -25,7 +25,19 @@ void Parameters::setup_gui(ofxKuTextGui &gui) {
 	gui.addString("send_host",send_host,"localhost");
 	gui.addInt("send_port",send_port,12345,1,65535,1,10);
 	gui.addPage("test_list");
+	gui.addVar("-fps");
 	gui.addStringList("list",list,0,3,"a","b","c");
+	fileName_ = fileName;
+	gui_ = &gui;
+	gui.loadFromFile(fileName);
+	FPS = _FPS_;
+	w = _w_;
+	h = _h_;
+}
+
+//--------------------------------------------------------------
+void Parameters::save() {
+	gui_->saveToFile(fileName_);
 }
 
 //--------------------------------------------------------------

@@ -1,19 +1,25 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2017-02-25-15-57-50-449
+//Auto-generated GUI file for ofxKuTextGui, 2017-03-26-12-20-35-117
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
 
 struct Parameters {
+	int FPS;
 	int _FPS_;
+	int w;
 	int _w_;
+	int h;
 	int _h_;
 	float fps_;
 	string send_host;
 	int send_port;
 	int list;
     Parameters();
-    void setup_gui(ofxKuTextGui &gui);
+    void setup(ofxKuTextGui &gui, string fileName);
+    void save();
+    string fileName_;
+    ofxKuTextGui *gui_;
 };
 
 extern Parameters params;

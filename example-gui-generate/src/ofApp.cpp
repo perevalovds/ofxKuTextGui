@@ -12,8 +12,7 @@ int list1;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    PRM setup_gui(gui);
-    gui.loadFromFile("param.ini");
+    PRM setup(gui,"param.ini");
     
     
     //Access to parameters
@@ -22,7 +21,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-    gui.saveToFile("param.ini");
+	PRM save();
 }
 
 //--------------------------------------------------------------
