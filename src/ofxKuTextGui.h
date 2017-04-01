@@ -52,6 +52,7 @@ struct ofxKuTextGui {
     
 	void addVar(string name);	//adding existing var
     Var *findVar(const string &name);   //one var
+    Var *findVarChecking(const string &name);   //one var, exits if no found
     vector<ofxKuTextGui::Var *> findVars(const string &name);   //all instances
 
 	bool setValue(const string &name, const string &value);

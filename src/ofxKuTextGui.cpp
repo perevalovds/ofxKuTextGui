@@ -110,7 +110,7 @@ void ofxKuTextGui::saveToFile(const string &fileName) {
 	for (int i=0; i<vars.size(); i++) {
 		string line = vars[i]->name() + "=" + vars[i]->value();
 		file.push_back(line);
-		cout << line << endl;
+		//cout << line << endl;
 	}
 	ofstream f(ofToDataPath(fileName).c_str(),ios::out);
     for ( size_t i=0; i<file.size(); i++ ) {
@@ -551,6 +551,18 @@ ofxKuTextGui::Var *ofxKuTextGui::findVar(const string &name) {
 	rebuildVars();
 	StringVarMap::iterator p = vars_.find( name );
     return ( p != vars_.end() )?vars_[name]:0;
+}
+
+//------------------------------------------------------------------------
+ofxKuTextGui::Var *ofxKuTextGui::findVarChecking(const string &name) {   //one var, exits if no found
+	Var *v = findVar(name);
+	if (!v) {
+		cout << "ofxKuTextGui error in findVarChecking, no var '" + name + "'" << endl;
+		cout << "Exiting now..." << endl;
+		ofSleepMillis(1000);
+		OF_EXIT_APP(0);
+	}
+	return v;
 }
 
 //------------------------------------------------------------------------
