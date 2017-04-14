@@ -590,6 +590,18 @@ int *ofxKuTextGui::findVarInt(const string &name) {
 }
 
 //------------------------------------------------------------------------
+int *ofxKuTextGui::findVarStringList(const string &name) {
+	int *var = findVarChecking(name)->vstringlist.var;
+    if (!var) {
+        cout << "ofxKuTextGui error in findVarStringList, no var '" + name + "'" << endl;
+        cout << "Exiting now..." << endl;
+        ofSleepMillis(1000);
+        OF_EXIT_APP(0);
+    }
+    return var;
+}
+
+//------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::findVars(const string &name) {   //all instances
     vector<ofxKuTextGui::Var *> vars;
     for (int i=0; i<page_.size(); i++) {
