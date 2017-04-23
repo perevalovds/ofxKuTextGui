@@ -163,7 +163,7 @@ struct ofxKuTextGui {
 			setValue(def);
 		}
 		void editStringValue() {
-			*var = ofSystemTextBoxDialog(name, *var);
+			//*var = ofSystemTextBoxDialog(name, *var);
 		}
 	};
     struct VarStringList {

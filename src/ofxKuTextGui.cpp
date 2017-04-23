@@ -1,4 +1,7 @@
 #include "ofxKuTextGui.h"
+#include <fstream>
+#include <iostream>
+
 
 
 //------------------------------------------------------------------------
@@ -60,7 +63,7 @@ void ofxKuTextGui::setFromString(const string &s) {
     vector<Var *> vars = getVars();
     vector<string> lines = ofSplitString(s," ");
     for (int k=0; k<lines.size(); k++) {
-        vector<string> item = ofSplitString(lines[k], "=", true, true);
+        vector<string> item = ofSplitString(lines[k], "=");
         if (item.size() >= 2) {
             string name		= item[0];
             string value	= item[1];
@@ -91,7 +94,7 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
 	//parse lines
 	vector<Var *> vars = getVars();
 	for (int k=0; k<lines.size(); k++) {
-		vector<string> item = ofSplitString(lines[k], "=", true, true);
+		vector<string> item = ofSplitString(lines[k], "=");
 		if (item.size() >= 2) {
 			string name		= item[0];
 			string value	= item[1];
@@ -440,22 +443,22 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 float y = Y + draw_yStep * i;
                 
                 ofFill();
-                ofSetColor(0, alpha_slider);
+                ofSetColor(0, 0, 0, alpha_slider);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 if (drawSliderMode_) {
                     if (selected) ofSetColor(200,200,0,alpha_slider);
-                    else ofSetColor(128, alpha_slider);
+                    else ofSetColor(128, 128, 128, alpha_slider);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
-                ofSetColor(255,alpha_text);
+                ofSetColor(255,255,255,alpha_text);
 				ofDrawBitmapString(name+" "+var.value(), x, y);
                if (drawSliderMode_) {
                     ofFill();
-                    ofSetColor(255,60.0/255.0*alpha_slider);
+                    ofSetColor(255,255,255,60.0/255.0*alpha_slider);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
                     if (selected) ofSetColor(255,255,0,alpha_slider);
-                    else ofSetColor(200,alpha_slider);
+                    else ofSetColor(200,200,200,alpha_slider);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
                 }
@@ -518,10 +521,10 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
                 ofDrawBitmapString(name+" "+value, x, y);
                 if (drawSliderMode_) {
                     ofFill();
-                    ofSetColor(255,60);
+                    ofSetColor(255,155,155,60);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*valueNormalized,h);
                     if (selected) ofSetColor(255,255,0);
-                    else ofSetColor(200);
+                    else ofSetColor(200,200,200);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w*valueNormalized,h);
                 }
