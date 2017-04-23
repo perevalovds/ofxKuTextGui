@@ -1,4 +1,7 @@
 ﻿#include "ofxKuTextGuiGen.h"
+#include <fstream>
+#include <iostream>
+
 
 /*C++ code generator for ofxKuTextGui addon
  You preparing text description of the GUI, see gui-script.ini,
@@ -86,9 +89,18 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     
     for (int i=0; i<lines.size(); i++) {
         string line = lines[i];
-        ofStringReplace(line, "\t", " ");
-        ofStringReplace(line, "  ", " ");
-        //ofTrim(line);
+		for (int i=0; i<line.length(); i++) {
+			if (line[i]=='\t') line[i] = ' ';
+		}
+		for (int i=0; i<int(line.length())-1;) {
+			if (line[i] == ' ' && line[i+1] == ' ') {
+				line = line.substr(0,i) + line.substr(i+1);
+			}
+			else i++;
+		}
+		//ofStringReplace(line, "\t", " ");
+		//ofStringReplace(line, "  ", " ");
+	    //ofTrim(line);
         if (line.empty()) continue;
         vector<string> item = ofSplitString(line, " ");
         int n = item.size();
@@ -170,7 +182,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
             put("\t" + name_code.code_name + "=" + def_index + ";", Constr);
             string line = "\tgui.addStringList(\"" + name_code.screen_name + "\","
             + name_code.code_name + "," + def_index + ","
-            + ofToString(list.size());
+            + ofToString(int(list.size()));
             if (list.size()>0) {
                 line += "," + stringlist_values(list) + ");";
             }
@@ -182,7 +194,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     //.H file
     vector<string> f_h;
     put("#pragma once", f_h);
-    put("//Auto-generated GUI file for ofxKuTextGui, " + ofGetTimestampString(), f_h);
+    put("//Auto-generated GUI file for ofxKuTextGui"/* + ofGetTimestampString()*/, f_h);
     put("", f_h);
     put("#include \"ofMain.h\"", f_h);
     put("#include \"ofxKuTextGui.h\"", f_h);
@@ -211,7 +223,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     vector<string> f_cpp;
     
     put("#include \"" + c_file_out + ".h\"", f_cpp);
-    put("//Auto-generated GUI file for ofxKuTextGui, " + ofGetTimestampString(), f_cpp);
+    put("//Auto-generated GUI file for ofxKuTextGui"/* + ofGetTimestampString()*/, f_cpp);
     put("", f_cpp);
     if (!extern_var_name.empty()) {
         put(class_name + " " + extern_var_name + ";", f_cpp);
