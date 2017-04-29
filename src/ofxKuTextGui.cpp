@@ -5,9 +5,8 @@
 ofxKuTextGui::ofxKuTextGui() {
 	selPage = 0;
 
-	draw_tabW = 150;
+	set_tab_w(140);
 	draw_yStep = 20;
-    cellW = draw_tabW-10;
     cellH = draw_yStep-2;
     cellDx = -10.5;
     cellDy = -14.5;
@@ -17,6 +16,11 @@ ofxKuTextGui::ofxKuTextGui() {
     drawSliderMode_ = true;
 }
 
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_tab_w(float w, float indentx) {
+	cellW = w;
+	draw_tabW = cellW + indentx;
+}
 
 //------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
@@ -367,13 +371,19 @@ void ofxKuTextGui::increaseValue(int speed) {	//0-slow,1-fast
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::editStringValue() {
-	if (validPage()) {
+	if (validPage() && editing_strings_) {
 		Page &page = page_[selPage];
 		if (page.validTab()) {
 			Tab &tab = page.tab[page.selTab];
 			if (tab.validVar()) tab.var[tab.selVar].editStringValue();
 		}
 	}
+}
+
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_editing_strings(bool v) {	//enable(default) or disable editing string values from keyboard
+	editing_strings_ = v;
 }
 
 //------------------------------------------------------------------------
@@ -534,6 +544,8 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
 bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
     if (key == '1')             { gotoPrevPage(); return true; }
     if (key == '2')             { gotoNextPage(); return true; }
+	if (key == '!')				{ setPage(0); return true; }
+	if (key == '@')				{ setPage(int(page_.size())-1); return true; }
     if (key == OF_KEY_LEFT)     { gotoPrevTab(); return true; }
     if (key == OF_KEY_RIGHT)    { gotoNextTab(); return true; }
     if (key == OF_KEY_UP)       { gotoPrevValue(); return true; }
@@ -542,7 +554,7 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
     if (key == ']')             { increaseValue(0); return true; }
     if (key == '{')             { decreaseValue(1); return true; }
     if (key == '}')             { increaseValue(1); return true; }
-	if (key == OF_KEY_RETURN)   { editStringValue(); return true; }
+
     return false;
 }
 

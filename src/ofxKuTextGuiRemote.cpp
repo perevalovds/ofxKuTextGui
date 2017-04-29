@@ -35,10 +35,12 @@ void ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
     //mousePressed(float,float,int)
     //mouseDragged(float,float,int)
     //mouseReleased(float,float,int)
+
     string addr = m.getAddress();
     if (addr == "/guiRequest") {
         int port = m.getArgAsInt(0);
         answerGuiRequest( m.getRemoteIp(), port );
+		//gui_->set_editing_strings(false);	//disable string editing in order not to loose the focus
     }
     if (app_) {
         if (addr == "/keyPressed") {

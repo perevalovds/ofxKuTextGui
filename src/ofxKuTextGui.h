@@ -22,6 +22,11 @@ struct ofxKuTextGui {
     void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
+	void set_tab_w(float w, float indentx = 10);	
+
+	//enable(default) or disable editing string values from keyboard. 
+	//We disable it when remotely control GUI, in order not to loose the focus from the app.
+	void set_editing_strings(bool v);	
     
     void mousePressed(int x, int y, int button);
     void mouseDragged(int x, int y, int button);
@@ -231,7 +236,7 @@ struct ofxKuTextGui {
 		void inc(int dir, int speed) {
 			if (index == 0) vfloat.inc(dir,speed);
 			if (index == 1) vint.inc(dir,speed);
-			if (index == 2) vstring.inc(dir,speed);
+			if (index == 2) editStringValue(); //vstring.inc(dir,speed);
             if (index == 3) vstringlist.inc(dir,speed);
 		}
 		void editStringValue() {
@@ -331,5 +336,7 @@ protected:
     int mouseIndex_;
     float cellW, cellH, cellDx, cellDy;
     
+	bool editing_strings_;
+
 };
 
