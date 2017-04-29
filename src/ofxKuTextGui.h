@@ -245,9 +245,9 @@ struct ofxKuTextGui {
 			return "";
 		}
         float valueNormalized() {
-            if (index == 0) return ofMap(*vfloat.var, vfloat.minV, vfloat.maxV,0,1);
-            if (index == 1) return ofMap(*vint.var, vint.minV, vint.maxV,0,1);
-            if (index == 3) return ofMap(*vstringlist.var, vstringlist.minV, vstringlist.maxV,0,1);
+            if (index == 0) return (vfloat.minV != vfloat.maxV)?ofMap(*vfloat.var, vfloat.minV, vfloat.maxV,0,1):vfloat.minV;
+            if (index == 1) return (vint.minV != vint.maxV)?ofMap(*vint.var, vint.minV, vint.maxV,0,1):vint.minV;
+            if (index == 3) return (vstringlist.minV != vstringlist.maxV)?ofMap(*vstringlist.var, vstringlist.minV, vstringlist.maxV,0,1):vstringlist.minV;
             
             return 0;
             
