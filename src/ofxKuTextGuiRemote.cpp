@@ -94,6 +94,8 @@ void ofxKuTextGuiRemoteClient::setup(string out_host, int out_port, int in_port)
     fast_time = 0.1;
     slow_time = 0.5;
     need_fast_update_ = true;
+
+	gui_string_ = "CONNECTING=0=0";
 }
 
 //------------------------------------------------------------------------
