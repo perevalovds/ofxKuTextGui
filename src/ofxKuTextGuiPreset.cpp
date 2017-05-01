@@ -20,15 +20,15 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 		else {
 			if (var->vfloat.var) {
 				presets.add_float(name, var->vfloat.var);
-				cout << "    added float " << name << endl;
+				//cout << "    added float " << name << endl;
 			}
 			if (var->vint.var) {
 				presets.add_int(name, var->vint.var);
-				cout << "    added int " << name << endl;
+				//cout << "    added int " << name << endl;
 			}
 			if (var->vstringlist.var) { 
 				presets.add_int(name, var->vstringlist.var);
-				cout << "    added stringlist " << name << endl;
+				//cout << "    added stringlist " << name << endl;
 			}
 		}
 	}
