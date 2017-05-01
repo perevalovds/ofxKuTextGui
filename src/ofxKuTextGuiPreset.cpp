@@ -11,6 +11,7 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 		string name = vars[i];
 		ofStringReplace(name, "\t", "");
 		ofStringReplace(name, " ", "");
+		if (name.empty()) continue;
 		ofxKuTextGui::Var *var = gui.findVar(name);
 		if (!var) {
 			cout << "    Warning: not found variable '" << name << "'" << endl;
