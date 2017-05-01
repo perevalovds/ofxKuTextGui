@@ -14,6 +14,14 @@ ofxKuTextGui::ofxKuTextGui() {
 	needRebuild_ = true;
     
     drawSliderMode_ = true;
+
+	editing_strings_ = true;
+	mouse_enabled_ = true;
+
+	drawn_x_ = -10000;
+	drawn_y_ = -10000;
+	mouse_step_ = 5;
+	mouse_dragging_ = false;
 }
 
 //------------------------------------------------------------------------
@@ -262,6 +270,7 @@ void ofxKuTextGui::addVar(string name) {	//adding existing var
 void ofxKuTextGui::setPage( int index ) {
     if (index >= 0 && index < page_.size()) {
         selPage = index;
+		mouse_reset();
     }
 }
 
@@ -348,23 +357,23 @@ void ofxKuTextGui::gotoNextValue() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::decreaseValue(int speed) {	//0-slow,1-fast
+void ofxKuTextGui::decreaseValue(int speed, int value) {	//0-slow,1-fast
 	if (validPage()){
 		Page &page = page_[selPage];
 		if (page.validTab()) {
 			Tab &tab = page.tab[page.selTab];
-			if (tab.validVar()) tab.var[tab.selVar].inc(-1,speed);
+			if (tab.validVar()) tab.var[tab.selVar].inc(-value,speed);
 		}
 	}
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::increaseValue(int speed) {	//0-slow,1-fast
+void ofxKuTextGui::increaseValue(int speed, int value) {	//0-slow,1-fast
 	if (validPage()){
 		Page &page = page_[selPage];
 		if (page.validTab()) {
 			Tab &tab = page.tab[page.selTab];
-			if (tab.validVar()) tab.var[tab.selVar].inc(+1,speed);
+			if (tab.validVar()) tab.var[tab.selVar].inc(+value,speed);
 		}
 	}
 }
@@ -429,10 +438,26 @@ vector<string> ofxKuTextGui::pageTitles() {
 }
 
 //------------------------------------------------------------------------
+ofRectangle ofxKuTextGui::drawn_cell_rect(int tab, int i) {
+	float x = drawn_x_ + cellDx + draw_tabW * tab;
+    float y = drawn_y_ + cellDy + draw_yStep * i;
+	return ofRectangle(x,y,cellW,cellH);                
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::get_cell_by_coords(float x, float y, int &tab, int &i) {
+	tab = (x-drawn_x_-cellDx) / draw_tabW;
+	i = (y-drawn_y_-cellDy) / draw_yStep;
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alpha_slider) {	//generic draw
 	if (validPage()) {
 		ofEnableAlphaBlending();
         
+		drawn_x_ = X;
+		drawn_y_ = Y;
+
         float w = cellW;
         float h = cellH;
         
@@ -634,6 +659,70 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::findVars(const string &name) {   //all
 //------------------------------------------------------------------------
 void ofxKuTextGui::setDrawSliderMode(bool value) { //should we draw slider
     drawSliderMode_ = value;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_mouse_enabled(bool v) {
+	mouse_enabled_  = v;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_mouse_step(int step) {
+	mouse_step_ = step;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::mousePressed(int x, int y, int button) {
+	if (mouse_enabled_) {
+		if (validPage()) {
+			Page *page = currentPagePointer();		
+			if (page) {
+				int t, i;
+				get_cell_by_coords(x, y, t, i);
+				if (t >= 0 && t < page->tab.size()) {
+					Tab &tab = page->tab[t];
+					if (i >= 0 && i < tab.var.size()) {
+						page->selTab = t;
+						tab.selVar = i;
+						mouse_dragging_ = true;
+						mouse_x_ = x;
+						mouse_y_ = y;
+					}
+				}
+			}
+		}
+	}
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::mouseDragged(int x, int y, int button) {
+	if (mouse_enabled_) {
+		if (mouse_dragging_) {
+			int speed = (button == 2)?1:0;
+
+			int delta = x - mouse_x_;
+			int a = abs(delta);
+			if (a >= mouse_step_) {
+				int shift = (a / mouse_step_) ;				
+				if (delta>0) increaseValue(speed, shift);
+				else decreaseValue(speed, shift);
+				mouse_x_ += shift * mouse_step_ * ((delta>0)?1:-1);
+			}
+		}
+	}
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::mouseReleased(int x, int y, int button) {
+	if (mouse_enabled_) {
+
+	}
+	mouse_reset();
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::mouse_reset() {
+	mouse_dragging_ = false;
 }
 
 //------------------------------------------------------------------------

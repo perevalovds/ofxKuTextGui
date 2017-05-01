@@ -29,7 +29,9 @@ struct ofxKuTextGui {
 	//enable(default) or disable editing string values from keyboard. 
 	//We disable it when remotely control GUI, in order not to loose the focus from the app.
 	void set_editing_strings(bool v);	
-    
+	void set_mouse_enabled(bool v);	//enable/disable mouse control
+	void set_mouse_step(int step);	//step for changing values
+
     void mousePressed(int x, int y, int button);
     void mouseDragged(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
@@ -75,8 +77,8 @@ struct ofxKuTextGui {
 	void gotoNextTab();
 	void gotoPrevValue();
 	void gotoNextValue();
-	void decreaseValue(int speed);	//0-slow,1-fast
-	void increaseValue(int speed);	//0-slow,1-fast
+	void decreaseValue(int speed, int value=1);	//0-slow,1-fast
+	void increaseValue(int speed, int value=1);	//0-slow,1-fast
 	void editStringValue();
 
     void setTab(int index);
@@ -331,14 +333,22 @@ protected:
 
 	void rebuildVars();
 	bool needRebuild_;
-    
-    bool drawSliderMode_;
-    
-    bool mouseDrag_;
-    int mouseIndex_;
     float cellW, cellH, cellDx, cellDy;
     
+    bool drawSliderMode_;    
+	bool mouse_enabled_;    
 	bool editing_strings_;
+
+	float drawn_x_;
+	float drawn_y_;
+	ofRectangle drawn_cell_rect(int tab, int i);
+	void get_cell_by_coords(float x, float y, int &tab, int &i);
+
+
+    bool mouse_dragging_;
+    int mouse_x_,mouse_y_;
+	int mouse_step_;
+	void mouse_reset();
 
 };
 
