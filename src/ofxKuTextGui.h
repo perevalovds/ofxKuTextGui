@@ -5,7 +5,7 @@
 #include <cstdarg>
 
 //Comment it if you compile in oF <= 0.9
-#define OFXKUTEXTGUI_OF_09
+//#define OFXKUTEXTGUI_OF_09
 
 //Checking oF version
 #ifndef OFXKUTEXTGUI_OF_09
@@ -247,7 +247,7 @@ struct ofxKuTextGui {
 			if (index == 2) vstring.editStringValue();
 		}
 		string value() {
-			if (index == 0) return ofToString(*vfloat.var);
+			if (index == 0) return (fabs(*vfloat.var)>=0.00001)?ofToString(*vfloat.var):"0";	//crop very small values
 			if (index == 1) return ofToString(*vint.var);
 			if (index == 2) return *vstring.var;
             if (index == 3) return vstringlist.getValue();
