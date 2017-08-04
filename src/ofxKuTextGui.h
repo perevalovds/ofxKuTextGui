@@ -5,7 +5,7 @@
 #include <cstdarg>
 
 //Comment it if you compile in oF <= 0.9
-//#define OFXKUTEXTGUI_OF_09
+#define OFXKUTEXTGUI_OF_09
 
 //Checking oF version
 #ifndef OFXKUTEXTGUI_OF_09
