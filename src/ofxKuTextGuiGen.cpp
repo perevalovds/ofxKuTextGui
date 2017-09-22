@@ -20,6 +20,7 @@
  
  PAGE all
  var -fps
+ dummy
  stringlist list=a [a,b,c]
  ------
  Here
@@ -116,6 +117,9 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
 		if (type_s == "var") {
 			put("\tgui.addVar(\"" + name_code.screen_name + "\");",
                     Setup);
+		}
+		if (type_s == "dummy") {
+			put("\tgui.addDummy();", Setup);
 		}
         
 		if (type_s == "int" || type_s == "float") {
