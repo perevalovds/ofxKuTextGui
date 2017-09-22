@@ -132,7 +132,7 @@ void ofxKuTextGui::saveToFile(const string &fileName) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addPage(const string &pageName) {
+int ofxKuTextGui::addPage(const string &pageName) {
 	Page page;
 	page.name = pageName;
 	page_.push_back(page);
@@ -155,6 +155,7 @@ void ofxKuTextGui::addPage(const string &pageName) {
         var[i]->vstringlist.maxV = int(titles.size())-1;
     }
     selPage = 0;
+    return int(page_.size())-1;
     
 }
 
@@ -167,9 +168,10 @@ void ofxKuTextGui::addTab() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addVar(Var &var) {
-	page_[page_.size()-1].addVar(var);
+ofxKuTextGui::Var *ofxKuTextGui::addVar(Var &var) {
+	Var *var_ = page_[page_.size()-1].addVar(var);
 	needRebuild_ = true;
+    return var_;
 }
 
 //------------------------------------------------------------------------
@@ -202,48 +204,47 @@ void ofxKuTextGui::rebuildVars() {
 
 //------------------------------------------------------------------------
 //adding to current page
-void ofxKuTextGui::addFloat(string name, float &var, float defV, float minV, float maxV, 
+ofxKuTextGui::Var *ofxKuTextGui::addFloat(string name, float &var, float defV, float minV, float maxV,
 	int numSteps1, int numSteps2) 
 {
 	if (page_.empty()) addPage("");
 	Var var_;
 	var_.index=0;
 	var_.vfloat = VarFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
-	addVar(var_);
-
+	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addInt(string name, int &var, int defV, int minV, int maxV,
+ofxKuTextGui::Var *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, int maxV,
 		int step1, int step2) 
 {
 	if (page_.empty()) addPage("");
 	Var var_;
 	var_.index=1;
 	var_.vint = VarInt(name, var, defV, minV, maxV, step1, step2);
-	addVar(var_);
+	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addString(string name, string &var, const string &defV) {
+ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
 	Var var_;
 	var_.index=2;
 	var_.vstring = VarString(name, var, defV);
-	addVar(var_);
+	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
+ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
     Var var_;
     var_.index=3;
     var_.vstringlist = VarStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
-    addVar(var_);
+    return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) {
+ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) {
     vector<string> title(count);
     va_list args;
     va_start(args, count);
@@ -251,11 +252,20 @@ void ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) 
         title[i] = va_arg(args, char*);
     }
     va_end(args);
-    addStringList(name,var,defV,title);
+    return addStringList(name,var,defV,title);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addVar(string name) {	//adding existing var
+void ofxKuTextGui::addDummy() {
+    if (page_.empty()) addPage("");
+    Var var_;
+    var_.index=Var::VDummy;
+    addVar(var_);
+}
+
+
+//------------------------------------------------------------------------
+ofxKuTextGui::Var *ofxKuTextGui::addVar(string name) {	//adding existing var
 	Var *var = findVar(name);
 	if (var) {
 		addVar(*var);
@@ -263,6 +273,7 @@ void ofxKuTextGui::addVar(string name) {	//adding existing var
 	else {
 		cout << "ERROR ofxKuTextGui::addVar, no variable " << name << endl;
 	}
+    return var;
 }
 
 
@@ -411,6 +422,29 @@ int ofxKuTextGui::pageIndex() {
 }
 
 //------------------------------------------------------------------------
+int ofxKuTextGui::tabIndex() {
+    if (validPage()){
+        Page &page = page_[selPage];
+        if (page.validTab()) {
+            return page.selTab;
+        }
+    }
+    return -1;
+}
+
+//------------------------------------------------------------------------
+int ofxKuTextGui::varIndex() {
+    if (validPage()){
+        Page &page = page_[selPage];
+        if (page.validTab()) {
+            Tab &tab = page.tab[page.selTab];
+            if (tab.validVar()) return tab.selVar;
+        }
+    }
+    return -1;
+}
+
+//------------------------------------------------------------------------
 string ofxKuTextGui::pageTitle() {
     if (validPage()) return page_[selPage].name;
     else return "";
@@ -466,8 +500,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 			Tab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
 				Var &var = tab.var[i];
-				bool selected = (enabled && page.selTab==t && tab.selVar==i);
-				string name = var.name();
+				bool selected = (/*enabled &&*/ page.selTab==t && tab.selVar==i);
+				string name = var.title();
 				if ( selected ) name = ">" + name;
 				else name = " " + name;
                 
@@ -477,22 +511,30 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 ofFill();
                 ofSetColor(0, alpha_slider);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
-                if (drawSliderMode_) {
-                    if (selected) ofSetColor(200,200,0,alpha_slider);
-                    else ofSetColor(128, alpha_slider);
-                    ofNoFill();
-                    ofDrawRectangle(x+cellDx,y+cellDy,w,h);
-                }
-                ofSetColor(255,alpha_text);
-				ofDrawBitmapString(name+" "+var.value(), x, y);
-               if (drawSliderMode_) {
-                    ofFill();
-                    ofSetColor(255,60.0/255.0*alpha_slider);
-                    ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
-                    if (selected) ofSetColor(255,255,0,alpha_slider);
-                    else ofSetColor(200,alpha_slider);
-                    ofNoFill();
-                    ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
+                if (var.index != Var::VDummy) {
+                    if (drawSliderMode_) {
+                        if (selected) {
+                            if (enabled) ofSetColor(200,200,0,alpha_slider);
+                            else ofSetColor(0,200,200,alpha_slider);
+                        }
+                        else ofSetColor(128, alpha_slider);
+                        ofNoFill();
+                        ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+                    }
+                    ofSetColor(255,alpha_text);
+                    ofDrawBitmapString(name+" "+var.value(), x, y);
+                    if (drawSliderMode_) {
+                        ofFill();
+                        ofSetColor(255,60.0/255.0*alpha_slider);
+                        ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
+                        if (selected) {
+                            if (enabled) ofSetColor(255,255,0,alpha_slider);
+                            else ofSetColor(0,200,200,alpha_slider);
+                        }
+                        else ofSetColor(200,alpha_slider);
+                        ofNoFill();
+                        ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
+                    }
                 }
 			}
 		}

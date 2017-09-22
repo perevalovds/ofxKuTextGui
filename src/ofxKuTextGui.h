@@ -4,7 +4,7 @@
 #include "ofMain.h"
 #include <cstdarg>
 
-//Comment it if you compile in oF <= 0.9
+//Comment it if you compile in oF < 0.9
 #define OFXKUTEXTGUI_OF_09
 
 //Checking oF version
@@ -42,24 +42,26 @@ struct ofxKuTextGui {
     string drawToString();  //keeps current page, tabs, selected value
     void drawFromString(const string &s, float x, float y); //gui can be empty, just use cellW, cellH params
 
-	void addPage(const string &pageName);
+	int addPage(const string &pageName);    //returns page index
 	void addTab();
     
     void setDrawSliderMode(bool value); //should we draw slider
 
-	//adding to current page/tab
-	void addFloat(string name, float &var, float defV, float minV, float maxV, 
-		int numStepsSlow, int numStepsFast);
-	void addInt(string name, int &var, int defV, int minV, int maxV,
-		int stepSlow, int stepFast);
-	void addString(string name, string &var, const string &defV);
-    void addStringList(string name, int &var, int defV, const vector<string> &title);
-    void addStringList(string name, int &var, int defV, int count...);
-    
-    
     struct Var;
     
-	void addVar(string name);	//adding existing var
+	//adding to current page/tab
+	Var *addFloat(string name, float &var, float defV, float minV, float maxV,
+		int numStepsSlow, int numStepsFast);
+	Var *addInt(string name, int &var, int defV, int minV, int maxV,
+		int stepSlow, int stepFast);
+	Var *addString(string name, string &var, const string &defV);
+    Var *addStringList(string name, int &var, int defV, const vector<string> &title);
+    Var *addStringList(string name, int &var, int defV, int count...);
+    void addDummy();
+    
+
+    
+	Var *addVar(string name);	//adding existing var
     Var *findVar(const string &name);   //one var
     Var *findVarChecking(const string &name);   //one var, exits if no found
     float *findVarFloat(const string &name);
@@ -81,36 +83,52 @@ struct ofxKuTextGui {
 	void increaseValue(int speed, int value=1);	//0-slow,1-fast
 	void editStringValue();
 
-    void setTab(int index);
-    void setValue(int index);
+    void setTab(int index);     //select tab
+    void setValue(int index);   //select value
     
 	void setPage( const string &name ); //switch to page
     void setPage( int index ); //switch to page
     int pageIndex();
+    int tabIndex();
+    int varIndex();
     string pageTitle();
     bool validPage();   //is current page number valid
     struct Page;
     Page *currentPagePointer();
-	
+    
+    
 	//-------------------------------------------------------------------
 	struct VarFloat {
 		string name;
+        string title;
 		float *var;
 		float minV, maxV;
-		float step[2];
+        int numSteps1, numSteps2;
+        float step[2];
 		float def;
 		VarFloat() { var = 0; step[0]=step[1]=0; }
 		VarFloat(string name0, float &var0, float defV, float minV0, float maxV0,
-		int numSteps1, int numSteps2) {
+		int numSteps1_0, int numSteps2_0) {
 			name = name0;
+            title = name;
 			var = &var0;
-			step[0] = (maxV0-minV0)/numSteps1;
-			step[1] = (maxV0-minV0)/numSteps2;
 			minV = minV0;
 			maxV = maxV0;
-			def = defV;
+            numSteps1 = numSteps1_0;
+            numSteps2 = numSteps2_0;
+            update_steps();
+            def = defV;
 			setValue( defV );
 		}
+        void update_steps() {
+            if (maxV!=minV) {
+                step[0] = (maxV-minV)/numSteps1;
+                step[1] = (maxV-minV)/numSteps2;
+            }
+            else {
+                step[0] = step[1] = 0;
+            }
+        }
 		void setValue(float v) {
 			*var = min(max(v,minV),maxV);
 		}
@@ -125,6 +143,7 @@ struct ofxKuTextGui {
 	
 	struct VarInt {
 		string name;
+        string title;
 		int *var;
 		int minV, maxV;
 		int step[2];
@@ -133,7 +152,8 @@ struct ofxKuTextGui {
 		VarInt(string name0, int &var0, int defV, int minV0, int maxV0,
 		int step1, int step2) {
 			name = name0;
-			var = &var0;
+            title = name;
+            var = &var0;
 			step[0] = step1;
 			step[1] = step2;
 			minV = minV0;
@@ -154,11 +174,13 @@ struct ofxKuTextGui {
 	};
 	struct VarString {
 		string name;
-		string *var;
+        string title;
+        string *var;
 		string def;
 		VarString() {}
 		VarString(const string &name0, string &var0, const string &defV) {
 			name = name0;
+            title = name;
 			var = &var0;
 			def = defV;
 			setValue( defV );
@@ -177,6 +199,7 @@ struct ofxKuTextGui {
 	};
     struct VarStringList {
         string name;
+        string title;
         int *var;
         int minV, maxV;
         int step[2];
@@ -186,6 +209,7 @@ struct ofxKuTextGui {
         VarStringList(string name0, int &var0, int defV, int minV0, int maxV0,
                int step1, int step2, vector<string> titles0) {
             name = name0;
+            title = name;
             var = &var0;
             step[0] = step1;
             step[1] = step2;
@@ -230,7 +254,19 @@ struct ofxKuTextGui {
 		VarInt vint;
 		VarString vstring;
         VarStringList vstringlist;
-		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist
+		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist, 4-dummy
+        static const int VFloat         = 0;
+        static const int VInt           = 1;
+        static const int VString        = 2;
+        static const int VStringList    = 3;
+        static const int VDummy         = 4;
+        
+        void setTitle(const string &title) {
+            if (index == VFloat)    vfloat.title = title;
+            if (index == VInt)      vint.title = title;
+            if (index == VString)   vstring.title = title;
+            if (index == VStringList) vstringlist.title = title;
+        }
 		void setValue( const string &v ) {
 			if (index == 0) vfloat.setValue(ofToFloat(v));
 			if (index == 1) vint.setValue(ofToInt(v));
@@ -273,8 +309,15 @@ struct ofxKuTextGui {
 			if (index == 1) return vint.name;
 			if (index == 2) return vstring.name;
             if (index == 3) return vstringlist.name;
-			return "???";
+			return "";
 		}
+        string title() {
+            if (index == 0) return vfloat.title;
+            if (index == 1) return vint.title;
+            if (index == 2) return vstring.title;
+            if (index == 3) return vstringlist.title;
+            return "";
+        }
 		void reset() {
 			if (index == 0) vfloat.reset();
 			if (index == 1) vint.reset();
@@ -329,7 +372,7 @@ protected:
 	typedef map<string, Var *> StringVarMap;
 	StringVarMap vars_;	//index of vars
 
-	void addVar(Var &var);
+	Var *addVar(Var &var);
 
 	void rebuildVars();
 	bool needRebuild_;
