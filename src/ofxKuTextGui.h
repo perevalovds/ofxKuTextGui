@@ -46,6 +46,7 @@ struct ofxKuTextGui {
 	void addTab();
     
     void setDrawSliderMode(bool value); //should we draw slider
+	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
 
     struct Var;
     
@@ -260,7 +261,12 @@ struct ofxKuTextGui {
         static const int VString        = 2;
         static const int VStringList    = 3;
         static const int VDummy         = 4;
-        
+
+		ofColor color;
+		void setColor(const ofColor &color0) {
+			color = color0;
+		}
+
         void setTitle(const string &title) {
             if (index == VFloat)    vfloat.title = title;
             if (index == VInt)      vint.title = title;

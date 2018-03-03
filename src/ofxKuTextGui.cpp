@@ -30,6 +30,17 @@ void ofxKuTextGui::set_tab_w(float w, float indentx) {
 	draw_tabW = cellW + indentx;
 }
 
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {	//sets variable color through all pages
+	vector<Var *> vars = findVars(var_name);
+	cout << "set color for " << var_name << endl;
+	for (int i = 0; i<vars.size(); i++) {
+		vars[i]->setColor(color);
+		cout << "set color!" << endl;
+	}
+}
+
 //------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
 	rebuildVars();
@@ -521,7 +532,9 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                         ofNoFill();
                         ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                     }
-                    ofSetColor(255,alpha_text);
+                    //ofSetColor(255,alpha_text);
+					ofColor &color = var.color;
+					ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
                     ofDrawBitmapString(name+" "+var.value(), x, y);
                     if (drawSliderMode_) {
                         ofFill();
@@ -682,12 +695,13 @@ int *ofxKuTextGui::findVarStringList(const string &name) {
 
 //------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::findVars(const string &name) {   //all instances
+	//rebuildVars();
     vector<ofxKuTextGui::Var *> vars;
     for (int i=0; i<page_.size(); i++) {
         Page &page = page_[i];
         for (int j=0; j<page.tab.size(); j++) {
             Tab &tab = page.tab[j];
-            for (int k=0; j<tab.var.size(); j++) {
+            for (int k=0; k<tab.var.size(); k++) {
                 if (tab.var[k].name() == name) {
                     vars.push_back(&tab.var[k]);
                 }
