@@ -34,10 +34,8 @@ void ofxKuTextGui::set_tab_w(float w, float indentx) {
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {	//sets variable color through all pages
 	vector<Var *> vars = findVars(var_name);
-	cout << "set color for " << var_name << endl;
 	for (int i = 0; i<vars.size(); i++) {
 		vars[i]->setColor(color);
-		cout << "set color!" << endl;
 	}
 }
 
