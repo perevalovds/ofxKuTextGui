@@ -44,6 +44,8 @@ struct ofxKuTextGuiRemoteClient {
     
     void askGuiRequest();
     void processMessage(ofxOscMessage &m);
+
+	string get_var_value(string var_name);	//returns var value if it's visible
 protected:
     ofxOscReceiver receiver_;
     int in_port_;

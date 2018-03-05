@@ -117,7 +117,29 @@ void ofxKuTextGuiRemoteClient::update() {
 #endif
         processMessage(m);
     }
+}
 
+//------------------------------------------------------------------------
+string ofxKuTextGuiRemoteClient::get_var_value(string var_name) {	//returns var value if it's visible
+	var_name = " " + var_name;
+	vector<string> tabs = ofSplitString(gui_string_, ";");
+	for (int t = 0; t < tabs.size(); t++) {
+		vector<string> tab = ofSplitString(tabs[t], ",");
+		for (int i = 0; i < tab.size(); i++) {
+			vector<string> var = ofSplitString(tab[i], "=");
+			if (var.size() >= 3) {
+				string name = var[0];
+				string &value = var[1];
+				//float valueNormalized = ofToFloat(var[2]);
+				bool selected = (!name.empty() && name[0] == '>');
+				if (selected) name[0] = ' ';
+				if (name == var_name) {
+					return value;
+				}
+			}
+		}
+	}
+	return "";
 }
 
 //------------------------------------------------------------------------
