@@ -22,6 +22,8 @@ ofxKuTextGui::ofxKuTextGui() {
 	drawn_y_ = -10000;
 	mouse_step_ = 5;
 	mouse_dragging_ = false;
+
+	set_font(0, 0, 0);
 }
 
 //------------------------------------------------------------------------
@@ -533,7 +535,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                     //ofSetColor(255,alpha_text);
 					ofColor &color = var.color;
 					ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
-                    ofDrawBitmapString(name+" "+var.value(), x, y);
+					draw_string(name+" "+var.value(), x, y);
                     if (drawSliderMode_) {
                         ofFill();
                         ofSetColor(255,60.0/255.0*alpha_slider);
@@ -576,6 +578,25 @@ string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected valu
 }
 
 //------------------------------------------------------------------------
+//using custom font - if not, using ofDrawBitmapString
+void ofxKuTextGui::set_font(ofTrueTypeFont *font, float shift_x, float shift_y) {
+	custom_font_ = font;
+	font_shift_x = shift_x;
+	font_shift_y = shift_y;
+
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::draw_string(const string &s, float x, float y) {
+	if (custom_font_) {
+		custom_font_->drawString(s, x + font_shift_x, y + font_shift_y);
+	}
+	else {
+		ofDrawBitmapString(s, x, y);
+	}
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
     vector<string> tabs = ofSplitString(s, ";");
     float w = cellW;
@@ -603,7 +624,7 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
                 ofSetColor(255);
-                ofDrawBitmapString(name+" "+value, x, y);
+				draw_string(name+" "+value, x, y);
                 if (drawSliderMode_) {
                     ofFill();
                     ofSetColor(255,60);

@@ -26,6 +26,13 @@ struct ofxKuTextGui {
     float draw_yStep;	//Distance between lines
 	void set_tab_w(float w, float indentx = 10);	
 
+	//using custom font - if not, using ofDrawBitmapString
+	void set_font(ofTrueTypeFont *font, float shift_x, float shift_y);
+	ofTrueTypeFont *custom_font_;
+	float font_shift_x, font_shift_y;
+	void draw_string(const string &s, float x, float y);
+
+
 	//enable(default) or disable editing string values from keyboard. 
 	//We disable it when remotely control GUI, in order not to loose the focus from the app.
 	void set_editing_strings(bool v);	
