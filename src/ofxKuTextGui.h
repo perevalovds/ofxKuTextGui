@@ -21,6 +21,7 @@ struct ofxKuTextGui {
 	void loadFromFile(const string &fileName);
 	void saveToFile(const string &fileName);
     bool keyPressed(int key);       //generic keyPressed handler
+	void update();					//for buttons processing
     void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
@@ -65,7 +66,8 @@ struct ofxKuTextGui {
 	Var *addString(string name, string &var, const string &defV);
     Var *addStringList(string name, int &var, int defV, const vector<string> &title);
     Var *addStringList(string name, int &var, int defV, int count...);
-    void addDummy();
+	Var *addButton(string name, int &var);
+	void addDummy();
     
 
     
@@ -156,6 +158,7 @@ struct ofxKuTextGui {
 		int minV, maxV;
 		int step[2];
 		int def;
+		int is_button;		//buttons are just int values, but rendered specially
 		VarInt() { var = 0; step[0]=step[1]=0; }
 		VarInt(string name0, int &var0, int defV, int minV0, int maxV0,
 		int step1, int step2) {
@@ -168,7 +171,41 @@ struct ofxKuTextGui {
 			maxV = maxV0;
 			setValue( defV );
 			def = defV;
+			is_button = 0;
 		}
+
+		//button ---------------------
+		int button_fired_ = 0;
+		float button_time_ = 0;
+		float button_alpha_ = 0;
+
+		void setButton(int b) {	//make int rendered as button
+			is_button = b;
+		}
+
+		int just_fired_ = 0;
+		void update_button() {
+			if (button_fired_ && !(just_fired_==0 && *var)) {
+				float delta = ofGetElapsedTimef() - button_time_;
+				button_alpha_ = ofMap(delta, 0, 0.5, 1, 0, true);
+				if (delta >= 0.5) {
+					button_fired_ = 0;
+				}
+				*var = 0;		//here we reset *var!
+				just_fired_ = 0;
+			}
+			else {
+				if (*var) {
+					button_fired_ = 1;
+					button_time_ = ofGetElapsedTimef();
+					button_alpha_ = 1;
+					just_fired_ = 1;
+					//here we keep *var non-zero to process it in the user code!
+				}
+			}
+		}
+
+		//----------------------------
 		void setValue(int v) {
 			*var = min(max(v,minV),maxV);
 		}
@@ -272,6 +309,13 @@ struct ofxKuTextGui {
 		ofColor color;
 		void setColor(const ofColor &color0) {
 			color = color0;
+		}
+
+		bool is_button() {
+			return (index == VInt) && vint.is_button;
+		}
+		void update_button() {
+			if (is_button()) vint.update_button();
 		}
 
         void setTitle(const string &title) {

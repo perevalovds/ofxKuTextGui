@@ -38,4 +38,5 @@ public:
 	string folder1 = "folderA";
 	string folder2 = "folderB";
 
+	int render = 0;
 };

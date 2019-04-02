@@ -237,6 +237,16 @@ ofxKuTextGui::Var *ofxKuTextGui::addInt(string name, int &var, int defV, int min
 }
 
 //------------------------------------------------------------------------
+ofxKuTextGui::Var *ofxKuTextGui::addButton(string name, int &var) {
+	if (page_.empty()) addPage("");
+	Var var_;
+	var_.index = 1;
+	var_.vint = VarInt(name, var, 0, 0, 1, 1, 1);
+	var_.vint.setButton(1);
+	return addVar(var_);
+}
+
+//------------------------------------------------------------------------
 ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
 	Var var_;
@@ -496,6 +506,19 @@ void ofxKuTextGui::get_cell_by_coords(float x, float y, int &tab, int &i) {
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::update() {					//for buttons processing
+	for (int i = 0; i<page_.size(); i++) {
+		Page &page = page_[i];
+		for (int j = 0; j<page.tab.size(); j++) {
+			Tab &tab = page.tab[j];
+			for (int k = 0; k<tab.var.size(); k++) {
+				tab.var[k].update_button();				//TODO optimize and check only button variables
+			}
+		}
+	}
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alpha_slider) {	//generic draw
 	if (validPage()) {
 		ofEnableAlphaBlending();
@@ -532,22 +555,40 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                         ofNoFill();
                         ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                     }
-                    //ofSetColor(255,alpha_text);
-					ofColor &color = var.color;
-					ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
-					draw_string(name+" "+var.value(), x, y);
-                    if (drawSliderMode_) {
-                        ofFill();
-                        ofSetColor(255,60.0/255.0*alpha_slider);
-                        ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
-                        if (selected) {
-                            if (enabled) ofSetColor(255,255,0,alpha_slider);
-                            else ofSetColor(0,200,200,alpha_slider);
-                        }
-                        else ofSetColor(200,alpha_slider);
-                        ofNoFill();
-                        ofDrawRectangle(x+cellDx,y+cellDy,w*var.valueNormalized(),h);
-                    }
+
+					//button
+					if (var.is_button()) {
+						float a = var.vint.button_alpha_;
+						if (a > 0) {
+							ofSetColor(200, var.vint.button_alpha_ * alpha_slider);
+							ofFill();
+							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						}
+
+						ofColor &color = var.color;
+						ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
+						draw_string(name, x, y);
+						
+					}
+					else {
+						//non-button
+						ofColor &color = var.color;
+						ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
+						draw_string(name + " " + var.value(), x, y);
+						if (drawSliderMode_) {
+							ofFill();
+							ofSetColor(255, 60.0 / 255.0*alpha_slider);
+							ofDrawRectangle(x + cellDx, y + cellDy, w*var.valueNormalized(), h);
+							if (selected) {
+								if (enabled) ofSetColor(255, 255, 0, alpha_slider);
+								else ofSetColor(0, 200, 200, alpha_slider);
+							}
+							else ofSetColor(200, alpha_slider);
+							ofNoFill();
+							ofDrawRectangle(x + cellDx, y + cellDy, w*var.valueNormalized(), h);
+
+						}
+					}
                 }
 			}
 		}
@@ -759,9 +800,16 @@ void ofxKuTextGui::mousePressed(int x, int y, int button) {
 					if (i >= 0 && i < tab.var.size()) {
 						page->selTab = t;
 						tab.selVar = i;
-						mouse_dragging_ = true;
-						mouse_x_ = x;
-						mouse_y_ = y;
+
+						//check button
+						if (tab.validVar() && tab.var[tab.selVar].is_button()) {
+							tab.var[tab.selVar].setValue("1");
+						}
+						else {
+							mouse_dragging_ = true;
+							mouse_x_ = x;
+							mouse_y_ = y;
+						}
 					}
 				}
 			}

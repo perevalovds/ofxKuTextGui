@@ -22,7 +22,7 @@ void ofApp::setup(){
 void ofApp::update(){
     server.update();
     client.update();
-
+	gui.update();
 }
 
 //--------------------------------------------------------------

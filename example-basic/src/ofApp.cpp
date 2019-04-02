@@ -21,6 +21,9 @@ void ofApp::setup(){
 	gui.addTab();
 	gui.addString("folder1", folder1, folder1);
 	gui.addString("folder2", folder2, folder2);
+
+	gui.addDummy();
+	gui.addButton("render",render);
 	
 	gui.loadFromFile("params.ini");	//load values from a file after all variables are added
 }
@@ -32,7 +35,7 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+	gui.update();
 }
 
 //--------------------------------------------------------------

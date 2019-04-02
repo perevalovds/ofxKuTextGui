@@ -22,13 +22,16 @@
  var -fps
  dummy
  stringlist list=a [a,b,c]
+ button render
+ #button - it's int variable, which is set when button is pressed
+
  ------
  Here
- "*" means parameter used at start, "*FPS" is "FPS",
+ "*" means constant parameter used at start, "*FPS" is "FPS",
  but changes only after restart
- "-" means read-only parameter, "-fps" is "fps_" in code
- 
- 
+ "-" means read-only parameter, so user changes will affect nothing, "-fps" is "fps_" in code
+
+
  Example of generator calling:
  generateCPP("../../src/gui-script.ini", "../src/params",
  "Parameters", "params",
@@ -180,6 +183,14 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
             }
             put(line,Setup);
         }
+		if (type_s == "button") {
+			if (name_code.is_const) {			//...but of course for buttons "const" value are meaningless :)
+				put("\tint " + name_code.const_name + ";", Decl);
+			}
+			put("\tint " + name_code.code_name + ";", Decl);
+			put("\t" + name_code.code_name + "=0;", Constr);
+			put("\tgui.addButton(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
+		}
     }
     
     

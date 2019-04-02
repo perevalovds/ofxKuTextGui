@@ -28,6 +28,8 @@ void ofApp::exit(){
 void ofApp::update(){
     //Access to parameters
     PRM fps_ = ofGetFrameRate();
+	
+	gui.update();
     
 }
 

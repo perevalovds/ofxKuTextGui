@@ -20,12 +20,16 @@
  
  PAGE all
  var -fps
+ dummy
  stringlist list=a [a,b,c]
+ button render
+ #button - it's int variable, which is set when button is pressed
+
  ------
  Here
- "*" means parameter used at start, "*FPS" is "FPS",
+ "*" means constant parameter used at start, "*FPS" is "FPS",
  but changes only after restart
- "-" means read-only parameter, "-fps" is "fps_" in code 
+ "-" means read-only parameter, so user changes will affect nothing, "-fps" is "fps_" in code
 
 
 Example of generator calling:
