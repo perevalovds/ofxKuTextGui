@@ -545,7 +545,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 ofFill();
                 ofSetColor(0, alpha_slider);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+
                 if (var.index != Var::VDummy) {
+					bool button = var.is_button();
+					const int button_ind = 8;
+
                     if (drawSliderMode_) {
                         if (selected) {
                             if (enabled) ofSetColor(200,200,0,alpha_slider);
@@ -553,16 +557,21 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                         }
                         else ofSetColor(128, alpha_slider);
                         ofNoFill();
-                        ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+						if (!button) {
+							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						}
+						else {
+							ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2* button_ind, h);
+						}
                     }
 
 					//button
-					if (var.is_button()) {
-						float a = var.vint.button_alpha_;
+					if (button) {
+						float a = var.vint.button_alpha_* 0.5 + 0.5;
 						if (a > 0) {
-							ofSetColor(200, var.vint.button_alpha_ * alpha_slider);
+							ofSetColor(200, a * alpha_slider);
 							ofFill();
-							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+							ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
 						}
 
 						ofColor &color = var.color;
