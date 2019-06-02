@@ -87,6 +87,8 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     vector<string> Constr;  //constructor
     vector<string> Setup;  //setup_gui
     vector<string> AfterLoad;  //after_load
+	vector<string> ColorLines;	//setting colors
+	string current_color;	//if not empty - the set to this color
     
     for (int i=0; i<lines.size(); i++) {
         string line = lines[i];
@@ -116,6 +118,13 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
         if (type_s == "TAB") {
             put("\tgui.addTab();", Setup);
         }
+
+		if (type_s == "COLOR") {
+			current_color = name_s;	//second argument
+		}
+		if (type_s == "RESET_COLOR") {
+			current_color = "";
+		}
         
 		if (type_s == "var") {
 			put("\tgui.addVar(\"" + name_code.screen_name + "\");",
@@ -125,6 +134,8 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
 			put("\tgui.addDummy();", Setup);
 		}
         
+		bool is_var = false;
+
 		if (type_s == "int" || type_s == "float") {
             if (name_code.is_const) {
                 put("\t" + type_s + " " + name_code.const_name + ";", Decl);
@@ -147,6 +158,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
                     + step_pair.a + "," + step_pair.b + ");",
                     Setup);
             }
+			is_var = true;
         }
         if (type_s == "string") {
             if (name_code.is_const) {
@@ -158,6 +170,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
             put("\tgui.addString(\"" + name_code.screen_name + "\","
                 + name_code.code_name + ",\"" + name_pair.b + "\");",
                 Setup);
+			is_var = true;
         }
         if (type_s == "stringlist") {
             if (name_code.is_const) {
@@ -182,6 +195,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
                 line += "," + stringlist_values(list) + ");";
             }
             put(line,Setup);
+			is_var = true;
         }
 		if (type_s == "button") {
 			if (name_code.is_const) {			//...but of course for buttons "const" value are meaningless :)
@@ -190,6 +204,10 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
 			put("\tint " + name_code.code_name + ";", Decl);
 			put("\t" + name_code.code_name + "=0;", Constr);
 			put("\tgui.addButton(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
+			is_var = true;
+		}
+		if (is_var && !current_color.empty()) {
+			put("\tgui.set_var_color(\"" + name_code.screen_name + "\", ofColor(" + current_color + "));", ColorLines);
 		}
     }
     
@@ -239,6 +257,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
     put("//--------------------------------------------------------------", f_cpp);
     put("void " + class_name + "::setup(ofxKuTextGui &gui, string fileName) {", f_cpp);
     insert(f_cpp, Setup);
+	insert(f_cpp, ColorLines);
     put("\tfileName_ = fileName;", f_cpp);
     put("\tgui_ = &gui;", f_cpp);
     put("\tgui.loadFromFile(fileName);", f_cpp);

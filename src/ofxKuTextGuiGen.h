@@ -8,12 +8,15 @@
  
  ------
  PAGE screen
+ COLOR 255,0,0
  int *FPS=30 1:100 1,10
  int *w=1024 1:2000 1,10
  int *h=768 1:2000 1,10
  TAB
+ COLOR 64
  float -fps=30 0:100 100,10
- 
+ RESET_COLOR
+
  PAGE osc
  string send_host=localhost
  int send_port=12345 1:65535 1,10
