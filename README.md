@@ -1,8 +1,8 @@
-# ofxKuTextGui - openFrameworks addon for creating textual GUI controlled by keyboard
+# ofxKuTextGui - openFrameworks addon for creating textual GUI controlled by keyboard and mouse
 
-It supports integer, float, string values (string are read-only), and string list (represented as integer, with string output in GUI). 
+It supports integers, floats, strings, stringlists (represented as integer, with string output in GUI) and buttons. 
 
-Values can be edited using keyboard, and stored in a file.
+Values can be edited using keyboard or mouse, and stored in a file.
 
 [![Video](http://img.youtube.com/vi/jVFbEZ22iPc/0.jpg)](http://www.youtube.com/watch?v=jVFbEZ22iPc)
 
