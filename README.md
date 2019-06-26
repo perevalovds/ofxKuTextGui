@@ -53,7 +53,7 @@ Such GUI description look as the following:
 
 `TAB`
 
-`COLOR 255,140,140
+`COLOR 255,140,140`
 
 `float -fps=30 0:100 100,10`
 
