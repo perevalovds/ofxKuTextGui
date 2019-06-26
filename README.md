@@ -10,7 +10,7 @@ Values can be edited using keyboard or mouse, and stored in a file.
 
 Download and unzip as *ofxKuTextGui* to *addons* folder of your openFrameworks installation.
 
-Addon works in openFrameworks 0.9.3, OSC/Windows/Linux.
+Addon works in openFrameworks 0.10.1 and older, Windows/MacOS/Linux.
 
 For working with addon, you need only four files in your project:
 
