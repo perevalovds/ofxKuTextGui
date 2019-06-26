@@ -4,7 +4,7 @@ It supports integers, floats, strings, stringlists (represented as integer, with
 
 Values can be edited using keyboard or mouse, and stored in a file.
 
-[![Video](http://img.youtube.com/vi/jVFbEZ22iPc/0.jpg)](http://www.youtube.com/watch?v=jVFbEZ22iPc)
+![example-basic](https://github.com/perevalovds/ofxKuTextGui/raw/master/example-basic.png "example-basic screenshot")
 
 ## Installation
 
@@ -34,8 +34,6 @@ https://github.com/perevalovds/KuRemote app which indended to control such GUIs 
 ## Usage
 
 See example *example-basic* included in addon for creating and using addon manually.
-
-![example-basic](https://github.com/perevalovds/ofxKuTextGui/raw/master/example-basic.png "example-basic screenshot")
 
 See *example-gui-generate* example which demonstrates auto-generation of GUI from script file.
 Such GUI description look as the following:
