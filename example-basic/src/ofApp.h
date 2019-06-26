@@ -3,6 +3,10 @@
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
 
+//Please exclude ofxKuTextGuiRemote.h/cpp from this project - it requires ofxOsc addon, but not used in this example,
+//and ofxKuTextGuiPreset.h/cpp - it reauires ofxKu addon, but not used here too.
+
+
 class ofApp : public ofBaseApp {
 
 public:
@@ -31,6 +35,8 @@ public:
 	float size = 30;
 	float step = 50;
 
+	int enabled = 0;
+
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -38,5 +44,6 @@ public:
 	string folder1 = "folderA";
 	string folder2 = "folderB";
 
-	int render = 0;
+	int save_btn = 0;
+	int load_btn = 0;
 };

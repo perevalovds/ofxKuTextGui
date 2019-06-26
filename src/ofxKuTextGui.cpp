@@ -277,10 +277,11 @@ ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, 
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addDummy() {
+void ofxKuTextGui::addDummy(string title) {
     if (page_.empty()) addPage("");
     Var var_;
     var_.index=Var::VDummy;
+	var_.vstring.title = title;
     addVar(var_);
 }
 
@@ -599,6 +600,14 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						}
 					}
                 }
+				else {
+					//Dummy
+					if (!var.vstring.title.empty()) {
+						ofColor &color = var.color;
+						ofSetColor(127, color.a * alpha_text);
+						draw_string(var.vstring.title, x, y);
+					}
+				}
 			}
 		}
 	}

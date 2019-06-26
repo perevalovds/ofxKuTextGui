@@ -1,5 +1,9 @@
 #include "ofApp.h"
 
+//Please exclude ofxKuTextGuiRemote.h/cpp from this project - it requires ofxOsc addon, but not used in this example,
+//and ofxKuTextGuiPreset.h/cpp - it reauires ofxKu addon, but not used here too.
+
+
 #include "ofxKuTextGui.h"
 #include "ofxKuTextGuiGen.h"
 #include "gui_generated.h"

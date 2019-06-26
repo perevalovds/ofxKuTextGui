@@ -1,5 +1,9 @@
 #pragma once
 
+//Please exclude ofxKuTextGuiRemote.h/cpp from this project - it requires ofxOsc addon, but not used in this example,
+//and ofxKuTextGuiPreset.h/cpp - it reauires ofxKu addon, but not used here too.
+
+
 #include "ofMain.h"
 
 class ofApp : public ofBaseApp{

@@ -1,6 +1,5 @@
 ﻿#include "ofxKuTextGuiRemote.h"
 
-
 //------------------------------------------------------------------------
 void ofxKuTextGuiRemoteServer::setup(int in_port, ofBaseApp *app, ofxKuTextGui *gui) {
     receiver_.setup(in_port);

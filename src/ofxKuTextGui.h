@@ -67,7 +67,7 @@ struct ofxKuTextGui {
     Var *addStringList(string name, int &var, int defV, const vector<string> &title);
     Var *addStringList(string name, int &var, int defV, int count...);
 	Var *addButton(string name, int &var);
-	void addDummy();
+	void addDummy(string title = "");
     
 
     

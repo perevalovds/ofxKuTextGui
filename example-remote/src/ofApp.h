@@ -2,9 +2,10 @@
 
 /*
  This example demonstrates transmitting and controlling interface parameters 
- via networking using OSC protocol.
+ via networking using OSC protocol, 
+ see also https://github.com/perevalovds/KuRemote app which indended to control such GUIs remotely.
  
- 
+Please exclude ofxKuTextGuiPreset.h/cpp from this project - it requires ofxKu addon, but not used in this example
  */
 
 
