@@ -24,9 +24,10 @@
  PAGE all
  var -fps
  dummy
+ dummy Stringlist:
  stringlist list=a [a,b,c]
  button render
- #button - it's int variable, which is set when button is pressed
+ #button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
 
  ------
  Here
@@ -38,9 +39,9 @@
 Example of generator calling:
  generateCPP("../../src/gui-script.ini", "../src/params",
                         "Parameters", "params",
-                         "P");
+                         "PRM");
 "P" is the abbreviation of the parameters, you can use them in such a way:
-  sender.setup(P send_host, P send_port);
+  sender.setup(PRM send_host, PRM send_port);
  
 */
 

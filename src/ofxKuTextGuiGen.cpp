@@ -21,9 +21,10 @@
  PAGE all
  var -fps
  dummy
+ dummy Stringlist:
  stringlist list=a [a,b,c]
  button render
- #button - it's int variable, which is set when button is pressed
+ #button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
 
  ------
  Here
@@ -78,7 +79,7 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
         if (line[0] == '#') continue;   //comment
 
         //remove '\r' for proper reading windows-files in linux
-        while ( line[line.length()-1] == '\r' ) {
+        while (!line.empty() && line[line.length()-1] == '\r' ) {
             line = line.substr( 0, line.length() - 1 );
         }
         lines.push_back( line );
@@ -131,7 +132,10 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
                     Setup);
 		}
 		if (type_s == "dummy") {
-			put("\tgui.addDummy();", Setup);
+			vector<string> title0 = item;
+			title0.erase(title0.begin());
+			string title = ofJoinString(title0, " ");
+			put("\tgui.addDummy(\"" + title + "\");", Setup);
 		}
         
 		bool is_var = false;

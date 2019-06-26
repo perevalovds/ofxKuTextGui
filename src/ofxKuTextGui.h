@@ -27,6 +27,9 @@ struct ofxKuTextGui {
     float draw_yStep;	//Distance between lines
 	void set_tab_w(float w, float indentx = 10);	
 
+	ofColor dummy_color_ = ofColor(127);
+	void set_dummy_color(const ofColor &color) { dummy_color_ = color; }
+
 	//using custom font - if not, using ofDrawBitmapString
 	void set_font(ofTrueTypeFont *font, float shift_x, float shift_y);
 	ofTrueTypeFont *custom_font_;

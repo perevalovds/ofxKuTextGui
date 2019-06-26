@@ -543,11 +543,12 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 float x = X + draw_tabW * t;
                 float y = Y + draw_yStep * i;
                 
-                ofFill();
-                ofSetColor(0, alpha_slider);
-                ofDrawRectangle(x+cellDx,y+cellDy,w,h);
+				bool dummy = (var.index == Var::VDummy);
 
-                if (var.index != Var::VDummy) {
+				if (!dummy) {
+					ofFill();
+					ofSetColor(0, alpha_slider);
+					ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 					bool button = var.is_button();
 					const int button_ind = 8;
 
@@ -603,8 +604,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				else {
 					//Dummy
 					if (!var.vstring.title.empty()) {
-						ofColor &color = var.color;
-						ofSetColor(127, color.a * alpha_text);
+						ofSetColor(dummy_color_);
 						draw_string(var.vstring.title, x, y);
 					}
 				}

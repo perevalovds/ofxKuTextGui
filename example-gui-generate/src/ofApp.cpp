@@ -17,6 +17,8 @@ int list1;
 //--------------------------------------------------------------
 void ofApp::setup(){
     PRM setup(gui,"param.ini");
+
+	gui.set_dummy_color(255);
     
     
     //Access to parameters
@@ -39,16 +41,18 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    gui.draw(20,20);
+	ofBackground(64);
+	ofDrawBitmapStringHighlight("Demo of generating GUI H/CPP files from GUI script\n\nPress Shift+G to re-generate gui_generated.h/cpp files from gui-script.ini file", 20, 20);
+
+    gui.draw(20,80);
     
-    //Access to parameters
-    ofSetColor(0);
-    ofDrawBitmapString("OSC port: " + ofToString(PRM send_port), 20, 150);
+    //Access to parameters - using PRM prefix:
+    //ofDrawBitmapStringHighlight("OSC port: " + ofToString(PRM send_port), 20, 300);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == 'g') {   //Generate .H and .CPP files for parameters
+    if (key == 'G') {   //Generate .H and .CPP files for parameters
         ofxKuTextGuiGen::generateCPP("gui-script.ini",
                                      "../../src/", "gui_generated",
                                      "Parameters", "params", "PRM");
@@ -68,17 +72,17 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+	gui.mouseDragged(x, y, button);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+	gui.mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+	gui.mouseReleased(x, y, button);
 }
 
 //--------------------------------------------------------------

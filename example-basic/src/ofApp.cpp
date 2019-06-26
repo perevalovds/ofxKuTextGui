@@ -7,7 +7,8 @@
 void ofApp::setup(){
 
 	gui.set_tab_w(180);
-
+	//gui.set_dummy_color(255);
+	
 	gui.addPage("page1");	
 	gui.addInt("countX", countX, countX, 1, 20, 1, 10);
 	gui.addInt("countY", countY, countY, 1, 20, 1, 10);
@@ -18,7 +19,7 @@ void ofApp::setup(){
 
 	gui.addDummy();
 
-	gui.addDummy("String list:");
+	gui.addDummy("Stringlist:");
 	vector<string> list;
 	list.push_back("OFF");
 	list.push_back("ON");

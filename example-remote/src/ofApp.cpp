@@ -60,16 +60,19 @@ void ofApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
     //client.mouseDragged(x, y, button);
+	gui.mouseDragged(x, y, button);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     //client.mousePressed(x, y, button);
+	gui.mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
     //client.mouseReleased(x, y, button);
+	gui.mouseReleased(x, y, button);
 }
 
 //--------------------------------------------------------------
