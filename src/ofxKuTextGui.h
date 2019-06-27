@@ -25,7 +25,8 @@ struct ofxKuTextGui {
     void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
-	void set_tab_w(float w, float indentx = 10);	
+	void set_tab_w(float w, float indentx = 10, float cell_dx = -10.5);
+	void set_tab_h(float h, float indenty = 2, float cell_dy = -14.5);
 
 	ofColor dummy_color_ = ofColor(127);
 	void set_dummy_color(const ofColor &color) { dummy_color_ = color; }
@@ -267,19 +268,18 @@ struct ofxKuTextGui {
             def = defV;
             titles = titles0;
         }
-        void setValueString(const string &s) {
-            if (!s.empty()) {
-                if (s[0]>='0' && s[0]<='9') {  //TODO it's so easy check for is-number
-                    setValue(ofToInt(s));
-                    return;
-                }
-                for (int i=0; i<titles.size(); i++) {
-                    if (titles[i] == s) {
-                        setValue(i);
-                        return;
-                    }
-                }
-            }
+		void setValueString(const string &s) {
+			//if (!s.empty()) {
+				//if (s[0]>='0' && s[0]<='9') {  //TODO it's so easy check for is-number
+				//    setValue(ofToInt(s));
+				//    return;
+				//}
+			for (int i = 0; i < titles.size(); i++) {
+				if (titles[i] == s) {
+					setValue(i);
+					return;
+				}
+			}
         }
         void setValue(int v) {
             *var = min(max(v,minV),maxV);

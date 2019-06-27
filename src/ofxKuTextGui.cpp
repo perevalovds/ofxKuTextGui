@@ -5,11 +5,11 @@
 ofxKuTextGui::ofxKuTextGui() {
 	selPage = 0;
 
-	set_tab_w(140);
-	draw_yStep = 20;
-    cellH = draw_yStep-2;
-    cellDx = -10.5;
-    cellDy = -14.5;
+	set_tab_w(180, 20);
+	set_tab_h(35, 10, -18);
+
+	//set_tab_w(140, 10, -10.5);
+	//set_tab_h(20, 2, -14.5);
 
 	needRebuild_ = true;
     
@@ -20,18 +20,25 @@ ofxKuTextGui::ofxKuTextGui() {
 
 	drawn_x_ = -10000;
 	drawn_y_ = -10000;
-	mouse_step_ = 5;
+	mouse_step_ = 15; //5;
 	mouse_dragging_ = false;
 
 	set_font(0, 0, 0);
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::set_tab_w(float w, float indentx) {
+void ofxKuTextGui::set_tab_w(float w, float indentx, float cell_dx) {
 	cellW = w;
 	draw_tabW = cellW + indentx;
+	cellDx = cell_dx;
 }
 
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_tab_h(float h, float indenty, float cell_dy) {
+	draw_yStep = h;
+	cellH = draw_yStep - indenty;
+	cellDy = cell_dy;
+}
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {	//sets variable color through all pages
