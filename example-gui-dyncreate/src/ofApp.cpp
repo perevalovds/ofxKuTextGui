@@ -6,35 +6,27 @@
 
 #include "ofxKuTextGui.h"
 #include "ofxKuTextGuiGen.h"
-#include "gui_generated.h"
 
 ofxKuTextGui gui;
 
 
-int page;
-int list1;
-
 //--------------------------------------------------------------
 void ofApp::setup(){
-    PRM setup(gui,"param.ini");
-
-	gui.set_dummy_color(255);
+	ofxKuTextGuiGen::createGuiFromFile(gui, "gui-script.ini");
+	gui.loadFromFile("param.ini");
     
     
-    //Access to constant parameter
-    ofSetFrameRate(PRM FPS);	//*FPS means it's constant value, its defined as FPS, and its dynamic version is PRM _FPS_
-	//PRM FPS is not changing until restarting app
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-	PRM save();
+	gui.saveToFile("param.ini");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    //Access to output parameter
-    PRM fps_ = ofGetFrameRate();		//"-fps" value is defined as fps_, meaning it's output value
+    //Access to parameters
+    gui.float_("-fps") = ofGetFrameRate();
 	
 	gui.update();
     
@@ -42,22 +34,18 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofBackground(PRM backR, PRM backG, PRM backB);
-	ofDrawBitmapStringHighlight("Demo of generating GUI H/CPP files from GUI script\n\nPress Shift+G to re-generate gui_generated.h/cpp files from gui-script.ini file", 20, 20);
+	//Access to parameters
+	ofBackground(gui.int_("backR"), gui.int_("backG"), gui.int_("backB"));
+
+
+	ofDrawBitmapStringHighlight("Demo of creating GUI from GUI script dynamically", 20, 20);
 
     gui.draw(20,80);
     
-    //Access to normal parameter, its named literally: send_port is again send_port:
-    //ofDrawBitmapStringHighlight("OSC port: " + ofToString(PRM send_port), 20, 300);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == 'G') {   //Generate .H and .CPP files for parameters
-        ofxKuTextGuiGen::generateCPP("gui-script.ini",
-                                     "../../src/", "gui_generated",
-                                     "Parameters", "params", "PRM");
-    }
     gui.keyPressed(key);
 }
 

@@ -1,12 +1,17 @@
 ﻿#pragma once
 
-/*C++ code generator for ofxKuTextGui addon
- You preparing text description of the GUI, see gui-script.ini,
- and this algorithm generates .H and .CPP files, which implements this gui in the C++ code.
+/*C++ code generator for ofxKuTextGui addon.
+To use it, prepare GUI script, see gui-script.ini,
+ and calling generateCPP() will generate .H and .CPP files, which implements this GUI in the C++ code.
  
+ Also, you cam create GUI dynamically just reading from file, using createGuiFromFile()
+ NOTE: dynamically creating GUI currently not supports constants (vars with names started with "*")
+
  Example of GUI script:
- 
  ------
+ 
+ #Comments starts with "#"
+
  PAGE screen
  COLOR 255,0,0
  int *FPS=30 1:100 1,10
@@ -15,6 +20,7 @@
  TAB
  COLOR 64
  float -fps=30 0:100 100,10
+ #reset color to default
  RESET_COLOR
 
  PAGE osc
@@ -50,6 +56,7 @@ Example of generator calling:
 
 
 struct ofxKuTextGuiGen {
+	//Create H/CPP files from GUI script file
     //generateCPP("gui-script.ini",
     //"../../src/", "gui_generated",
     //"Parameters", "params", "PRM");
@@ -61,9 +68,30 @@ struct ofxKuTextGuiGen {
                             string extern_var_name = "params",
                             string define_prefix_name = "PRM");
 
+	//Create GUI from script file
+	static void createGuiFromFile(ofxKuTextGui &gui, string gui_file_in = "gui-script.ini");
+
+	//Create GUI from list of lines
+	static void createGuiFromLines(ofxKuTextGui &gui, vector<string> &lines);
+
+
 protected:
+	//common function which generates both CPP and dynamic GUI
+	static void generate_common(bool make_cpp, bool make_gui,
+		vector<string> &lines,
+		ofxKuTextGui *gui,
+		string c_path = "../../src/",
+		string c_file_out = "gui_generated",
+		string class_name = "Parameters",
+		string extern_var_name = "params",
+		string define_prefix_name = "PRM");
+
+
+
+	static vector<string> loadFile(string fileName, bool trim = true, bool skip_comments_and_empty = true);
+	static void saveFile(vector<string> &lines, string fileName);
+
     static void put(string lin, vector<string> &lines);
-    static void saveFile(vector<string> &lines, string fileName);
     static void insert(vector<string> &lines, vector<string> &what_to_insert);
     
     struct Pair {

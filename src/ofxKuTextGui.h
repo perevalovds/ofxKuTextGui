@@ -63,6 +63,7 @@ struct ofxKuTextGui {
     struct Var;
     
 	//adding to current page/tab
+	//if &var = NULL, then GUI parameter is linked to its own value - useful for dynamic GUI creation
 	Var *addFloat(string name, float &var, float defV, float minV, float maxV,
 		int numStepsSlow, int numStepsFast);
 	Var *addInt(string name, int &var, int defV, int minV, int maxV,
@@ -81,7 +82,20 @@ struct ofxKuTextGui {
     float *findVarFloat(const string &name);
     int *findVarInt(const string &name);
     int *findVarStringList(const string &name);
-    
+	string *findVarString(const string &name);
+	int *findVarButton(const string &name);
+
+	void exit_with_message(const string &message);
+
+
+	//short access to vars
+	float &float_(const string &name);
+	int &int_(const string &name);
+	int &stringlist_(const string &name);
+	string &string_(const string &name);
+	int &button_(const string &name);
+
+
     vector<ofxKuTextGui::Var *> findVars(const string &name);   //all instances
 
 	bool setValue(const string &name, const string &value);
@@ -115,6 +129,7 @@ struct ofxKuTextGui {
 	struct VarFloat {
 		string name;
         string title;
+		shared_ptr<float> autovar;	//used when creating dynamic GUI, and variable stored right here
 		float *var;
 		float minV, maxV;
         int numSteps1, numSteps2;
@@ -125,7 +140,11 @@ struct ofxKuTextGui {
 		int numSteps1_0, int numSteps2_0) {
 			name = name0;
             title = name;
-			var = &var0;
+			if (&var0) var = &var0;
+			else {
+				autovar = shared_ptr<float>(new float);
+				var = autovar.get();
+			}
 			minV = minV0;
 			maxV = maxV0;
             numSteps1 = numSteps1_0;
@@ -158,6 +177,8 @@ struct ofxKuTextGui {
 	struct VarInt {
 		string name;
         string title;
+		
+		shared_ptr<int> autovar;
 		int *var;
 		int minV, maxV;
 		int step[2];
@@ -168,7 +189,12 @@ struct ofxKuTextGui {
 		int step1, int step2) {
 			name = name0;
             title = name;
-            var = &var0;
+			
+			if (&var0) var = &var0;
+			else {
+				autovar = shared_ptr<int>(new int);
+				var = autovar.get();
+			}
 			step[0] = step1;
 			step[1] = step2;
 			minV = minV0;
@@ -224,13 +250,21 @@ struct ofxKuTextGui {
 	struct VarString {
 		string name;
         string title;
-        string *var;
+		shared_ptr<string> autovar;
+		string *var;
 		string def;
+
 		VarString() {}
 		VarString(const string &name0, string &var0, const string &defV) {
 			name = name0;
             title = name;
-			var = &var0;
+
+			if (&var0) var = &var0;
+			else {
+				autovar = shared_ptr<string>(new string);
+				var = autovar.get();
+			}
+
 			def = defV;
 			setValue( defV );
 		}
@@ -249,17 +283,24 @@ struct ofxKuTextGui {
     struct VarStringList {
         string name;
         string title;
-        int *var;
+		shared_ptr<int> autovar;
+		int *var;
         int minV, maxV;
         int step[2];
         int def;
         vector<string> titles;
+
         VarStringList() { var = 0; step[0]=step[1]=0; }
         VarStringList(string name0, int &var0, int defV, int minV0, int maxV0,
                int step1, int step2, vector<string> titles0) {
             name = name0;
             title = name;
-            var = &var0;
+			
+			if (&var0) var = &var0;
+			else {
+				autovar = shared_ptr<int>(new int);
+				var = autovar.get();
+			}
             step[0] = step1;
             step[1] = step2;
             minV = minV0;
@@ -303,6 +344,9 @@ struct ofxKuTextGui {
 		VarString vstring;
         VarStringList vstringlist;
 		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist, 4-dummy
+
+		//Note: dummy's title stored in vstring.title !!!!
+		//So, when we will optimize Vars - check this
         static const int VFloat         = 0;
         static const int VInt           = 1;
         static const int VString        = 2;

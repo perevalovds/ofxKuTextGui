@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2019-06-26-14-43-26-492
+//Auto-generated GUI file for ofxKuTextGui, 2019-06-29-11-06-04-749
 
 Parameters params;
 //--------------------------------------------------------------
@@ -7,6 +7,9 @@ Parameters::Parameters() {
 	_FPS_=30;
 	_w_=1024;
 	_h_=768;
+	backR=0;
+	backG=0;
+	backB=0;
 	fps_=30;
 	send_host="localhost";
 	send_port=12345;
@@ -23,6 +26,10 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addDummy("Screen size:");
 	gui.addInt("*w",_w_,1024,1,2000,1,10);
 	gui.addInt("*h",_h_,768,1,2000,1,10);
+	gui.addDummy("Background color:");
+	gui.addInt("backR",backR,0,0,255,1,10);
+	gui.addInt("backG",backG,0,0,255,1,10);
+	gui.addInt("backB",backB,0,0,255,1,10);
 	gui.addTab();
 	gui.addTab();
 	gui.addDummy("");

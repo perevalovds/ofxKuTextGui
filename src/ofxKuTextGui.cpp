@@ -20,7 +20,7 @@ ofxKuTextGui::ofxKuTextGui() {
 
 	drawn_x_ = -10000;
 	drawn_y_ = -10000;
-	mouse_step_ = 15; //5;
+	mouse_step_ = 10; //15; //5;
 	mouse_dragging_ = false;
 
 	set_font(0, 0, 0);
@@ -227,7 +227,7 @@ ofxKuTextGui::Var *ofxKuTextGui::addFloat(string name, float &var, float defV, f
 {
 	if (page_.empty()) addPage("");
 	Var var_;
-	var_.index=0;
+	var_.index= Var::VFloat;
 	var_.vfloat = VarFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
 	return addVar(var_);
 }
@@ -238,7 +238,7 @@ ofxKuTextGui::Var *ofxKuTextGui::addInt(string name, int &var, int defV, int min
 {
 	if (page_.empty()) addPage("");
 	Var var_;
-	var_.index=1;
+	var_.index= Var::VInt;
 	var_.vint = VarInt(name, var, defV, minV, maxV, step1, step2);
 	return addVar(var_);
 }
@@ -247,7 +247,7 @@ ofxKuTextGui::Var *ofxKuTextGui::addInt(string name, int &var, int defV, int min
 ofxKuTextGui::Var *ofxKuTextGui::addButton(string name, int &var) {
 	if (page_.empty()) addPage("");
 	Var var_;
-	var_.index = 1;
+	var_.index = Var::VInt;
 	var_.vint = VarInt(name, var, 0, 0, 1, 1, 1);
 	var_.vint.setButton(1);
 	return addVar(var_);
@@ -257,7 +257,7 @@ ofxKuTextGui::Var *ofxKuTextGui::addButton(string name, int &var) {
 ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
 	Var var_;
-	var_.index=2;
+	var_.index= Var::VString;
 	var_.vstring = VarString(name, var, defV);
 	return addVar(var_);
 }
@@ -266,7 +266,7 @@ ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const strin
 ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
     Var var_;
-    var_.index=3;
+    var_.index= Var::VStringList;
     var_.vstringlist = VarStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
     return addVar(var_);
 }
@@ -733,49 +733,78 @@ ofxKuTextGui::Var *ofxKuTextGui::findVar(const string &name) {
 //------------------------------------------------------------------------
 ofxKuTextGui::Var *ofxKuTextGui::findVarChecking(const string &name) {   //one var, exits if no found
 	Var *v = findVar(name);
-	if (!v) {
-		cout << "ofxKuTextGui error in findVarChecking, no var '" + name + "'" << endl;
-		cout << "Exiting now..." << endl;
-		ofSleepMillis(1000);
-		OF_EXIT_APP(0);
+	if (!v) {	//Note - it shouldn't put checking of v to "exit_with_message" to avoid constructing strings each calling
+		exit_with_message("ofxKuTextGui error in findVarChecking, no var '" + name + "'");
 	}
 	return v;
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::exit_with_message(const string &message) {
+	cout << "ofxKuTextGui causes exiting now," << endl;
+	cout << "    Reason: " << message << endl;
+	ofSleepMillis(2000);
+	OF_EXIT_APP(0);
+}
+
+//------------------------------------------------------------------------
 float *ofxKuTextGui::findVarFloat(const string &name) {
-    float *var = findVarChecking(name)->vfloat.var;
-    if (!var) {
-        cout << "ofxKuTextGui error in findVarFloat, no var '" + name + "'" << endl;
-        cout << "Exiting now..." << endl;
-        ofSleepMillis(1000);
-        OF_EXIT_APP(0);
-    }
-    return var;
+	float *v = findVarChecking(name)->vfloat.var;
+	if (!v) exit_with_message("No float " + name);
+    return v;
 }
 
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarInt(const string &name) {
-    int *var = findVarChecking(name)->vint.var;
-    if (!var) {
-        cout << "ofxKuTextGui error in findVarInt, no var '" + name + "'" << endl;
-        cout << "Exiting now..." << endl;
-        ofSleepMillis(1000);
-        OF_EXIT_APP(0);
-    }
-    return var;
+	int *v = findVarChecking(name)->vint.var;
+	if (!v) exit_with_message("No int " + name);
+	return v;
 }
 
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarStringList(const string &name) {
-	int *var = findVarChecking(name)->vstringlist.var;
-    if (!var) {
-        cout << "ofxKuTextGui error in findVarStringList, no var '" + name + "'" << endl;
-        cout << "Exiting now..." << endl;
-        ofSleepMillis(1000);
-        OF_EXIT_APP(0);
-    }
-    return var;
+	int *v = findVarChecking(name)->vstringlist.var;
+	if (!v) exit_with_message("No stringlist " + name);
+	return v;
+}
+
+//------------------------------------------------------------------------
+string *ofxKuTextGui::findVarString(const string &name) {
+	string *v = findVarChecking(name)->vstring.var;
+	if (!v) exit_with_message("No string " + name);
+	return v;
+}
+
+//------------------------------------------------------------------------
+int *ofxKuTextGui::findVarButton(const string &name) {
+	int *v = findVarChecking(name)->vint.var;
+	if (!v) exit_with_message("No button " + name);
+	return v;
+}
+
+//------------------------------------------------------------------------
+float &ofxKuTextGui::float_(const string &name) {
+	return *findVarFloat(name);
+}
+
+//------------------------------------------------------------------------
+int &ofxKuTextGui::int_(const string &name) {
+	return *findVarInt(name);
+}
+
+//------------------------------------------------------------------------
+int &ofxKuTextGui::stringlist_(const string &name) {
+	return *findVarStringList(name);
+}
+
+//------------------------------------------------------------------------
+string &ofxKuTextGui::string_(const string &name) {
+	return *findVarString(name);
+}
+
+//------------------------------------------------------------------------
+int &ofxKuTextGui::button_(const string &name) {
+	return *findVarButton(name);
 }
 
 //------------------------------------------------------------------------

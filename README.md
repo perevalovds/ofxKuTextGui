@@ -33,10 +33,26 @@ https://github.com/perevalovds/KuRemote app which indended to control such GUIs 
 
 ## Usage
 
-See example *example-basic* included in addon for creating and using addon manually.
+1. *example-basic* example demonstrates creating GUI manually: you need to define variables and then link them with GUI.
 
-See *example-gui-generate* example which demonstrates auto-generation of GUI from script file.
-Such GUI description look as the following:
+2. *example-gui-generate* example demonstrates generation of H/CPP files for constructing GUI from a GUI script file (see below).
+By pressing Shift+G it creates source files, which contain GUI creation and also variables definition.
+
+Note: variables names started with "*" means constants, such as *FPS, and defined in C++ code as PRM FPS - constant, PRM _FPS_ - its current value in GUI.
+Variables names started with "-" means output values, such as -fps, and defined in C++ code as PRM fps_.
+
+
+3. *example-gui-dyncreate" example shows how to create GUI during runtime from a script file.
+In this case, GUI stores values itself, and to get access to value, use the following functions:
+
+'gui.int_()', 'gui.float_()', 'gui_.stringlist_()', 'gui.string_()', 'gui.button_()', for example:
+
+'gui.int_("backR")', 'gui.float_("-fps")'
+
+
+## GUI script file
+
+A GUI script file looks as the following:
 
 `PAGE screen`
 

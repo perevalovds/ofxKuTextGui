@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2019-06-26-14-43-26-487
+//Auto-generated GUI file for ofxKuTextGui, 2019-06-29-11-06-04-745
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -11,6 +11,9 @@ struct Parameters {
 	int _w_;
 	int h;
 	int _h_;
+	int backR;
+	int backG;
+	int backB;
 	float fps_;
 	string send_host;
 	int send_port;
