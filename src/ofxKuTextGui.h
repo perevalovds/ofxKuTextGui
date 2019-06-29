@@ -18,6 +18,7 @@
 struct ofxKuTextGui {
 	ofxKuTextGui();
 
+	void clear();
 	void loadFromFile(const string &fileName);
 	void saveToFile(const string &fileName);
     bool keyPressed(int key);       //generic keyPressed handler

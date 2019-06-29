@@ -3,7 +3,6 @@
 
 //------------------------------------------------------------------------
 ofxKuTextGui::ofxKuTextGui() {
-	selPage = 0;
 
 	set_tab_w(180, 20);
 	set_tab_h(35, 10, -18);
@@ -11,7 +10,6 @@ ofxKuTextGui::ofxKuTextGui() {
 	//set_tab_w(140, 10, -10.5);
 	//set_tab_h(20, 2, -14.5);
 
-	needRebuild_ = true;
     
     drawSliderMode_ = true;
 
@@ -24,7 +22,20 @@ ofxKuTextGui::ofxKuTextGui() {
 	mouse_dragging_ = false;
 
 	set_font(0, 0, 0);
+
+	clear();
 }
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::clear() {
+	selPage = 0;
+	needRebuild_ = true;
+	mouse_reset();
+
+	page_.clear();
+	vars_.clear();
+}
+
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_tab_w(float w, float indentx, float cell_dx) {
@@ -529,6 +540,8 @@ void ofxKuTextGui::update() {					//for buttons processing
 //------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alpha_slider) {	//generic draw
 	if (validPage()) {
+		float alpha_text_f = float(alpha_text) / 255.0;
+
 		ofEnableAlphaBlending();
         
 		drawn_x_ = X;
@@ -584,14 +597,14 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						}
 
 						ofColor &color = var.color;
-						ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
+						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name, x, y);
 						
 					}
 					else {
 						//non-button
 						ofColor &color = var.color;
-						ofSetColor(color.r, color.g, color.b, color.a * alpha_text);
+						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name + " " + var.value(), x, y);
 						if (drawSliderMode_) {
 							ofFill();
