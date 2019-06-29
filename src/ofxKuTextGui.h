@@ -409,6 +409,13 @@ struct ofxKuTextGui {
             if (index == 3) return *vstringlist.var;
             return 0;
         }
+		float floatValue() {
+			if (index == 0) return *vfloat.var;
+			if (index == 1) return *vint.var;
+			if (index == 2) return 0;
+			if (index == 3) return *vstringlist.var;
+			return 0;
+		}
 		string name() {
 			if (index == 0) return vfloat.name;
 			if (index == 1) return vint.name;
