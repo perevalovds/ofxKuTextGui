@@ -115,6 +115,9 @@ void ofxKuTextGui::setFromString(const string &s) {
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::loadFromFile(const string &fileName) {
+	if (fileName.empty()) {
+		return;
+	}
 	//read lines
 	vector<string> lines;
     ifstream f(ofToDataPath(fileName).c_str(),ios::in | ios::binary);
@@ -158,6 +161,54 @@ void ofxKuTextGui::saveToFile(const string &fileName) {
         f << file[i] << endl;
     }
     f.close();
+}
+
+//------------------------------------------------------------------------
+/*
+Saving format:
+{
+  "-camera"="OFF",
+  "FPS"="30",
+  "[page]"="Camera",
+  "depth_fps"="30",
+  "depth_res"="640x480",
+  "rgb_fps"="30"
+}
+*/
+string ofxKuTextGui::saveToJSON() {
+	vector<string> file;
+	file.push_back("{");
+	vector<Var *> vars = getVars();
+	for (int i = 0; i < vars.size(); i++) {
+		string name = vars[i]->name();
+		if (!name.empty()) {
+			string line = "  \"" + vars[i]->name() + "\"" + ": " + "\"" + vars[i]->value() + "\"";
+			file.push_back(line);
+		}
+	}
+	file.push_back("}");
+	for (int i = 1; i < int(file.size()) - 2; i++) {
+		file[i] += ",";
+	}
+	return ofJoinString(file, "\n");
+}
+
+//------------------------------------------------------------------------
+//JSON using documentation: https://github.com/nlohmann/json#examples
+
+bool ofxKuTextGui::loadFromJSON(const string &s) {
+	ofJson j = ofJson::parse(s);
+
+	vector<Var *> vars = getVars();
+
+	for (auto &it = j.begin(); it != j.end(); ++it) {
+		//std::cout << it.key() << " : " << it.value() << "\n";
+		Var *var = findVar(it.key());
+		if (var) {
+			var->setValue(it.value());
+		}
+	}
+	return true;
 }
 
 //------------------------------------------------------------------------
