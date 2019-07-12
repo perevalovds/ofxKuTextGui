@@ -56,7 +56,7 @@ struct ofxKuTextGui {
     void drawFromString(const string &s, float x, float y); //gui can be empty, just use cellW, cellH params
 
 	int addPage(const string &pageName);    //returns page index
-	void addTab();
+	void addTab(int n = 1);
     
     void setDrawSliderMode(bool value); //should we draw slider
 	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
@@ -73,7 +73,7 @@ struct ofxKuTextGui {
     Var *addStringList(string name, int &var, int defV, const vector<string> &title);
     Var *addStringList(string name, int &var, int defV, int count...);
 	Var *addButton(string name, int &var);
-	void addDummy(string title = "");
+	void addDummy(string title = "", int n=1);
     
 
     

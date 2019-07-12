@@ -189,11 +189,13 @@ int ofxKuTextGui::addPage(const string &pageName) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addTab() {
-	if (page_.empty()) addPage("");
-	Tab tab;
-	page_[page_.size()-1].addTab();	
-	needRebuild_ = true;
+void ofxKuTextGui::addTab(int n) {
+	for (int i = 0; i < n; i++) {
+		if (page_.empty()) addPage("");
+		Tab tab;
+		page_[page_.size() - 1].addTab();
+		needRebuild_ = true;
+	}
 }
 
 //------------------------------------------------------------------------
@@ -295,12 +297,14 @@ ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, 
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addDummy(string title) {
-    if (page_.empty()) addPage("");
-    Var var_;
-    var_.index=Var::VDummy;
-	var_.vstring.title = title;
-    addVar(var_);
+void ofxKuTextGui::addDummy(string title, int n) {
+	for (int i = 0; i < n; i++) {
+		if (page_.empty()) addPage("");
+		Var var_;
+		var_.index = Var::VDummy;
+		var_.vstring.title = title;
+		addVar(var_);
+	}
 }
 
 
