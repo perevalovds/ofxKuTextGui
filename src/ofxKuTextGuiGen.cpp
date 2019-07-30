@@ -127,7 +127,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
         string line = lines[i];
         ofStringReplace(line, "\t", " ");
         ofStringReplace(line, "  ", " ");
-        //ofTrim(line);
+        line = ofTrim(line);
         if (line.empty()) continue;
         vector<string> item = ofSplitString(line, " ");
         int n = item.size();
