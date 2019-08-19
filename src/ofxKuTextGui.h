@@ -25,6 +25,11 @@ struct ofxKuTextGui {
 	bool loadFromJSON(const string &s);
 	string saveToJSON();
 
+	//Generate names and values separated by separator: x;10;y;20...
+	string saveToLine(const string &separator);
+	bool loadFromLine(const string &s, const string &separator);
+
+
     bool keyPressed(int key);       //generic keyPressed handler
 	void update();					//for buttons processing
     void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw

@@ -211,6 +211,39 @@ bool ofxKuTextGui::loadFromJSON(const string &s) {
 	return true;
 }
 
+
+//------------------------------------------------------------------------
+//Generate names and values separated by separator: x;10;y;20...
+string ofxKuTextGui::saveToLine(const string &separator) {
+	string line;
+	vector<Var *> vars = getVars();
+	for (int i = 0; i < vars.size(); i++) {
+		string name = vars[i]->name();
+		if (!name.empty()) {
+			if (!line.empty()) line += separator;
+			line += vars[i]->name() + separator + vars[i]->value();
+		}
+	}
+	return line;
+}
+
+//------------------------------------------------------------------------
+bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
+	vector<Var *> vars = getVars();
+
+	vector<string> &items = ofSplitString(s, separator);
+	int n = items.size();
+	for (int i = 0; i < n; i+=2) {
+		if (i + 1 < n) {
+			Var *var = findVar(items[i]);
+			if (var) {
+				var->setValue(items[i + 1]);
+			}
+		}
+	}
+	return true;
+}
+
 //------------------------------------------------------------------------
 int ofxKuTextGui::addPage(const string &pageName) {
 	Page page;
