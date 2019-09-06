@@ -15,7 +15,7 @@
 # and the PG will write to the console the kind of error and in which line it is
 
 meta:
-	ADDON_NAME = ofxUniversalMedia
+	ADDON_NAME = ofxKuTextGui
 	ADDON_DESCRIPTION = Addon for creating GUI controlled by keyboard and mouse, and contains tools for autogeneration, remote control and presets.
 	ADDON_AUTHOR = Denis Perevalov
 	ADDON_TAGS = "GUI"
