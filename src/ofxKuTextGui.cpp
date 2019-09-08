@@ -501,7 +501,12 @@ void ofxKuTextGui::decreaseValue(int speed, int value) {	//0-slow,1-fast
 		Page &page = page_[selPage];
 		if (page.validTab()) {
 			Tab &tab = page.tab[page.selTab];
-			if (tab.validVar()) tab.var[tab.selVar].inc(-value,speed);
+			if (tab.validVar()) {
+				bool is_string = tab.var[tab.selVar].is_string();
+				if (!is_string || (is_string && editing_strings_)) {
+					tab.var[tab.selVar].inc(-value, speed);
+				}
+			}
 		}
 	}
 }
@@ -512,7 +517,12 @@ void ofxKuTextGui::increaseValue(int speed, int value) {	//0-slow,1-fast
 		Page &page = page_[selPage];
 		if (page.validTab()) {
 			Tab &tab = page.tab[page.selTab];
-			if (tab.validVar()) tab.var[tab.selVar].inc(+value,speed);
+			if (tab.validVar()) {
+				bool is_string = tab.var[tab.selVar].is_string();
+				if (!is_string || (is_string && editing_strings_)) {
+					tab.var[tab.selVar].inc(+value, speed);
+				}
+			}
 		}
 	}
 }
@@ -530,7 +540,10 @@ void ofxKuTextGui::editStringValue() {
 
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::set_editing_strings(bool v) {	//enable(default) or disable editing string values from keyboard
+//Enable(default) or disable editing string values from keyboard
+//This disabling feature t may be useful, because currently editing strings blocks main app loop in oF,
+//and for remote controlled GUI it's undesirable to be blocked
+void ofxKuTextGui::set_editing_strings(bool v) {	
 	editing_strings_ = v;
 }
 

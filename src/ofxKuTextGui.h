@@ -48,10 +48,12 @@ struct ofxKuTextGui {
 	void draw_string(const string &s, float x, float y);
 
 
-	//enable(default) or disable editing string values from keyboard. 
-	//We disable it when remotely control GUI, in order not to loose the focus from the app.
-	void set_editing_strings(bool v);	
-	void set_mouse_enabled(bool v);	//enable/disable mouse control
+	//Enable(default) or disable editing string values from keyboard
+	//This disabling feature t may be useful, because currently editing strings blocks main app loop in oF,
+	//and for remote controlled GUI it's undesirable to be blocked
+	void set_editing_strings(bool v);	//true by default
+
+	void set_mouse_enabled(bool v);	//enable/disable mouse control, true by default
 	void set_mouse_step(int step);	//step for changing values
 
     void mousePressed(int x, int y, int button);
@@ -363,14 +365,18 @@ struct ofxKuTextGui {
         static const int VStringList    = 3;
         static const int VDummy         = 4;
 
+		bool is_string() {
+			return (index == VString);
+		}
+		bool is_button() {
+			return (index == VInt) && vint.is_button;
+		}
+
 		ofColor color;
 		void setColor(const ofColor &color0) {
 			color = color0;
 		}
-
-		bool is_button() {
-			return (index == VInt) && vint.is_button;
-		}
+		
 		void update_button() {
 			if (is_button()) vint.update_button();
 		}
