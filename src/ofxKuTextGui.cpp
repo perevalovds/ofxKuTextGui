@@ -659,6 +659,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 					ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 					bool button = var.is_button();
 					const int button_ind = 8;
+					const float button_round = 10;	//button rounding of corners
 
                     if (drawSliderMode_) {
                         if (selected) {
@@ -671,17 +672,19 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 						}
 						else {
-							ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2* button_ind, h);
+							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
+							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2* button_ind, h);
 						}
                     }
 
 					//button
 					if (button) {
-						float a = var.vint.button_alpha_* 0.5 + 0.5;
+						float a = ofLerp(0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
 						if (a > 0) {
-							ofSetColor(200, a * alpha_slider);
+							ofSetColor(180, a * alpha_slider);
 							ofFill();
-							ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
+							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
+							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
 						}
 
 						ofColor &color = var.color;
