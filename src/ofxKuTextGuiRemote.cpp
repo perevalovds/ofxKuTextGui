@@ -1,10 +1,18 @@
 ﻿#include "ofxKuTextGuiRemote.h"
 
+
 //------------------------------------------------------------------------
 void ofxKuTextGuiRemoteServer::setup(int in_port, ofBaseApp *app, ofxKuTextGui *gui) {
-    receiver_.setup(in_port);
-    app_ = app;
-    gui_ = gui;
+	cout << "Starting OSC (ofxKuTextGuiRemoteServer) at port " << in_port << endl;
+	receiver_.setup(in_port);
+	setup(app, gui);
+}
+
+//------------------------------------------------------------------------
+//Setup without starting OSC - call processMessage for processing messages
+void ofxKuTextGuiRemoteServer::setup(ofBaseApp *app, ofxKuTextGui *gui) {
+	app_ = app;
+	gui_ = gui;
 }
 
 //------------------------------------------------------------------------
@@ -27,7 +35,7 @@ void ofxKuTextGuiRemoteServer::exit() {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
+bool ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
     //guiRequest(int) - argument is port for returning the result
     //keyPressed(int)
     //keyReleased(int)
@@ -39,31 +47,38 @@ void ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
     if (addr == "/guiRequest") {
         int port = m.getArgAsInt(0);
         answerGuiRequest( m.getRemoteIp(), port );
+		return true;
 		//gui_->set_editing_strings(false);	//disable string editing in order not to loose the focus
     }
     if (app_) {
         if (addr == "/keyPressed") {
             app_->keyPressed(m.getArgAsInt(0));
+			return true;
         }
         if (addr == "/keyReleased") {
             app_->keyReleased(m.getArgAsInt(0));
+			return true;
         }
         if (addr == "/mousePressed") {
             app_->mousePressed(m.getArgAsFloat(0) * ofGetWidth(),
                                m.getArgAsFloat(1) * ofGetHeight(),
                                m.getArgAsInt(0));
+			return true;
         }
         if (addr == "/mouseDragged") {
             app_->mouseDragged(m.getArgAsFloat(0) * ofGetWidth(),
                                m.getArgAsFloat(1) * ofGetHeight(),
                                m.getArgAsInt(0));
+			return true;
         }
         if (addr == "/mouseReleased") {
             app_->mouseReleased(m.getArgAsFloat(0) * ofGetWidth(),
                                m.getArgAsFloat(1) * ofGetHeight(),
                                m.getArgAsInt(0));
+			return true;
         }
     }
+	return false;
 }
 
 

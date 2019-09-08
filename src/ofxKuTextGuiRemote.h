@@ -13,11 +13,17 @@
 
 //Remote Server
 struct ofxKuTextGuiRemoteServer {
+	//Setup with starting OSC
     void setup(int in_port, ofBaseApp *app, ofxKuTextGui *gui);
+	//Setup without starting OSC - call processMessage for processing messages
+	void setup(ofBaseApp *app, ofxKuTextGui *gui);	
+
     void update();
     void exit();
     
-    void processMessage(ofxOscMessage &m);    
+	//Parsing message and return true, if it's known command
+    bool processMessage(ofxOscMessage &m);    
+
     void answerGuiRequest(string ip, int port);
 
 protected:
