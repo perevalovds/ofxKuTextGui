@@ -667,12 +667,15 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				bool dummy = (var.index == Var::VDummy);
 
 				if (!dummy) {
-					ofFill();
-					ofSetColor(0, alpha_slider);
-					ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 					bool button = var.is_button();
 					const int button_ind = 8;
 					const float button_round = 10;	//button rounding of corners
+
+					if (!button) {
+						ofFill();
+						ofSetColor(0, alpha_slider);
+						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+					}
 
                     if (drawSliderMode_) {
                         if (selected) {
@@ -727,10 +730,29 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 }
 				else {
 					//Dummy
+
+					//dummy's text
 					if (!var.vstring.title.empty()) {
+						//back
+						ofFill();
+						ofSetColor(0, alpha_slider);
+						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+
 						ofSetColor(dummy_color_);
 						draw_string(var.vstring.title, x, y);
 					}
+
+					if (drawSliderMode_) {
+						if (selected) {
+							if (enabled) ofSetColor(150, 150, 0, alpha_slider);
+							else ofSetColor(0, 120, 120, alpha_slider);
+							//}
+							//else ofSetColor(100, alpha_slider);
+							ofNoFill();
+							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						}
+					}
+					
 				}
 			}
 		}
