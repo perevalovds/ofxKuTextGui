@@ -675,32 +675,37 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						ofFill();
 						ofSetColor(0, alpha_slider);
 						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
-					}
+					
 
-                    if (drawSliderMode_) {
-                        if (selected) {
-                            if (enabled) ofSetColor(200,200,0,alpha_slider);
-                            else ofSetColor(0,200,200,alpha_slider);
-                        }
-                        else ofSetColor(128, alpha_slider);
-                        ofNoFill();
-						if (!button) {
+						if (drawSliderMode_) {
+							if (selected) {
+								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
+								else ofSetColor(0, 200, 200, alpha_slider);
+							}
+							else ofSetColor(128, alpha_slider);
+							ofNoFill();
 							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 						}
-						else {
-							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
-							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2* button_ind, h);
-						}
-                    }
+					}
 
 					//button
 					if (button) {
 						float a = ofLerp(0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
 						if (a > 0) {
-							ofSetColor(180, a * alpha_slider);
+							ofSetColor(180 * a, alpha_slider);
 							ofFill();
 							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
 							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
+						}
+
+						if (drawSliderMode_) {
+							if (selected) {
+								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
+								else ofSetColor(0, 200, 200, alpha_slider);
+							}
+							else ofSetColor(128, alpha_slider);
+							ofNoFill();
+							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
 						}
 
 						ofColor &color = var.color;
