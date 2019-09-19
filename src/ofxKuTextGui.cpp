@@ -740,7 +740,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 					if (!var.vstring.title.empty()) {
 						//back
 						ofFill();
-						ofSetColor(0, alpha_slider);
+						ofSetColor(dummy_back_);
+						//ofSetColor(0, alpha_slider);
 						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 
 						ofSetColor(dummy_color_);
