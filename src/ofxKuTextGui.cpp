@@ -231,7 +231,7 @@ string ofxKuTextGui::saveToLine(const string &separator) {
 bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
 	vector<Var *> vars = getVars();
 
-	vector<string> &items = ofSplitString(s, separator);
+	vector<string> items = ofSplitString(s, separator);
 	int n = items.size();
 	for (int i = 0; i < n; i+=2) {
 		if (i + 1 < n) {
