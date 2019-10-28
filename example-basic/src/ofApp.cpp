@@ -58,13 +58,11 @@ void ofApp::update(){
 	gui.update();
 
 	//Checking buttons
-	//It's required to set their values to zero after using
+	//Buttons fires only once after pressing, and then set to 0 automatically
 	if (save_btn) {
-		save_btn = 0;
 		gui.saveToFile("params.ini");
 	}
 	if (load_btn) {
-		load_btn = 0;
 		gui.loadFromFile("params.ini");
 	}
 

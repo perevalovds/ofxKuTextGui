@@ -198,6 +198,8 @@ struct ofxKuTextGui {
 		int step[2];
 		int def;
 		int is_button;		//buttons are just int values, but rendered specially
+		//Note: Buttons fires only once after pressing, and then set to 0 automatically
+
 		VarInt() { var = 0; step[0]=step[1]=0; }
 		VarInt(string name0, int &var0, int defV, int minV0, int maxV0,
 		int step1, int step2) {

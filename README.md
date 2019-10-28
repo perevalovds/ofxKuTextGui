@@ -49,6 +49,13 @@ In this case, GUI stores values itself, and to get access to value, use the foll
 
 `gui.int_("backR")`, `gui.float_("-fps")`
 
+## Technical details
+
+Please take care on the following notes:
+
+* 'stringlist' is int value.
+
+* 'button' is int value. Button fires only once after pressing, and then set to 0 automatically.
 
 ## GUI script file
 
@@ -85,4 +92,7 @@ And for access to parameters use PRM:
 
 `PRM fps_ = ofGetFrameRate();`
 
+Note about constants: you can get access to changed valued of constants by adding "_" at the beginning and end.
+For example, for '*FPS' value, PRM FPS means constant value, not changed after program start, and PRM _FPS_ is value,
+possible changed by user.
 
