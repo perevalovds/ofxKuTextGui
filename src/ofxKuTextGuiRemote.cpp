@@ -17,6 +17,8 @@ void ofxKuTextGuiRemoteServer::setup(ofBaseApp *app, ofxKuTextGui *gui) {
 
 //------------------------------------------------------------------------
 void ofxKuTextGuiRemoteServer::update() {
+	unparsed_messages_.clear();
+
     while (receiver_.hasWaitingMessages()) {
         ofxOscMessage m;
 #ifdef OFXKUTEXTGUI_074
@@ -24,9 +26,17 @@ void ofxKuTextGuiRemoteServer::update() {
 #else
 		receiver_.getNextMessage(m);
 #endif
-        processMessage(m);
+        bool parsed = processMessage(m);
+		if (!parsed) {
+			unparsed_messages_.push_back(m);
+		}
     }
     
+}
+
+//------------------------------------------------------------------------
+vector<ofxOscMessage> &ofxKuTextGuiRemoteServer::unparsed_messages() {
+	return unparsed_messages_;
 }
 
 //------------------------------------------------------------------------

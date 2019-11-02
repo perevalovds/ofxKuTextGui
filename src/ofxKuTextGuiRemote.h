@@ -26,11 +26,17 @@ struct ofxKuTextGuiRemoteServer {
 
     void answerGuiRequest(string ip, int port);
 
+	//Here receiver stored unparsed messages - use it for custom parsing
+	//Note: it is cleaned on each update; so you should parse it right after "update"
+	vector<ofxOscMessage> &unparsed_messages();
+
 protected:
     ofxOscReceiver receiver_;
     ofxKuTextGui *gui_;
     ofBaseApp *app_;
-    
+
+	vector<ofxOscMessage> unparsed_messages_;
+
 };
 
 
