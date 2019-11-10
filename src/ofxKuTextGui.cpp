@@ -201,7 +201,7 @@ bool ofxKuTextGui::loadFromJSON(const string &s) {
 
 	vector<Var *> vars = getVars();
 
-	for (auto &it = j.begin(); it != j.end(); ++it) {
+	for (auto it = j.begin(); it != j.end(); ++it) {
 		//std::cout << it.key() << " : " << it.value() << "\n";
 		Var *var = findVar(it.key());
 		if (var) {
