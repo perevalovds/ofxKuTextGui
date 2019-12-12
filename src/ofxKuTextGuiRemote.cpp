@@ -16,7 +16,7 @@ void ofxKuTextGuiRemoteServer::setup(ofBaseApp *app, ofxKuTextGui *gui) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGuiRemoteServer::update() {
+void ofxKuTextGuiRemoteServer::update(bool verbose) {
 	unparsed_messages_.clear();
 
     while (receiver_.hasWaitingMessages()) {
@@ -26,9 +26,12 @@ void ofxKuTextGuiRemoteServer::update() {
 #else
 		receiver_.getNextMessage(m);
 #endif
-        bool parsed = processMessage(m);
+        bool parsed = processMessage(m, verbose);
 		if (!parsed) {
 			unparsed_messages_.push_back(m);
+			if (verbose) {
+				cout << "ofxKuTextGuiRemoteServer unparsed message " << m.getAddress() << endl;
+			}
 		}
     }
     
@@ -45,7 +48,7 @@ void ofxKuTextGuiRemoteServer::exit() {
 }
 
 //------------------------------------------------------------------------
-bool ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
+bool ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m, bool verbose) {
     //guiRequest(int) - argument is port for returning the result
     //keyPressed(int)
     //keyReleased(int)
@@ -54,6 +57,11 @@ bool ofxKuTextGuiRemoteServer::processMessage(ofxOscMessage &m) {
     //mouseReleased(float,float,int)
 
     string addr = m.getAddress();
+
+	if (verbose) {
+		cout << "ofxKuTextGuiRemoteServer message " << addr << endl;
+	}
+
     if (addr == "/guiRequest") {
         int port = m.getArgAsInt(0);
         answerGuiRequest( m.getRemoteIp(), port );
