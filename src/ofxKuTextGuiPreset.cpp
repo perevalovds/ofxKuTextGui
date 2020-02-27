@@ -11,6 +11,8 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 		string name = vars[i];
 		ofStringReplace(name, "\t", "");
 		ofStringReplace(name, " ", "");
+		ofStringReplace(name, "\r", "");
+		ofStringReplace(name, "\n", "");
 		if (name.empty()) continue;		//skip empty name
 		if (name[0] == '#') continue;	//skip comment
 		ofxKuTextGui::Var *var = gui.findVar(name);
