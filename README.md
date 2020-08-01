@@ -49,6 +49,8 @@ In this case, GUI stores values itself, and to get access to value, use the foll
 
 `gui.int_("backR")`, `gui.float_("-fps")`
 
+4. *example-app-template* example is a template for creating full-fledge applications. Just use App class for performing your custom actions.
+
 ## Technical details
 
 Please take care on the following notes:
