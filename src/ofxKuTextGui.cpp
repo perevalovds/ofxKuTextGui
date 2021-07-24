@@ -152,9 +152,11 @@ void ofxKuTextGui::saveToFile(const string &fileName) {
 	vector<string> file;
 	vector<Var *> vars = getVars();
 	for (int i=0; i<vars.size(); i++) {
-		string line = vars[i]->name() + "=" + vars[i]->value();
-		file.push_back(line);
-		//cout << line << endl;
+		if (vars[i]->need_save()) {
+			string line = vars[i]->name() + "=" + vars[i]->value();
+			file.push_back(line);
+			//cout << "SAVE PARAM " << line << endl;
+		}
 	}
 	ofstream f(ofToDataPath(fileName).c_str(),ios::out);
     for ( size_t i=0; i<file.size(); i++ ) {
@@ -180,10 +182,12 @@ string ofxKuTextGui::saveToJSON() {
 	file.push_back("{");
 	vector<Var *> vars = getVars();
 	for (int i = 0; i < vars.size(); i++) {
-		string name = vars[i]->name();
-		if (!name.empty()) {
-			string line = "  \"" + vars[i]->name() + "\"" + ": " + "\"" + vars[i]->value() + "\"";
-			file.push_back(line);
+		if (vars[i]->need_save()) {
+			string name = vars[i]->name();
+			if (!name.empty()) {
+				string line = "  \"" + vars[i]->name() + "\"" + ": " + "\"" + vars[i]->value() + "\"";
+				file.push_back(line);
+			}
 		}
 	}
 	file.push_back("}");
@@ -218,10 +222,12 @@ string ofxKuTextGui::saveToLine(const string &separator) {
 	string line;
 	vector<Var *> vars = getVars();
 	for (int i = 0; i < vars.size(); i++) {
-		string name = vars[i]->name();
-		if (!name.empty()) {
-			if (!line.empty()) line += separator;
-			line += vars[i]->name() + separator + vars[i]->value();
+		if (vars[i]->need_save()) {
+			string name = vars[i]->name();
+			if (!name.empty()) {
+				if (!line.empty()) line += separator;
+				line += vars[i]->name() + separator + vars[i]->value();
+			}
 		}
 	}
 	return line;

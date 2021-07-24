@@ -369,6 +369,10 @@ struct ofxKuTextGui {
         static const int VStringList    = 3;
         static const int VDummy         = 4;
 
+		bool need_save() { //we save only not-dummy, not-button, not-output vars (name doesn't start with "-")
+			return (index != VDummy && !is_button() && (title().empty() || title()[0] != '-'));
+		}
+
 		bool is_string() {
 			return (index == VString);
 		}
