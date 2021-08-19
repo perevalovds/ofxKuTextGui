@@ -894,6 +894,7 @@ ofxKuTextGui::Var *ofxKuTextGui::findVarChecking(const string &name) {   //one v
 void ofxKuTextGui::exit_with_message(const string &message) {
 	cout << "ofxKuTextGui causes exiting now," << endl;
 	cout << "    Reason: " << message << endl;
+	ofSystemAlertDialog("ofxKuTextGui causes exiting now, reason:\n" + message);
 	ofSleepMillis(2000);
 	OF_EXIT_APP(0);
 }
