@@ -21,7 +21,7 @@ void ofApp::setup(){
 	cout << "[,], drag with LMB - change parameter slowly" << endl;
 	cout << "{,}, drag with RMB - change parameter faster" << endl;
 	cout << "s, l - load / save params" << endl;
-	cout << "Shift+g - generate code usign gui/gui-script.txt" << endl;
+	cout << "Shift+g - generate code using gui/gui-script.ini" << endl;
 	cout << "-----------------------------------------------------------------" << endl;
 	ofSetWindowShape(1400, 800);
 
