@@ -55,10 +55,10 @@ In this case, GUI stores values itself, and to get access to value, use the foll
 
 Also it shows how to use feature of smoothing values,
 ```
-	//Smoothing values
-	float time_smooth = PRM time_smoothing;
-	float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
-	float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
+    //Smoothing values
+    float time_smooth = PRM time_smoothing;
+    float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
+    float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
     
     //cout << "Smoothed \t" << smoothed1 << "\t" << smoothed2 << endl;
 ```
