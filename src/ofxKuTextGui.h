@@ -109,6 +109,11 @@ struct ofxKuTextGui {
 	string &string_(const string &name);
 	int &button_(const string &name);
 
+	//Smoothing vars values
+	//Applicable to float and int vars, automatically enables drawing smoothed value
+	//Currently it's not in an development stage (not matured), so access by smoothed values is by their string names
+	float updateSmoothedValue(const string name, float dt, float time_whole_change);
+	float getSmoothedValue(const string name);
 
     vector<ofxKuTextGui::Var *> findVars(const string &name);   //all instances
 
@@ -389,6 +394,37 @@ struct ofxKuTextGui {
 			if (is_button()) vint.update_button();
 		}
 
+
+		//Smoothing values 
+		//applicable to float and int vars
+		float smoothed_value_normalized_ = 0;
+		float smoothed_value_ = 0;
+		bool draw_smoothed_value_ = false;
+		//smoothing function
+		void updateSmoothedValue(float dt, float time_whole_change) {
+			float v = valueNormalized();
+			if (time_whole_change <= 0.00001) {
+				//momentary change
+				smoothed_value_normalized_ = v;
+			}
+			else {
+				//smooth change
+				float limit = dt / time_whole_change;
+				smoothed_value_normalized_ += ofClamp(v - smoothed_value_normalized_, -limit, limit);
+			}
+			smoothed_value_ = normalizedToValue(smoothed_value_normalized_);
+		}
+		//get smoother value
+		float getSmoothedValue() {
+			return smoothed_value_;
+		}
+
+		//should we draw smoothed value
+		void setDrawSmoothed(bool v) {
+			draw_smoothed_value_ = v;
+		}
+
+
         void setTitle(const string &title) {
             if (index == VFloat)    vfloat.title = title;
             if (index == VInt)      vint.title = title;
@@ -396,71 +432,82 @@ struct ofxKuTextGui {
             if (index == VStringList) vstringlist.title = title;
         }
 		void setValue( const string &v ) {
-			if (index == 0) vfloat.setValue(ofToFloat(v));
-			if (index == 1) vint.setValue(ofToInt(v));
-			if (index == 2) vstring.setValue(v);
-            if (index == 3) vstringlist.setValueString(v);
+			if (index == VFloat) vfloat.setValue(ofToFloat(v));
+			if (index == VInt) vint.setValue(ofToInt(v));
+			if (index == VString) vstring.setValue(v);
+            if (index == VStringList) vstringlist.setValueString(v);
+
+			//TODO this applied to all vars, even not smoothed - performance is not optimal
+			smoothed_value_normalized_ = valueNormalized();
+			smoothed_value_ = floatValue();
 		}
 		void inc(int dir, int speed) {
-			if (index == 0) vfloat.inc(dir,speed);
-			if (index == 1) vint.inc(dir,speed);
-			if (index == 2) editStringValue(); //vstring.inc(dir,speed);
-            if (index == 3) vstringlist.inc(dir,speed);
+			if (index == VFloat) vfloat.inc(dir,speed);
+			if (index == VInt) vint.inc(dir,speed);
+			if (index == VString) editStringValue(); //vstring.inc(dir,speed);
+            if (index == VStringList) vstringlist.inc(dir,speed);
 		}
 		void editStringValue() {
-			if (index == 2) vstring.editStringValue();
+			if (index == VString) vstring.editStringValue();
 		}
 		string value() {
-			if (index == 0) return (fabs(*vfloat.var)>=0.00001)?ofToString(*vfloat.var):"0";	//crop very small values
-			if (index == 1) return ofToString(*vint.var);
-			if (index == 2) return *vstring.var;
-            if (index == 3) return vstringlist.getValue();
+			if (index == VFloat) return (fabs(*vfloat.var)>=0.00001)?ofToString(*vfloat.var):"0";	//crop very small values
+			if (index == VInt) return ofToString(*vint.var);
+			if (index == VString) return *vstring.var;
+            if (index == VStringList) return vstringlist.getValue();
 			return "";
 		}
         float valueNormalized() {
-            if (index == 0) return (vfloat.minV != vfloat.maxV)?ofMap(*vfloat.var, vfloat.minV, vfloat.maxV,0,1):vfloat.minV;
-            if (index == 1) return (vint.minV != vint.maxV)?ofMap(*vint.var, vint.minV, vint.maxV,0,1):vint.minV;
-            if (index == 3) return (vstringlist.minV != vstringlist.maxV)?ofMap(*vstringlist.var, vstringlist.minV, vstringlist.maxV,0,1):vstringlist.minV;
+            if (index == VFloat) return (vfloat.minV != vfloat.maxV)?ofMap(*vfloat.var, vfloat.minV, vfloat.maxV,0,1):vfloat.minV;
+            if (index == VInt) return (vint.minV != vint.maxV)?ofMap(*vint.var, vint.minV, vint.maxV,0,1):vint.minV;
+            if (index == VStringList) return (vstringlist.minV != vstringlist.maxV)?ofMap(*vstringlist.var, vstringlist.minV, vstringlist.maxV,0,1):vstringlist.minV;
             
             return 0;
-            
         }
+		float normalizedToValue(float normalizedValue) {
+			if (index == VFloat) return ofMap(normalizedValue, 0, 1, vfloat.minV, vfloat.maxV);
+			if (index == VInt) return ofMap(normalizedValue, 0, 1, vint.minV, vint.maxV);
+			if (index == VStringList) return ofMap(normalizedValue, 0, 1, vstringlist.minV, vstringlist.maxV);
+
+			return 0;
+		}
+
         int intValue() {
-            if (index == 0) return 0;//int(*vfloat.var);
-            if (index == 1) return *vint.var;
-            if (index == 2) return 0;
-            if (index == 3) return *vstringlist.var;
+            if (index == VFloat) return 0;//int(*vfloat.var);
+            if (index == VInt) return *vint.var;
+            if (index == VString) return 0;
+            if (index == VStringList) return *vstringlist.var;
             return 0;
         }
 		float floatValue() {
-			if (index == 0) return *vfloat.var;
-			if (index == 1) return *vint.var;
-			if (index == 2) return 0;
-			if (index == 3) return *vstringlist.var;
+			if (index == VFloat) return *vfloat.var;
+			if (index == VInt) return *vint.var;
+			if (index == VString) return 0;
+			if (index == VStringList) return *vstringlist.var;
 			return 0;
 		}
 		string name() {
-			if (index == 0) return vfloat.name;
-			if (index == 1) return vint.name;
-			if (index == 2) return vstring.name;
-            if (index == 3) return vstringlist.name;
+			if (index == VFloat) return vfloat.name;
+			if (index == VInt) return vint.name;
+			if (index == VString) return vstring.name;
+            if (index == VStringList) return vstringlist.name;
 			return "";
 		}
         string title() {
-            if (index == 0) return vfloat.title;
-            if (index == 1) return vint.title;
-            if (index == 2) return vstring.title;
-            if (index == 3) return vstringlist.title;
+            if (index == VFloat) return vfloat.title;
+            if (index == VInt) return vint.title;
+            if (index == VString) return vstring.title;
+            if (index == VStringList) return vstringlist.title;
             return "";
         }
 		void reset() {
-			if (index == 0) vfloat.reset();
-			if (index == 1) vint.reset();
-			if (index == 2) vstring.reset();
-            if (index == 3) vstringlist.reset();
+			if (index == VFloat) vfloat.reset();
+			if (index == VInt) vint.reset();
+			if (index == VString) vstring.reset();
+            if (index == VStringList) vstringlist.reset();
 		}
         void setTitles(vector<string> &titles) {
-            if (index == 3) vstringlist.titles = titles;
+            if (index == VStringList) vstringlist.titles = titles;
         }
 	};
 

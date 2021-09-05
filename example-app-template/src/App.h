@@ -8,5 +8,5 @@ public:
 	void update();
 	void draw();
 
-
+	float time0_ = 0;
 };

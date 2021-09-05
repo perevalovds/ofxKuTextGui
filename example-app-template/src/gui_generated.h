@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2020-07-20-09-43-58-715
+//Auto-generated GUI file for ofxKuTextGui, 2021-09-05-10-33-30-336
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -17,6 +17,9 @@ struct Parameters {
 	int _scr_w_;
 	int scr_h;
 	int _scr_h_;
+	float smooth_float;
+	int smooth_int;
+	float time_smoothing;
     Parameters();
     void setup(ofxKuTextGui &gui, string fileName);
     void save();

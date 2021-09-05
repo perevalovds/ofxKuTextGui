@@ -682,7 +682,6 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						ofSetColor(0, alpha_slider);
 						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 					
-
 						if (drawSliderMode_) {
 							if (selected) {
 								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
@@ -724,6 +723,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						ofColor &color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name + " " + var.value(), x, y);
+
+						//Slider and smoothed value
 						if (drawSliderMode_) {
 							ofFill();
 							ofSetColor(255, 60.0 / 255.0*alpha_slider);
@@ -733,9 +734,23 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 								else ofSetColor(0, 200, 200, alpha_slider);
 							}
 							else ofSetColor(200, alpha_slider);
+							//Slider
 							ofNoFill();
-							ofDrawRectangle(x + cellDx, y + cellDy, w*var.valueNormalized(), h);
+							float val_pix = w * var.valueNormalized();
+							ofDrawRectangle(x + cellDx, y + cellDy, val_pix, h);
 
+							//Thick line
+							ofSetLineWidth(3);
+							ofDrawLine(x + cellDx + val_pix, y + cellDy, x + cellDx + val_pix, y + cellDy + h);
+							ofSetLineWidth(1);
+
+							//Bottom line - currently only for smoothed values
+							if (var.draw_smoothed_value_) {	//comment to draw bottom line always
+								float bottom_val_pix = (var.draw_smoothed_value_) ? w * var.smoothed_value_normalized_ : val_pix;
+								ofFill();
+								const int h1 = 3; //PARAM
+								ofDrawRectangle(x + cellDx, y + cellDy + h - h1, bottom_val_pix, h1);
+							}
 						}
 					}
                 }
@@ -957,6 +972,20 @@ string &ofxKuTextGui::string_(const string &name) {
 //------------------------------------------------------------------------
 int &ofxKuTextGui::button_(const string &name) {
 	return *findVarButton(name);
+}
+
+//------------------------------------------------------------------------
+//applicable to float and int vars, automatically enables drawing smoothed value
+float ofxKuTextGui::updateSmoothedValue(const string name, float dt, float time_whole_change) {
+	auto *var = findVarChecking(name);
+	var->setDrawSmoothed(true);
+	var->updateSmoothedValue(dt, time_whole_change);
+	return var->getSmoothedValue();
+}
+
+//------------------------------------------------------------------------
+float ofxKuTextGui::getSmoothedValue(const string name) {
+	return findVarChecking(name)->getSmoothedValue();
 }
 
 //------------------------------------------------------------------------

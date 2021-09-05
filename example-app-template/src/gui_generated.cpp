@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2020-07-20-09-43-58-719
+//Auto-generated GUI file for ofxKuTextGui, 2021-09-05-10-33-30-336
 
 Parameters params;
 //--------------------------------------------------------------
@@ -11,6 +11,9 @@ Parameters::Parameters() {
 	_FPS_=30;
 	_scr_w_=1024;
 	_scr_h_=768;
+	smooth_float=0;
+	smooth_int=5;
+	time_smoothing=0.1;
 }
 
 //--------------------------------------------------------------
@@ -26,6 +29,13 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addInt("*scr_w",_scr_w_,1024,1,2000,1,10);
 	gui.addInt("*scr_h",_scr_h_,768,1,2000,1,10);
+	gui.addTab();
+	gui.addTab();
+	gui.addDummy("SmoothedValue");
+	gui.addFloat("smooth_float",smooth_float,0,0,10,100,10);
+	gui.addInt("smooth_int",smooth_int,5,-10,10,1,10);
+	gui.addDummy("");
+	gui.addFloat("time_smoothing",time_smoothing,0.1,0,10,1000,100);
 	gui.set_var_color("show_zoom", ofColor(140,140,255));
 	gui.set_var_color("Analyze", ofColor(140,140,255));
 	gui.set_var_color("*FILE", ofColor(200,200,0));
@@ -33,6 +43,9 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*scr_w", ofColor(255,140,255));
 	gui.set_var_color("*scr_h", ofColor(255,140,255));
+	gui.set_var_color("smooth_float", ofColor(255,100,100));
+	gui.set_var_color("smooth_int", ofColor(255,100,100));
+	gui.set_var_color("time_smoothing", ofColor(200,200,200));
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);

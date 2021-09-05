@@ -4,6 +4,8 @@ It supports integers, floats, strings, stringlists (represented as integer, with
 
 Values can be edited using keyboard or mouse, and stored in a file.
 
+Supported smoothing values (see details at **example-app-template** example description below).
+
 ![example-basic](https://github.com/perevalovds/ofxKuTextGui/raw/master/example-basic.png "example-basic screenshot")
 
 ## Installation
@@ -50,6 +52,18 @@ In this case, GUI stores values itself, and to get access to value, use the foll
 `gui.int_("backR")`, `gui.float_("-fps")`
 
 4. **example-app-template** example is a template for creating full-fledge applications. Just use App class for performing your custom actions.
+
+Also it shows how to use feature of smoothing values,
+```
+	//Smoothing values
+	float time_smooth = PRM time_smoothing;
+	float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
+	float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
+    
+    //cout << "Smoothed \t" << smoothed1 << "\t" << smoothed2 << endl;
+```
+Also smoothed values will be drawn automatically as bottom part of value's widget.
+ 
 
 ## Technical details
 
