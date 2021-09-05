@@ -4,7 +4,7 @@ It supports integers, floats, strings, stringlists (represented as integer, with
 
 Values can be edited using keyboard or mouse, and stored in a file.
 
-Supported smoothing values (see details at **example-app-template** example description below).
+Supported smoothing values (read details below and see example of it at  **example-app-template**).
 
 ![example-basic](https://github.com/perevalovds/ofxKuTextGui/raw/master/example-basic.png "example-basic screenshot")
 
@@ -53,16 +53,8 @@ In this case, GUI stores values itself, and to get access to value, use the foll
 
 4. **example-app-template** example is a template for creating full-fledge applications. Just use App class for performing your custom actions.
 
-Also it shows how to use feature of smoothing values,
-```
-    //Smoothing values
-    float time_smooth = PRM time_smoothing;
-    float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
-    float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
-    
-    //cout << "Smoothed \t" << smoothed1 << "\t" << smoothed2 << endl;
-```
-Also smoothed values will be drawn automatically as bottom part of value's widget.
+Also it shows how to use feature of smoothing values (see technical details below).
+
  
 
 ## Technical details
@@ -111,4 +103,23 @@ And for access to parameters use PRM:
 Note about constants: you can get access to changed valued of constants by adding "_" at the beginning and end.
 For example, for '*FPS' value, PRM FPS means constant value, not changed after program start, and PRM _FPS_ is value,
 possible changed by user.
+
+## Smoothing
+
+Float and int values can be smoothed, so they change that smooth value with given period of time for whole range.
+
+Smoothed values drawn automatically as think lines at the bottom of value's widget.
+
+Code for smoothing currently binded to string names of variables:
+```
+//Smoothing values
+float time_smooth = PRM time_smoothing;
+float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
+float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
+
+//Access to a smoothed value
+cout << "smooth_float smoothed = " << gui.getSmoothedValue("smooth_float") << endl;
+```
+
+The code above is a part of **example-app-template** example, so see it code for the more details.
 

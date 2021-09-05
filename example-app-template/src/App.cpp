@@ -22,7 +22,8 @@ void App::update(){
 	float smoothed1 = gui.updateSmoothedValue("smooth_float", dt, time_smooth);
 	float smoothed2 = gui.updateSmoothedValue("smooth_int", dt, time_smooth);
 
-	//cout << "Smoothed \t" << smoothed1 << "\t" << smoothed2 << endl;
+	//Access to a smoothed value
+	cout << "smooth_float smoothed = " << gui.getSmoothedValue("smooth_float") << endl;
 
 }
 
