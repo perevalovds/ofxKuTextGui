@@ -104,7 +104,7 @@ Note about constants: you can get access to changed valued of constants by addin
 For example, for '*FPS' value, PRM FPS means constant value, not changed after program start, and PRM _FPS_ is value,
 possible changed by user.
 
-## Smoothing
+## Smoothing values
 
 Float and int values can be smoothed, so they change that smooth value with given period of time for whole range.
 
