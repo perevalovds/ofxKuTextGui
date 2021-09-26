@@ -552,7 +552,10 @@ protected:
     vector<string> pageTitles();
 
 	typedef map<string, Var *> StringVarMap;
-	StringVarMap vars_;	//index of vars
+	StringVarMap vars_;	//index of vars - sorted, for saving to file
+
+	typedef unordered_map<string, Var *> StringVarHash;
+	StringVarHash hash_vars_;	//index of vars - unsorted, for search 
 
 	Var *addVar(Var &var);
 

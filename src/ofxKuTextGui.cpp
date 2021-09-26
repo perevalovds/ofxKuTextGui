@@ -310,6 +310,7 @@ void ofxKuTextGui::rebuildVars() {
 	if (needRebuild_) {
 		needRebuild_ = false;
 		vars_.clear();
+		hash_vars_.clear();
 		for (int p = 0; p<page_.size(); p++) {
 			Page &page = page_[p];
 			for (int t=0; t<page.tab.size(); t++) {
@@ -317,6 +318,7 @@ void ofxKuTextGui::rebuildVars() {
 				for (int i=0; i<tab.var.size(); i++) {
 					Var &var_ = tab.var[i];
 					vars_[var_.name()] = &var_;
+					hash_vars_[var_.name()] = &var_;
 				}
 			}
 		}
@@ -892,8 +894,8 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
 //------------------------------------------------------------------------
 ofxKuTextGui::Var *ofxKuTextGui::findVar(const string &name) {
 	rebuildVars();
-	StringVarMap::iterator p = vars_.find( name );
-    return ( p != vars_.end() )?vars_[name]:0;
+	StringVarHash::iterator p = hash_vars_.find( name );
+    return ( p != hash_vars_.end() )? hash_vars_[name]:0;
 }
 
 //------------------------------------------------------------------------
