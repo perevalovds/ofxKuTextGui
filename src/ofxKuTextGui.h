@@ -58,7 +58,7 @@ struct ofxKuTextGui {
 	void set_mouse_enabled(bool v);	//enable/disable mouse control, true by default
 	void set_mouse_step(int step);	//step for changing values
 
-    void mousePressed(int x, int y, int button);
+    bool mousePressed(int x, int y, int button);
     void mouseDragged(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
 

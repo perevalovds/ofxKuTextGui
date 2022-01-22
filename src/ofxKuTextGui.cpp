@@ -1026,7 +1026,7 @@ void ofxKuTextGui::set_mouse_step(int step) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::mousePressed(int x, int y, int button) {
+bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 	if (mouse_enabled_) {
 		if (validPage()) {
 			Page *page = currentPagePointer();		
@@ -1048,11 +1048,13 @@ void ofxKuTextGui::mousePressed(int x, int y, int button) {
 							mouse_x_ = x;
 							mouse_y_ = y;
 						}
+                        return true;
 					}
 				}
 			}
 		}
 	}
+    return false;
 }
 
 //------------------------------------------------------------------------
