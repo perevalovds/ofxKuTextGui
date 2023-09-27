@@ -45,9 +45,9 @@ To use it, prepare GUI script, see gui-script.ini,
 Example of generator calling:
  generateCPP("../../src/gui-script.ini", "../src/params",
                         "Parameters", "params",
-                         "PRM");
+                         "PRMQD");
 "P" is the abbreviation of the parameters, you can use them in such a way:
-  sender.setup(PRM send_host, PRM send_port);
+  sender.setup(PRMQD send_host, PRMQD send_port);
  
 */
 
@@ -59,14 +59,14 @@ struct ofxKuTextGuiGen {
 	//Create H/CPP files from GUI script file
     //generateCPP("gui-script.ini",
     //"../../src/", "gui_generated",
-    //"Parameters", "params", "PRM");
+    //"Parameters", "params", "PRMQD");
     //extern_var_name = "" means no extern variable for parameters
     static void generateCPP(string gui_file_in = "gui-script.ini",
                             string c_path = "../../src/",
                             string c_file_out = "gui_generated",
                             string class_name = "Parameters",
                             string extern_var_name = "params",
-                            string define_prefix_name = "PRM");
+                            string define_prefix_name = "PRMQD");
 
 	//Create GUI from script file
 	static void createGuiFromFile(ofxKuTextGui &gui, string gui_file_in = "gui-script.ini");
@@ -84,7 +84,7 @@ protected:
 		string c_file_out = "gui_generated",
 		string class_name = "Parameters",
 		string extern_var_name = "params",
-		string define_prefix_name = "PRM");
+		string define_prefix_name = "PRMQD");
 
 
 

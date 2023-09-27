@@ -8,6 +8,7 @@
 #include "ofxKuTextGuiGen.h"
 #include "gui_generated.h"
 
+ofTrueTypeFont gui_font;
 ofxKuTextGui gui;
 
 
@@ -16,6 +17,9 @@ int list1;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    gui_font.load("fonts/frabk.ttf", 15);
+    gui.set_font(&gui_font, 0, 0);
+    
     PRM setup(gui,"param.ini");
 
 	gui.set_dummy_color(255);

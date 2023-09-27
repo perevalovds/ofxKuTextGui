@@ -27,7 +27,7 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-
+    ofTrueTypeFont gui_font;
 	ofxKuTextGui gui;
 	int page = 0;
 	int countX = 5;

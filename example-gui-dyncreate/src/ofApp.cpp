@@ -7,14 +7,16 @@
 #include "ofxKuTextGui.h"
 #include "ofxKuTextGuiGen.h"
 
+ofTrueTypeFont gui_font;
 ofxKuTextGui gui;
-
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    gui_font.load("fonts/frabk.ttf", 15);
+    gui.set_font(&gui_font, 0, 0);
+    
 	ofxKuTextGuiGen::createGuiFromFile(gui, "gui-script.ini");
 	gui.loadFromFile("param.ini");
-    
     
 }
 

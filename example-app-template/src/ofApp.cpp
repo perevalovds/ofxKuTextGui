@@ -3,6 +3,7 @@
 #include "ofxKuTextGuiGen.h"
 #include "gui_generated.h"
 
+ofTrueTypeFont gui_font;
 ofxKuTextGui gui;
 
 int draw_gui = 1;
@@ -27,6 +28,9 @@ void ofApp::setup(){
 
 	//--------------------------------------
 	//GUI
+    gui_font.load("fonts/frabk.ttf", 15);
+    gui.set_font(&gui_font, 0, 0);
+    
 	PRM setup(gui, "param.ini");
 	gui.set_dummy_color(255);
 

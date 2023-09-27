@@ -5,6 +5,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    gui_font.load("fonts/frabk.ttf", 15);
+    gui.set_font(&gui_font, 0, 0);
 
 	gui.set_tab_w(180);
 	//gui.set_dummy_color(255);

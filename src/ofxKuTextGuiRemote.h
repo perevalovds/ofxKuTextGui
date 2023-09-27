@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 /*
- Optional module for controlling ofApp and GUI over OSC networking protocol.
+ Optional module for controlling ofAppQDTracker and GUI over OSC networking protocol.
  It requires ofxOsc addon.
  If you are not need this capability - just exclude this from the project.
 */

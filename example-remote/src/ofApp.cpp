@@ -11,7 +11,7 @@ Please exclude ofxKuTextGuiPreset.h/cpp from this project - it requires ofxKu ad
 #include "ofxKuTextGuiRemote.h"
 
 
-
+ofTrueTypeFont gui_font;
 ofxKuTextGui gui;
 ofxKuTextGuiRemoteServer server;
 ofxKuTextGuiRemoteClient client;
@@ -23,9 +23,11 @@ void ofApp::setup(){
     server.setup(12345, this, &gui);
     client.setup("localhost", 12345, 12346);
     
+    gui_font.load("fonts/frabk.ttf", 15);
+    gui.set_font(&gui_font, 0, 0);
+    
     gui.addInt("a", a, a, 0, 10, 1, 10);
     gui.addFloat("b", b, b, 0, 1, 100, 10);
-    
 }
 
 //--------------------------------------------------------------
