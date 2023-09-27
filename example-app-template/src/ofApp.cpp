@@ -24,7 +24,6 @@ void ofApp::setup(){
 	cout << "s, l - load / save params" << endl;
 	cout << "Shift+g - generate code using gui/gui-script.ini" << endl;
 	cout << "-----------------------------------------------------------------" << endl;
-	ofSetWindowShape(1400, 800);
 
 	//--------------------------------------
 	//GUI
