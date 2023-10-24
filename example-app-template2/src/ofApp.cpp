@@ -7,7 +7,7 @@
 ofTrueTypeFont gui_font;
 ofxKuTextGui gui;
 float flash_ = -1000;	//flash time
-string Title = "YouApp 1.01";
+string Title = "YourApp 1.01";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -91,6 +91,7 @@ void ofApp::keyPressed(int key){
         ofxKuTextGuiGen::generateCPP("gui/gui-script.ini",
             "../../src/", "gui_generated",
             "Parameters", "params", "PRM");
+        flash();
     }
 
     if (key == 's') save();
