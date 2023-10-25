@@ -235,24 +235,21 @@ struct ofxKuTextGui {
 			is_button = b;
 		}
 
-		int just_fired_ = 0;
 		void update_button() {
-			if (button_fired_ && !(just_fired_==0 && *var)) {
-				float delta = ofGetElapsedTimef() - button_time_;
-				button_alpha_ = ofMap(delta, 0, 0.5, 1, 0, true);
-				if (delta >= 0.5) {
-					button_fired_ = 0;
-				}
-				*var = 0;		//here we reset *var!
-				just_fired_ = 0;
+			// It's expected gui.update is the last line of the code,
+			// so we cleaning *var here
+			if (*var) {
+				button_fired_ = 1;
+				button_time_ = ofGetElapsedTimef();
+				button_alpha_ = 1;
+				*var = 0; // reset *var
 			}
-			else {
-				if (*var) {
-					button_fired_ = 1;
-					button_time_ = ofGetElapsedTimef();
-					button_alpha_ = 1;
-					just_fired_ = 1;
-					//here we keep *var non-zero to process it in the user code!
+			if (button_fired_) {
+				float delta = ofGetElapsedTimef() - button_time_;
+				const float ButtonFireTimeSec = 0.5f;
+				button_alpha_ = ofMap(delta, 0, ButtonFireTimeSec, 1, 0, true);
+				if (delta >= ButtonFireTimeSec) {
+					button_fired_ = 0;
 				}
 			}
 		}
