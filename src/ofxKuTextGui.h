@@ -200,11 +200,12 @@ struct ofxKuTextGui {
 		
 		shared_ptr<int> autovar;
 		int *var;
-		int minV, maxV;
+		int minV = 0, maxV = 0;
 		int step[2];
-		int def;
-		int is_button;		//buttons are just int values, but rendered specially
+		int def = 0;
+		int is_button = 0;		//buttons are just int values, but rendered specially
 		//Note: Buttons fires only once after pressing, and then set to 0 automatically
+		int is_toggled_ = 0;	// setToggled() should be used to manually toggle the button. This not saves to INI
 
 		VarInt() { var = 0; step[0]=step[1]=0; }
 		VarInt(string name0, int &var0, int defV, int minV0, int maxV0,
@@ -233,6 +234,10 @@ struct ofxKuTextGui {
 
 		void setButton(int b) {	//make int rendered as button
 			is_button = b;
+		}
+
+		void setToggled(int t) {
+			is_toggled_ = t;
 		}
 
 		void update_button() {
@@ -429,11 +434,16 @@ struct ofxKuTextGui {
             if (index == VString)   vstring.title = title;
             if (index == VStringList) vstringlist.title = title;
         }
-		void setValue( const string &v ) {
+
+		void setToggled(int t) {
+			if (index == VInt) vint.setToggled(t);
+		}
+
+		void setValue(const string& v) {
 			if (index == VFloat) vfloat.setValue(ofToFloat(v));
 			if (index == VInt) vint.setValue(ofToInt(v));
 			if (index == VString) vstring.setValue(v);
-            if (index == VStringList) vstringlist.setValueString(v);
+			if (index == VStringList) vstringlist.setValueString(v);
 
 			//TODO this applied to all vars, even not smoothed - performance is not optimal
 			smoothed_value_normalized_ = valueNormalized();

@@ -697,7 +697,9 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 					//button
 					if (button) {
-						float a = ofLerp(0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
+						// Background
+						bool toggled = var.vint.is_toggled_;
+						float a = ofLerp(toggled ? 0.5 : 0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
 						if (a > 0) {
 							ofSetColor(180 * a, alpha_slider);
 							ofFill();
@@ -705,16 +707,26 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
 						}
 
+						// Contour
 						if (drawSliderMode_) {
 							if (selected) {
-								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
-								else ofSetColor(0, 200, 200, alpha_slider);
+								int c = toggled ? 255 : 220;
+								if (enabled) ofSetColor(c, c, c, alpha_slider);
+								else ofSetColor(0, c, c, alpha_slider);
 							}
-							else ofSetColor(128, alpha_slider);
+							else {
+								int c = toggled ? 255 : 160;
+								ofSetColor(c, alpha_slider);
+							}
 							ofNoFill();
+							ofSetLineWidth(toggled ? 3 : 2);
 							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
+							if (toggled) {
+								ofSetLineWidth(1);
+							}
 						}
 
+						// Text
 						ofColor &color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name, x, y);
@@ -739,19 +751,23 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							//Slider
 							ofNoFill();
 							float val_pix = w * var.valueNormalized();
-							ofDrawRectangle(x + cellDx, y + cellDy, val_pix, h);
+							// ofDrawRectangle(x + cellDx, y + cellDy, val_pix, h);
 
-							//Thick line
 							ofSetLineWidth(3);
-							ofDrawLine(x + cellDx + val_pix, y + cellDy, x + cellDx + val_pix, y + cellDy + h);
+							float bottomY = y + cellDy + h - 0.5;
+							// Bottom line
+							ofDrawLine(x + cellDx, bottomY, x + cellDx + val_pix, bottomY);
+							// Right line
+							ofDrawLine(x + cellDx + val_pix, y + cellDy, x + cellDx + val_pix, bottomY);
+
 							ofSetLineWidth(1);
 
-							//Bottom line - currently only for smoothed values
+							//Almost Bottom line - currently only for smoothed values
 							if (var.draw_smoothed_value_) {	//comment to draw bottom line always
 								float bottom_val_pix = (var.draw_smoothed_value_) ? w * var.smoothed_value_normalized_ : val_pix;
 								ofFill();
 								const int h1 = 3; //PARAM
-								ofDrawRectangle(x + cellDx, y + cellDy + h - h1, bottom_val_pix, h1);
+								ofDrawRectangle(x + cellDx, bottomY - h1, bottom_val_pix, h1);
 							}
 						}
 					}
