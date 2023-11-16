@@ -318,7 +318,7 @@ void ofxKuTextGui::rebuildVars() {
 				for (int i=0; i<tab.var.size(); i++) {
 					Var &var_ = tab.var[i];
 					vars_[var_.name()] = &var_;
-					hash_vars_[var_.name()] = &var_;
+					hash_vars_[var_.name()].push_back(&var_);
 				}
 			}
 		}
@@ -911,7 +911,7 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
 ofxKuTextGui::Var *ofxKuTextGui::findVar(const string &name) {
 	rebuildVars();
 	StringVarHash::iterator p = hash_vars_.find( name );
-    return ( p != hash_vars_.end() )? hash_vars_[name]:0;
+    return ( p != hash_vars_.end() )? hash_vars_[name][0] : nullptr;
 }
 
 //------------------------------------------------------------------------
@@ -966,6 +966,18 @@ int *ofxKuTextGui::findVarButton(const string &name) {
 	int *v = findVarChecking(name)->vint.var;
 	if (!v) exit_with_message("No button " + name);
 	return v;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setToggled(const string& name, int t) {		// Need call this, because there can be multiple duplicated buttons 
+	StringVarHash::iterator p = hash_vars_.find(name);
+	if (p == hash_vars_.end()) {
+		cout << "ofxKuTextGui::setToggled: can't find " << name << endl;
+	} 
+	
+	for (auto b : hash_vars_[name]) {
+		b->setToggled(t);
+	}
 }
 
 //------------------------------------------------------------------------

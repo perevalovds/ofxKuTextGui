@@ -99,6 +99,7 @@ struct ofxKuTextGui {
     int *findVarStringList(const string &name);
 	string *findVarString(const string &name);
 	int *findVarButton(const string &name);
+	void setToggled(const string& name, int t);		// Call this to toggle buttons (with duplicates)
 
 	void exit_with_message(const string &message);
 
@@ -562,8 +563,8 @@ protected:
 	typedef map<string, Var *> StringVarMap;
 	StringVarMap vars_;	//index of vars - sorted, for saving to file
 
-	typedef unordered_map<string, Var *> StringVarHash;
-	StringVarHash hash_vars_;	//index of vars - unsorted, for search 
+	typedef unordered_map<string, vector<Var *> > StringVarHash;
+	StringVarHash hash_vars_;	//index of vars - unsorted, multiple, for search and toggle buttons
 
 	Var *addVar(Var &var);
 

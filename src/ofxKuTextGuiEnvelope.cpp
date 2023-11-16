@@ -79,10 +79,10 @@ void ofxKuTextGuiEnvelope::drawGrid(ofRectangle rect, ofColor color, string titl
     ofNoFill();
     ofDrawRectangle(0,0,1,1);
     ofSetColor(90);
-    ofLine(0,0.5,1,0.5);
-    ofLine(0.25,0,0.25,1);
-    ofLine(0.5,0,0.5,1);
-    ofLine(0.75,0,0.75,1);
+    ofDrawLine(0,0.5,1,0.5);
+    ofDrawLine(0.25,0,0.25,1);
+    ofDrawLine(0.5,0,0.5,1);
+    ofDrawLine(0.75,0,0.75,1);
     
     ofPopMatrix();
 	if (title != "") {
@@ -99,7 +99,7 @@ void ofxKuTextGuiEnvelope::draw(ofRectangle rect, ofColor color) {
     //Graph
     ofSetColor(color);
     for (int i=-1; i<size(); i++) {
-        ofLine(d(i),vd(i),d(i+1),vd(i+1));
+        ofDrawLine(d(i),vd(i),d(i+1),vd(i+1));
     }
 
 	//Squares
@@ -108,7 +108,7 @@ void ofxKuTextGuiEnvelope::draw(ofRectangle rect, ofColor color) {
     float w = 3.0/rect.width;
 	float h = 3.0/rect.height;
     for (int i=0; i<size(); i++) {
-        ofRect(d(i)-w,vd(i)-h,2*w,2*h);
+        ofDrawRectangle(d(i)-w,vd(i)-h,2*w,2*h);
     }
    
     ofPopMatrix();
