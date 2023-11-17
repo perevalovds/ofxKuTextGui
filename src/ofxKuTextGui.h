@@ -61,7 +61,7 @@ struct ofxKuTextGui {
     bool mousePressed(int x, int y, int button);
     void mouseDragged(int x, int y, int button);
 	bool is_mouse_dragging() { return mouse_dragging_; }
-    void mouseReleased(int x, int y, int button);
+	void mouseReleased();
 
     string toString();
     void setFromString(const string &s);

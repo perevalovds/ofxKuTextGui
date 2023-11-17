@@ -73,8 +73,8 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-    //client.mouseReleased(x, y, button);
-	gui.mouseReleased(x, y, button);
+    //client.mouseReleased();
+	gui.mouseReleased();
 }
 
 //--------------------------------------------------------------

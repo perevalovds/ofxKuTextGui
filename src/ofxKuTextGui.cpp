@@ -1104,10 +1104,8 @@ void ofxKuTextGui::mouseDragged(int x, int y, int button) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::mouseReleased(int x, int y, int button) {
-	if (mouse_enabled_) {
-
-	}
+void ofxKuTextGui::mouseReleased()
+{
 	mouse_reset();
 }
 
