@@ -1,5 +1,6 @@
 #include "ofxKuTextGui.h"
 
+#include "json.hpp"
 
 //------------------------------------------------------------------------
 ofxKuTextGui::ofxKuTextGui() {
@@ -201,7 +202,7 @@ string ofxKuTextGui::saveToJSON() {
 //JSON using documentation: https://github.com/nlohmann/json#examples
 
 bool ofxKuTextGui::loadFromJSON(const string &s) {
-	ofJson j = ofJson::parse(s);
+	nlohmann::json j = nlohmann::json::parse(s);
 
 	vector<Var *> vars = getVars();
 

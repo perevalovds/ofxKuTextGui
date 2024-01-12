@@ -1,19 +1,8 @@
 #pragma once
 
-//Textual GUI
+// Textual GUI
 #include "ofMain.h"
 #include <cstdarg>
-
-//Comment it if you compile in oF < 0.9
-#define OFXKUTEXTGUI_OF_09
-
-//Checking oF version
-#ifndef OFXKUTEXTGUI_OF_09
-#define OFXKUTEXTGUI_074
-#define ofDrawRectangle ofRect
-#define getArgAsInt getArgAsInt32
-#endif
-
 
 struct ofxKuTextGui {
 	ofxKuTextGui();
