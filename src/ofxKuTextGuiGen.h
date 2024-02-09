@@ -10,17 +10,23 @@ To use it, prepare GUI script, see gui-script.ini,
  Example of GUI script:
  ------
  
- #Comments starts with "#"
+ # Comments starts with "#"
+ # "*" - constant changed at restart
+ # "-" - output value, not saved. "-fps" in C++ code is referenced as "fps_"
+ " "!" - invisible variable, saved. Changed only from C++
 
  PAGE screen
  COLOR 255,0,0
  int *FPS=30 1:100 1,10
  int *w=1024 1:2000 1,10
  int *h=768 1:2000 1,10
+ !string openedFile=default.wav
+ !float scale=1.0
+ 
  TAB
  COLOR 64
  float -fps=30 0:100 100,10
- #reset color to default
+ # reset color to default
  RESET_COLOR
 
  PAGE osc
@@ -32,14 +38,10 @@ To use it, prepare GUI script, see gui-script.ini,
  dummy
  dummy Stringlist:
  stringlist list=a [a,b,c]
- button render
- #button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
+ button Render
+ # button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
 
  ------
- Here
- "*" means constant parameter used at start, "*FPS" is "FPS",
- but changes only after restart
- "-" means read-only parameter, so user changes will affect nothing, "-fps" is "fps_" in code
 
 
 Example of generator calling:
@@ -104,8 +106,10 @@ protected:
     };
     struct Name {
         string code_name, screen_name;
-        bool is_const;
+        bool is_const = false;
         string const_name;
+        bool visible = true;
+        bool editable = true;
         Name(string name) {
             screen_name = name;
             string prefix = (name.size()>=1)?name.substr(0,1):"";
@@ -117,7 +121,14 @@ protected:
                 const_name = short_name;
                 is_const = true;
             }
-            if (prefix == "-") code_name = short_name + "_";
+            if (prefix == "-") {
+                code_name = short_name + "_";
+                editable = false;
+            }
+            if (prefix == "!") {
+                visible = false;
+                editable = false;
+            }
         }
     };
     static vector<string> parse_stringlist_values(string v) {

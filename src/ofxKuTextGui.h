@@ -63,6 +63,8 @@ struct ofxKuTextGui {
     
     void setDrawSliderMode(bool value); //should we draw slider
 	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
+	void set_var_visibility(const string& var_name, bool visible);
+	void set_var_editable(const string& var_name, bool editable);
 
     struct Var;
     
@@ -358,6 +360,10 @@ struct ofxKuTextGui {
 		VarString vstring;
         VarStringList vstringlist;
 		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist, 4-dummy
+		bool visible = true;
+		bool editable = true;	// Can user edit it
+
+		bool is_editable() const { return visible && editable; }
 
 		//Note: dummy's title stored in vstring.title !!!!
 		//So, when we will optimize Vars - check this

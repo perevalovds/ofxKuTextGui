@@ -19,6 +19,7 @@
  int send_port=12345 1:65535 1,10
  
  PAGE all
+ # "var" used to duplicate values declared before
  var -fps
  dummy
  dummy Stringlist:
@@ -279,20 +280,39 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			is_var = true;
 		}
-		if (is_var && !current_color.empty()) {
-			if (make_cpp) put("\tgui.set_var_color(\"" + name_code.screen_name + "\", ofColor(" + current_color + "));", ColorLines);
-			if (make_gui) {
-				vector<string> items_s = ofSplitString(current_color,",");
-				vector<int> items;
-				for (auto &s : items_s) {
-					items.push_back(ofToInt(s));
+		// Setting color, visibility, editing
+		if (is_var) {
+			if (!current_color.empty()) {
+				if (make_cpp) put("\tgui.set_var_color(\"" + name_code.screen_name + "\", ofColor(" + current_color + "));", ColorLines);
+				if (make_gui) {
+					vector<string> items_s = ofSplitString(current_color, ",");
+					vector<int> items;
+					for (auto& s : items_s) {
+						items.push_back(ofToInt(s));
+					}
+					ofColor color;
+					if (items.size() == 1) color = ofColor(items[0]);
+					if (items.size() == 2) color = ofColor(items[0], items[1]);
+					if (items.size() == 3) color = ofColor(items[0], items[1], items[2]);
+					if (items.size() == 4) color = ofColor(items[0], items[1], items[2], items[3]);
+					gui->set_var_color(name_code.screen_name, color);
 				}
-				ofColor color;
-				if (items.size() == 1) color = ofColor(items[0]);
-				if (items.size() == 2) color = ofColor(items[0], items[1]);
-				if (items.size() == 3) color = ofColor(items[0], items[1], items[2]);
-				if (items.size() == 4) color = ofColor(items[0], items[1], items[2], items[3]);
-				gui->set_var_color(name_code.screen_name, color);
+			}
+			if (!name_code.visible) {
+				if (make_cpp) {
+					put("\tgui.set_var_visibility(\"" + name_code.screen_name + "\", false);", ColorLines);
+				}
+				if (make_gui) {
+					gui->set_var_visibility(name_code.screen_name, false);
+				}
+			}
+			if (!name_code.editable) {
+				if (make_cpp) {
+					put("\tgui.set_var_editable(\"" + name_code.screen_name + "\", false);", ColorLines);
+				}
+				if (make_gui) {
+					gui->set_var_editable(name_code.screen_name, false);
+				}
 			}
 		}
     }

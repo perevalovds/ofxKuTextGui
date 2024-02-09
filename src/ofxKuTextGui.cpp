@@ -61,6 +61,23 @@ void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::set_var_visibility(const string& var_name, bool visible) {
+	vector<Var*> vars = findVars(var_name);
+	for (int i = 0; i < vars.size(); i++) {
+		vars[i]->visible = visible;
+	}
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_var_editable(const string& var_name, bool editable)
+{
+	vector<Var*> vars = findVars(var_name);
+	for (int i = 0; i < vars.size(); i++) {
+		vars[i]->editable = editable;
+	}
+}
+
+//------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
 	rebuildVars();
 	vector<Var *> vars;
@@ -665,6 +682,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 			Tab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
 				Var &var = tab.var[i];
+
+				if (!var.visible) {
+					continue;
+				}
+
 				bool selected = (/*enabled &&*/ page.selTab==t && tab.selVar==i);
 				string name = var.title();
 				if ( selected ) name = ">" + name;
@@ -1065,19 +1087,22 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 				if (t >= 0 && t < page->tab.size()) {
 					Tab &tab = page->tab[t];
 					if (i >= 0 && i < tab.var.size()) {
-						page->selTab = t;
-						tab.selVar = i;
+						auto& var = tab.var[i];
+						if (var.is_editable()) {
+							page->selTab = t;
+							tab.selVar = i;
 
-						//check button
-						if (tab.validVar() && tab.var[tab.selVar].is_button()) {
-							tab.var[tab.selVar].setValue("1");
+							//check button
+							if (tab.validVar() && var.is_button()) {
+								var.setValue("1");
+							}
+							else {
+								mouse_dragging_ = true;
+								mouse_x_ = x;
+								mouse_y_ = y;
+							}
+							return true;
 						}
-						else {
-							mouse_dragging_ = true;
-							mouse_x_ = x;
-							mouse_y_ = y;
-						}
-                        return true;
 					}
 				}
 			}
