@@ -732,15 +732,15 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 						// Contour
 						if (drawSliderMode_) {
-							if (selected) {
-								int c = toggled ? 255 : 220;
-								if (enabled) ofSetColor(c, c, c, alpha_slider);
-								else ofSetColor(0, c, c, alpha_slider);
-							}
-							else {
-								int c = toggled ? 255 : 160;
-								ofSetColor(c, alpha_slider);
-							}
+							// if (selected) {
+							//	int c = toggled ? 255 : 220;
+							//	if (enabled) ofSetColor(c, c, c, alpha_slider);
+							//	else ofSetColor(0, c, c, alpha_slider);
+							//}
+							//else {
+							int c = toggled ? 255 : 160;
+							ofSetColor(c, alpha_slider);
+							//}
 							ofNoFill();
 							ofSetLineWidth(toggled ? 3 : 2);
 							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
