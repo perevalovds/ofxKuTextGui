@@ -1,10 +1,11 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2019-06-29-11-06-04-749
+//Auto-generated GUI file for ofxKuTextGui, 2024-02-10-10-18-57-816
 
 Parameters params;
 //--------------------------------------------------------------
 Parameters::Parameters() {
 	_FPS_=30;
+	hidden_value=0;
 	_w_=1024;
 	_h_=768;
 	backR=0;
@@ -23,6 +24,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addDummy("Constants names starts with *:");
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addDummy("");
+	gui.addInt("~hidden_value",hidden_value,0,0,10,1,10);
 	gui.addDummy("Screen size:");
 	gui.addInt("*w",_w_,1024,1,2000,1,10);
 	gui.addInt("*h",_h_,768,1,2000,1,10);
@@ -47,8 +49,12 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addDummy("Button:");
 	gui.addButton("render",render);
 	gui.set_var_color("*FPS", ofColor(140,140,255));
+	gui.set_var_color("~hidden_value", ofColor(140,140,255));
+	gui.set_var_visibility("~hidden_value", false);
+	gui.set_var_editable("~hidden_value", false);
 	gui.set_var_color("*w", ofColor(140,140,255));
 	gui.set_var_color("*h", ofColor(140,140,255));
+	gui.set_var_editable("-fps", false);
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);

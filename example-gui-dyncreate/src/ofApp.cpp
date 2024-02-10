@@ -16,13 +16,13 @@ void ofApp::setup(){
     gui.set_font(&gui_font, 0, 0);
     
 	ofxKuTextGuiGen::createGuiFromFile(gui, "gui-script.ini");
-	gui.loadFromFile("param.ini");
+	gui.loadFromFile("settings.ini");
     
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-	gui.saveToFile("param.ini");
+	gui.saveToFile("settings.ini");
 }
 
 //--------------------------------------------------------------

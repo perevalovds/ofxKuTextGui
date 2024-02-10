@@ -20,7 +20,7 @@ void ofApp::setup(){
     gui_font.load("fonts/frabk.ttf", 15);
     gui.set_font(&gui_font, 0, 0);
     
-    PRM setup(gui,"param.ini");
+    PRM setup(gui,"settings.ini");
 
 	gui.set_dummy_color(255);
     

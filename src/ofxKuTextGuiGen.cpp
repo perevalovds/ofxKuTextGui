@@ -185,7 +185,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 					//TODO CONST
 				}
             }
-			if (make_cpp) put("\t" + type_s + " " + name_code.code_name + ";", Decl);
+			if (make_cpp) put("\t" + type_s + " " + name_code.code_name + ";" + name_code.comment, Decl);
 			if (make_cpp) put("\t" + name_code.code_name + "=" + name_pair.b + ";", Constr);
             if (type_s == "int") {
                 //int *FPS=30 1:100 1,10
@@ -221,7 +221,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 				if (make_cpp) put("\t" + type_s + " " + name_code.const_name + ";", Decl);
             }
             //string send_host=localhost
-			if (make_cpp) put("\t" + type_s + " " + name_code.code_name + ";", Decl);
+			if (make_cpp) put("\t" + type_s + " " + name_code.code_name + ";" + name_code.comment, Decl);
 			if (make_cpp) put("\t" + name_code.code_name + "=\"" + name_pair.b + "\";", Constr);
 			if (make_cpp) put("\tgui.addString(\"" + name_code.screen_name + "\","
                 + name_code.code_name + ",\"" + name_pair.b + "\");",
@@ -240,7 +240,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
             }
 
             //stringlist list=a [a,b,c]
-			if (make_cpp) put("\tint " + name_code.code_name + ";", Decl);
+			if (make_cpp) put("\tint " + name_code.code_name + ";" + name_code.comment, Decl);
             vector<string> list = parse_stringlist_values(range_s);
             string def_index = "0";
             for (int i=0; i<list.size(); i++) {
@@ -269,7 +269,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			if (name_code.is_const) {			//...but of course for buttons "const" value are meaningless :)
 				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
 			}
-			if (make_cpp) put("\tint " + name_code.code_name + ";", Decl);
+			if (make_cpp) put("\tint " + name_code.code_name + ";" + name_code.comment, Decl);
 			if (make_cpp) put("\t" + name_code.code_name + "=0;", Constr);
 			if (make_cpp) put("\tgui.addButton(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
 			

@@ -13,7 +13,7 @@ To use it, prepare GUI script, see gui-script.ini,
  # Comments starts with "#"
  # "*" - constant changed at restart
  # "-" - output value, not saved. "-fps" in C++ code is referenced as "fps_"
- " "!" - invisible variable, saved. Changed only from C++
+ " "~" - variable is hidden in UI, but saved. Changed only from C++
 
  PAGE screen
  COLOR 255,0,0
@@ -110,6 +110,7 @@ protected:
         string const_name;
         bool visible = true;
         bool editable = true;
+        string comment;
         Name(string name) {
             screen_name = name;
             string prefix = (name.size()>=1)?name.substr(0,1):"";
@@ -117,17 +118,21 @@ protected:
             string short_name = (name.size()>=2)?name.substr(1):"";  //shorten
             is_const = false;
             if (prefix == "*") {
+                is_const = true;
                 code_name = "_" + short_name + "_";
                 const_name = short_name;
-                is_const = true;
+                comment = "\t// const";
             }
             if (prefix == "-") {
-                code_name = short_name + "_";
                 editable = false;
+                code_name = short_name + "_";
+                comment = "\t// output";
             }
-            if (prefix == "!") {
+            if (prefix == "~") {
                 visible = false;
                 editable = false;
+                code_name = short_name;
+                comment = "\t// hidden";
             }
         }
     };

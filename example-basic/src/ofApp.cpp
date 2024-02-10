@@ -9,33 +9,35 @@ void ofApp::setup(){
     gui.set_font(&gui_font, 0, 0);
 
 	gui.set_tab_w(180);
-	//gui.set_dummy_color(255);
+	gui.set_dummy_color(255);
 	
-	gui.addPage("page1");	
-	gui.addInt("countX", countX, countX, 1, 20, 1, 10);
-	gui.addInt("countY", countY, countY, 1, 20, 1, 10);
+	gui.addPage("Page1");	
+	gui.addInt("CountX", countX, countX, 1, 20, 1, 10);
+	gui.addInt("CountY", countY, countY, 1, 20, 1, 10);
 	gui.addDummy();
 
-	gui.addFloat("step", step, step, 0, 200, 200, 20);
-	gui.addFloat("size", size, size, 0, 200, 200, 20);
+	gui.addFloat("Step", step, step, 0, 200, 200, 20);
+	gui.addFloat("Size", size, size, 0, 200, 200, 20);
 
 	gui.addDummy();
 
-	gui.addDummy("Stringlist:");
 	vector<string> list;
 	list.push_back("OFF");
 	list.push_back("ON");
-	gui.addStringList("enabled", enabled, 1, list);
+	gui.addStringList("Enabled", enabled, 1, list);
 
 	gui.addTab();
-	gui.addInt("red", red, red, 0, 255, 1, 10);
-	gui.addInt("green", green, green, 0, 255, 1, 10);
-	gui.addInt("blue", blue, blue, 0, 255, 1, 10);
+	gui.addDummy("Color");
+	gui.addInt("Red", red, red, 0, 255, 1, 10);
+	gui.addInt("Green", green, green, 0, 255, 1, 10);
+	gui.addInt("Blue", blue, blue, 0, 255, 1, 10);
+	gui.set_var_color("Red", ofColor(255, 0, 0));
+	gui.set_var_color("Green", ofColor(0, 255, 0));
+	gui.set_var_color("Blue", ofColor(0, 0, 255));
 
 	gui.addDummy();
-	gui.addDummy("Buttons:");
-	gui.addButton("save", save_btn);
-	gui.addButton("load", load_btn);
+	gui.addButton("Save", save_btn);
+	gui.addButton("Load", load_btn);
 
 	gui.addPage("page2");
 	gui.addVar("countX");	//use addVar(..) to add the variables which exists on the other pages
@@ -47,27 +49,26 @@ void ofApp::setup(){
 	//Changing colors
 	gui.set_var_color("enabled", ofColor(255, 140, 140));
 
-	gui.loadFromFile("params.ini");	//load values from a file after all variables are added
+	gui.loadFromFile("settings.ini");	//load values from a file after all variables are added
 }
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-	gui.saveToFile("params.ini");
+	gui.saveToFile("settings.ini");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	gui.update();
-
 	//Checking buttons
 	//Buttons fires only once after pressing, and then set to 0 automatically
 	if (save_btn) {
-		gui.saveToFile("params.ini");
+		gui.saveToFile("settings.ini");
 	}
 	if (load_btn) {
-		gui.loadFromFile("params.ini");
+		gui.loadFromFile("settings.ini");
 	}
 
+	gui.update();
 }
 
 //--------------------------------------------------------------
@@ -78,7 +79,7 @@ void ofApp::draw(){
 		ofFill();
 		for (int y = 0; y < countY; y++) {
 			for (int x = 0; x < countX; x++) {
-				ofDrawRectangle(x*step + 50, y*step + 320, size, size);
+				ofDrawRectangle(x*step + 50, y*step + 430, size, size);
 			}
 		}
 	}

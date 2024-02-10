@@ -25,7 +25,7 @@ void ofApp::setup(){
     gui_font.load("fonts/frabk.ttf", 15);
     gui.set_font(&gui_font, 0, 0);
 
-    PRM setup(gui, "param.ini");
+    PRM setup(gui, "settings.ini");
     gui.set_dummy_color(255);
 
     //--------------------------------------
@@ -43,14 +43,14 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::load() {
     cout << "Load..." << endl;
-    gui.loadFromFile("param.ini");
+    gui.loadFromFile("settings.ini");
     flash();
 }
 
 //--------------------------------------------------------------
 void ofApp::save() {
     cout << "Save..." << endl;
-    gui.saveToFile("param.ini");
+    PRM save();
     flash();
 }
 

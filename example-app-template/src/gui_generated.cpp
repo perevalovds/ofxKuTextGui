@@ -1,16 +1,18 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2021-09-05-10-33-30-336
+//Auto-generated GUI file for ofxKuTextGui, 2024-02-10-10-04-24-999
 
 Parameters params;
 //--------------------------------------------------------------
 Parameters::Parameters() {
 	show_zoom=0;
 	Analyze=0;
+	Result_=0;
 	_FILE_="05_2.36";
 	_seconds_=20;
 	_FPS_=30;
 	_scr_w_=1024;
 	_scr_h_=768;
+	hidden_value=0;
 	smooth_float=0;
 	smooth_int=5;
 	time_smoothing=0.1;
@@ -22,6 +24,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addDummy("Analyze");
 	gui.addFloat("show_zoom",show_zoom,0,0,5,100,10);
 	gui.addButton("Analyze",Analyze);
+	gui.addInt("-Result",Result_,0,0,10,1,10);
 	gui.addDummy("File");
 	gui.addString("*FILE",_FILE_,"05_2.36");
 	gui.addInt("*seconds",_seconds_,20,1,1000,1,10);
@@ -29,6 +32,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addInt("*scr_w",_scr_w_,1024,1,2000,1,10);
 	gui.addInt("*scr_h",_scr_h_,768,1,2000,1,10);
+	gui.addInt("~hidden_value",hidden_value,0,0,10,1,10);
 	gui.addTab();
 	gui.addTab();
 	gui.addDummy("SmoothedValue");
@@ -38,11 +42,15 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addFloat("time_smoothing",time_smoothing,0.1,0,10,1000,100);
 	gui.set_var_color("show_zoom", ofColor(140,140,255));
 	gui.set_var_color("Analyze", ofColor(140,140,255));
+	gui.set_var_color("-Result", ofColor(140,140,255));
+	gui.set_var_editable("-Result", false);
 	gui.set_var_color("*FILE", ofColor(200,200,0));
 	gui.set_var_color("*seconds", ofColor(200,200,0));
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*scr_w", ofColor(255,140,255));
 	gui.set_var_color("*scr_h", ofColor(255,140,255));
+	gui.set_var_visibility("~hidden_value", false);
+	gui.set_var_editable("~hidden_value", false);
 	gui.set_var_color("smooth_float", ofColor(255,100,100));
 	gui.set_var_color("smooth_int", ofColor(255,100,100));
 	gui.set_var_color("time_smoothing", ofColor(200,200,200));
