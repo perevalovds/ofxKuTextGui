@@ -744,10 +744,10 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							ofSetLineWidth(toggled ? 3 : 2);
 							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
 
-							// Checkbox square
+							// Checkbox mark and square
 							if (checkbox) {
 								float h1 = h - 6;
-								float x1 = x + cellDx + w - 2 * button_ind - h;
+								float x1 = x + cellDx + w - 2 * button_ind - h1 - 1;
 								float y1 = y + cellDy + 3;
 
 								if (var.intValue()) {
