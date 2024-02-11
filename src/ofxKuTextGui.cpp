@@ -746,24 +746,23 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 							// Checkbox square
 							if (checkbox) {
-								ofSetColor(160, alpha_slider);
 								float h1 = h - 6;
 								float x1 = x + cellDx + w - 2 * button_ind - h;
 								float y1 = y + cellDy + 3;
-								ofDrawRectangle(x1, y1, h1, h1);
 
 								if (var.intValue()) {
 									// Mark
 									ofColor& color = var.color;
 									ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-									ofDrawLine(x1 + 3, y1 + 3, x1 + h1 / 2, y1 + h1 - 3);
-									ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 4, y1 + 5);
+									ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
+									ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
 								}
+
+								ofSetLineWidth(1);
+								ofDrawRectangle(x1, y1, h1, h1);
 							}
 
-							if (toggled) {
-								ofSetLineWidth(1);
-							}
+							ofSetLineWidth(1);
 						}
 
 						// Text
