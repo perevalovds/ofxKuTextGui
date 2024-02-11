@@ -20,8 +20,13 @@ To use it, prepare GUI script, see gui-script.ini,
  int *FPS=30 1:100 1,10
  int *w=1024 1:2000 1,10
  int *h=768 1:2000 1,10
- !string openedFile=default.wav
- !float scale=1.0
+ checkbox enable=1
+ button Render
+ # button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
+
+ # hidden:
+ ~string openedFile=default.wav
+ ~float scale=1.0 0:1 100,10
  
  TAB
  COLOR 64
@@ -38,8 +43,6 @@ To use it, prepare GUI script, see gui-script.ini,
  dummy
  dummy Stringlist:
  stringlist list=a [a,b,c]
- button Render
- # button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
 
  ------
 

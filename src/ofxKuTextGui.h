@@ -78,6 +78,7 @@ struct ofxKuTextGui {
     Var *addStringList(string name, int &var, int defV, const vector<string> &title);
     Var *addStringList(string name, int &var, int defV, int count...);
 	Var *addButton(string name, int &var);
+	Var* addCheckbox(string name, int& var);
 	void addDummy(string title = "", int n=1);
     
 
@@ -196,6 +197,7 @@ struct ofxKuTextGui {
 		int step[2];
 		int def = 0;
 		int is_button = 0;		//buttons are just int values, but rendered specially
+		int is_checkbox = 0;	// checkbox is int, which reads 0,1,OFF,ON for older compatibility
 		//Note: Buttons fires only once after pressing, and then set to 0 automatically
 		int is_toggled_ = 0;	// setToggled() should be used to manually toggle the button. This not saves to INI
 
@@ -226,6 +228,10 @@ struct ofxKuTextGui {
 
 		void setButton(int b) {	//make int rendered as button
 			is_button = b;
+		}
+
+		void setCheckbox() {	// make int as checkbox
+			is_checkbox = true;
 		}
 
 		void setToggled(int t) {
@@ -383,6 +389,9 @@ struct ofxKuTextGui {
 		bool is_button() {
 			return (index == VInt) && vint.is_button;
 		}
+		bool is_checkbox() {
+			return (index == VInt) && vint.is_checkbox;
+		}
 
 		ofColor color;
 		void setColor(const ofColor &color0) {
@@ -434,10 +443,25 @@ struct ofxKuTextGui {
 		void setToggled(int t) {
 			if (index == VInt) vint.setToggled(t);
 		}
-
+		
+		void setValueInt(int v) {
+			if (index == VInt) {
+				vint.setValue(v);
+			}
+			else if (index == VStringList) {
+				vstringlist.setValue(v);
+			}
+		}
 		void setValue(const string& v) {
 			if (index == VFloat) vfloat.setValue(ofToFloat(v));
-			if (index == VInt) vint.setValue(ofToInt(v));
+			if (index == VInt) {
+				if (is_checkbox()) {
+					vint.setValue((v == "1" || v == "ON") ? 1 : 0);	// Compatibility with old "OFF/ON" checkboxes
+				}
+				else {
+					vint.setValue(ofToInt(v));
+				}
+			}
 			if (index == VString) vstring.setValue(v);
 			if (index == VStringList) vstringlist.setValueString(v);
 

@@ -266,15 +266,34 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			is_var = true;
         }
 		if (type_s == "button") {
-			if (name_code.is_const) {			//...but of course for buttons "const" value are meaningless :)
+			if (name_code.is_const) {			//...but of course for buttons "const" value is meaningless :)
 				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
 			}
-			if (make_cpp) put("\tint " + name_code.code_name + ";" + name_code.comment, Decl);
-			if (make_cpp) put("\t" + name_code.code_name + "=0;", Constr);
-			if (make_cpp) put("\tgui.addButton(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
-			
+			if (make_cpp) {
+				put("\tint " + name_code.code_name + ";" + name_code.comment, Decl);
+				put("\t" + name_code.code_name + "=0;", Constr);
+				put("\tgui.addButton(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
+			}
+
 			if (make_gui) {
 				int *null = 0;
+				gui->addButton(name_code.screen_name, *null);
+			}
+
+			is_var = true;
+		}
+		if (type_s == "checkbox") {
+			if (name_code.is_const) {			
+				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
+			}
+			if (make_cpp) {
+				put("\tint " + name_code.code_name + ";" + name_code.comment, Decl);
+				put("\t" + name_code.code_name + "=0;", Constr);
+				put("\tgui.addCheckbox(\"" + name_code.screen_name + "\"," + name_code.code_name + ");", Setup);
+			}
+
+			if (make_gui) {
+				int* null = 0;
 				gui->addButton(name_code.screen_name, *null);
 			}
 

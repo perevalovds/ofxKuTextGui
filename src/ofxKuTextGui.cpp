@@ -377,6 +377,17 @@ ofxKuTextGui::Var *ofxKuTextGui::addButton(string name, int &var) {
 }
 
 //------------------------------------------------------------------------
+ofxKuTextGui::Var* ofxKuTextGui::addCheckbox(string name, int& var)
+{
+	if (page_.empty()) addPage("");
+	Var var_;
+	var_.index = Var::VInt;
+	var_.vint = VarInt(name, var, 0, 0, 1, 1, 1);
+	var_.vint.setCheckbox();
+	return addVar(var_);
+}
+
+//------------------------------------------------------------------------
 ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
 	Var var_;
@@ -689,8 +700,9 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 				bool selected = (/*enabled &&*/ page.selTab==t && tab.selVar==i);
 				string name = var.title();
-				if ( selected ) name = ">" + name;
-				else name = " " + name;
+				//if ( selected ) name = ">" + name;
+				//else 
+				name = " " + name;
                 
                 float x = X + draw_tabW * t;
                 float y = Y + draw_yStep * i;
@@ -699,27 +711,13 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 				if (!dummy) {
 					bool button = var.is_button();
+					bool checkbox = var.is_checkbox();
+					bool buttonLike = button || checkbox;
 					const int button_ind = 8;
 					const float button_round = 10;	//button rounding of corners
 
-					if (!button) {
-						ofFill();
-						ofSetColor(0, alpha_slider);
-						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
-					
-						if (drawSliderMode_) {
-							if (selected) {
-								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
-								else ofSetColor(0, 200, 200, alpha_slider);
-							}
-							else ofSetColor(128, alpha_slider);
-							ofNoFill();
-							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
-						}
-					}
-
-					//button
-					if (button) {
+					//button, checkbox
+					if (buttonLike) {
 						// Background
 						bool toggled = var.vint.is_toggled_;
 						float a = ofLerp(toggled ? 0.5 : 0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
@@ -732,31 +730,64 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 						// Contour
 						if (drawSliderMode_) {
-							// if (selected) {
-							//	int c = toggled ? 255 : 220;
-							//	if (enabled) ofSetColor(c, c, c, alpha_slider);
-							//	else ofSetColor(0, c, c, alpha_slider);
-							//}
-							//else {
-							int c = toggled ? 255 : 160;
-							ofSetColor(c, alpha_slider);
-							//}
+							if (selected) {
+								int c = toggled ? 255 : 220;
+								//if (enabled) ofSetColor(c, c, c, alpha_slider);
+							//	else 
+								ofSetColor(c, c, 0, alpha_slider);
+							}
+							else {
+								int c = toggled ? 255 : 160;
+								ofSetColor(c, alpha_slider);
+							}
 							ofNoFill();
 							ofSetLineWidth(toggled ? 3 : 2);
 							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
+
+							// Checkbox square
+							if (checkbox) {
+								ofSetColor(160, alpha_slider);
+								float h1 = h - 6;
+								float x1 = x + cellDx + w - 2 * button_ind - h;
+								float y1 = y + cellDy + 3;
+								ofDrawRectangle(x1, y1, h1, h1);
+
+								if (var.intValue()) {
+									// Mark
+									ofColor& color = var.color;
+									ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
+									ofDrawLine(x1 + 3, y1 + 3, x1 + h1 / 2, y1 + h1 - 3);
+									ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 4, y1 + 5);
+								}
+							}
+
 							if (toggled) {
 								ofSetLineWidth(1);
 							}
 						}
 
 						// Text
-						ofColor &color = var.color;
+						ofColor& color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-						draw_string(name, x, y);
-						
+						draw_string(name, x, y);						
 					}
 					else {
 						//non-button
+
+						ofFill();
+						ofSetColor(0, alpha_slider);
+						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+
+						if (drawSliderMode_) {
+							if (selected) {
+								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
+								else ofSetColor(0, 200, 200, alpha_slider);
+							}
+							else ofSetColor(128, alpha_slider);
+							ofNoFill();
+							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						}
+
 						ofColor &color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name + " " + var.value(), x, y);
@@ -1095,6 +1126,10 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 							//check button
 							if (tab.validVar() && var.is_button()) {
 								var.setValue("1");
+							}
+							else if (tab.validVar() && var.is_checkbox())
+							{
+								var.setValueInt(1 - var.intValue());
 							}
 							else {
 								mouse_dragging_ = true;
