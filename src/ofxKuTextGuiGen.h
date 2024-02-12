@@ -23,6 +23,9 @@ To use it, prepare GUI script, see gui-script.ini,
  checkbox enable=1
  button Render
  # button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
+ 
+ # "_" is converted to space when drawing
+ button Run_This
 
  # hidden:
  ~string openedFile=default.wav
@@ -116,6 +119,7 @@ protected:
         string comment;
         Name(string name) {
             screen_name = name;
+            ofStringReplace(screen_name, "_", " ");
             string prefix = (name.size()>=1)?name.substr(0,1):"";
             code_name = name;
             string short_name = (name.size()>=2)?name.substr(1):"";  //shorten
