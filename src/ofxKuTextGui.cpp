@@ -69,6 +69,12 @@ void ofxKuTextGui::set_var_visibility(const string& var_name, bool visible) {
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::set_pagelist_visibility(bool visible)
+{
+	set_var_visibility(PageVarName, visible);
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::set_var_editable(const string& var_name, bool editable)
 {
 	vector<Var*> vars = findVars(var_name);
@@ -277,16 +283,14 @@ int ofxKuTextGui::addPage(const string &pageName) {
 	needRebuild_ = true;
 
     //add var "[page]" at the top of the page
-    string pageVar = "[page]";
     if (page_.size() == 1) {
-        string page_var = pageVar;
-        addStringList(page_var, selPage, selPage, 0);
+        addStringList(PageVarName, selPage, selPage, 0);
     }
     else {
-        addVar(pageVar);
+        addVar(PageVarName);
     }
     vector<string> titles = pageTitles();
-    vector<Var *> var = findVars(pageVar);
+    vector<Var *> var = findVars(PageVarName);
     for (int i=0; i<var.size(); i++) {
         var[i]->setTitles(titles);
         var[i]->vstringlist.maxV = int(titles.size())-1;

@@ -65,6 +65,7 @@ struct ofxKuTextGui {
 	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
 	void set_var_visibility(const string& var_name, bool visible);
 	void set_var_editable(const string& var_name, bool editable);
+	void set_pagelist_visibility(bool visible);	// allows to hide pages list
 
     struct Var;
     
@@ -575,6 +576,8 @@ struct ofxKuTextGui {
 
 
 protected:
+	const string PageVarName = "[page]";
+
 	vector<Page> page_;
 	int selPage;	//selected page
     vector<string> pageTitles();
