@@ -239,7 +239,6 @@ bool ofxKuTextGui::loadFromJSON(const string &s) {
 	return true;
 }
 
-
 //------------------------------------------------------------------------
 //Generate names and values separated by separator: x;10;y;20...
 string ofxKuTextGui::saveToLine(const string &separator) {
@@ -986,6 +985,7 @@ void ofxKuTextGui::exit_with_message(const string &message) {
 	cout << "    Reason: " << message << endl;
 	ofSetFullscreen(false);
 	ofSystemAlertDialog("ofxKuTextGui causes exiting now, reason:\n" + message);
+	__debugbreak();
 	ofSleepMillis(2000);
 	OF_EXIT_APP(0);
 }

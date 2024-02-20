@@ -154,6 +154,8 @@ struct ofxKuTextGui {
 		int numSteps1_0, int numSteps2_0) {
 			name = name0;
             title = name;
+			ofStringReplace(title, "_", " ");
+
 			if (&var0) var = &var0;
 			else {
 				autovar = shared_ptr<float>(new float);
@@ -207,6 +209,7 @@ struct ofxKuTextGui {
 		int step1, int step2) {
 			name = name0;
             title = name;
+			ofStringReplace(title, "_", " ");
 			
 			if (&var0) var = &var0;
 			else {
@@ -281,6 +284,7 @@ struct ofxKuTextGui {
 		VarString(const string &name0, string &var0, const string &defV) {
 			name = name0;
             title = name;
+			ofStringReplace(title, "_", " ");
 
 			if (&var0) var = &var0;
 			else {
@@ -318,6 +322,7 @@ struct ofxKuTextGui {
                int step1, int step2, vector<string> titles0) {
             name = name0;
             title = name;
+			ofStringReplace(title, "_", " ");
 			
 			if (&var0) var = &var0;
 			else {

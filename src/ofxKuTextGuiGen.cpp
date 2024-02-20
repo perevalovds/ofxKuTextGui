@@ -120,7 +120,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
     vector<string> Decl;  //struct declaration
     vector<string> Constr;  //constructor
     vector<string> Setup;  //setup_gui
-    vector<string> AfterLoad;  //after_load
+    vector<string> ApplyConstChanges;  //applyConstChanges
 	vector<string> ColorLines;	//setting colors
 	string current_color;	//if not empty - the set to this color
     
@@ -143,7 +143,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
         Name name_code(name_pair.a);
 
         if (name_code.is_const) {
-			if (make_cpp) put("\t" + name_code.const_name + " = " + name_code.code_name + ";", AfterLoad);
+			if (make_cpp) put("\t" + name_code.const_name + " = " + name_code.code_name + ";", ApplyConstChanges);
 			if (make_gui) { //TODO support of constants
 			}
         }
@@ -351,6 +351,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		insert(f_h, Decl);
 		put("    " + class_name + "();", f_h);
 		put("    void setup(ofxKuTextGui &gui, string fileName);", f_h);
+		put("    void applyConstChanges();", f_h);
 		put("    void save();", f_h);
 		put("    string fileName_;", f_h);
 		put("    ofxKuTextGui *gui_;", f_h);
@@ -387,7 +388,12 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		put("\tfileName_ = fileName;", f_cpp);
 		put("\tgui_ = &gui;", f_cpp);
 		put("\tgui.loadFromFile(fileName);", f_cpp);
-		insert(f_cpp, AfterLoad);
+		put("\tapplyConstChanges();", f_cpp);
+		put("}", f_cpp);
+		put("", f_cpp);
+		put("//--------------------------------------------------------------", f_cpp);
+		put("void " + class_name + "::applyConstChanges() {", f_cpp);
+		insert(f_cpp, ApplyConstChanges);
 		put("}", f_cpp);
 		put("", f_cpp);
 		put("//--------------------------------------------------------------", f_cpp);

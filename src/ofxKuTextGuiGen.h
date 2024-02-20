@@ -119,7 +119,6 @@ protected:
         string comment;
         Name(string name) {
             screen_name = name;
-            ofStringReplace(screen_name, "_", " ");
             string prefix = (name.size()>=1)?name.substr(0,1):"";
             code_name = name;
             string short_name = (name.size()>=2)?name.substr(1):"";  //shorten
