@@ -14,6 +14,8 @@ struct ofxKuTextGui {
 	bool loadFromJSON(const string &s);
 	string saveToJSON();
 
+	bool wasModified();		// Currently slow, because comparing JSON serializations
+
 	//Generate names and values separated by separator: x;10;y;20...
 	string saveToLine(const string &separator);
 	bool loadFromLine(const string &s, const string &separator);
@@ -581,6 +583,9 @@ struct ofxKuTextGui {
 
 
 protected:
+	void storeState();		// for "wasModified"
+	string stateJson_;
+
 	const string PageVarName = "[page]";
 
 	vector<Page> page_;

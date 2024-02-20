@@ -169,6 +169,7 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
 			}
 		}
 	}
+	storeState();
 }
 
 //------------------------------------------------------------------------
@@ -187,6 +188,19 @@ void ofxKuTextGui::saveToFile(const string &fileName) {
         f << file[i] << endl;
     }
     f.close();
+	storeState();
+}
+
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::storeState() {		// for "wasModified"
+	stateJson_ = saveToJSON();
+}
+
+//------------------------------------------------------------------------
+bool ofxKuTextGui::wasModified() {		// Currently slow, because comparing JSON serializations
+	string json = saveToJSON();
+	return (stateJson_ != json);
 }
 
 //------------------------------------------------------------------------
@@ -236,6 +250,9 @@ bool ofxKuTextGui::loadFromJSON(const string &s) {
 			var->setValue(it.value());
 		}
 	}
+
+	storeState();
+
 	return true;
 }
 
@@ -270,6 +287,9 @@ bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
 			}
 		}
 	}
+
+	storeState();
+
 	return true;
 }
 
