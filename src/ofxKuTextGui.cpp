@@ -737,6 +737,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
                 
                 float x = X + draw_tabW * t;
                 float y = Y + draw_yStep * i;
+				float x0 = x + cellDx;
+				float y0 = y + cellDy;
                 
 				bool dummy = (var.index == Var::VDummy);
 
@@ -755,8 +757,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						if (a > 0) {
 							ofSetColor(180 * a, alpha_slider);
 							ofFill();
-							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
-							//ofDrawRectangle(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h);
+							ofDrawRectRounded(x0 + button_ind, y0, w - 2 * button_ind, h, button_round);
 						}
 
 						// Contour
@@ -773,13 +774,13 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							}
 							ofNoFill();
 							ofSetLineWidth(toggled ? 3 : 2);
-							ofDrawRectRounded(x + cellDx + button_ind, y + cellDy, w - 2 * button_ind, h, button_round);
+							ofDrawRectRounded(x0 + button_ind, y0, w - 2 * button_ind, h, button_round);
 
 							// Checkbox mark and square
 							if (checkbox) {
 								float h1 = h - 6;
-								float x1 = x + cellDx + w - 2 * button_ind - h1 - 1;
-								float y1 = y + cellDy + 3;
+								float x1 = x0 + w - 2 * button_ind - h1 - 1;
+								float y1 = y0 + 3;
 
 								if (var.intValue()) {
 									// Mark
@@ -799,14 +800,24 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						// Text
 						ofColor& color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-						draw_string(name, x, y);						
+						draw_string(name, x, y);		
+
+						// Mark
+						if (var.marked) {
+							const float MarkShift = 12;
+							const float MarkSize = 6;
+							float x1 = x0 + MarkShift;
+							ofFill();
+							ofDrawTriangle(x1, y0, x1, y0 + MarkSize, x1 + MarkSize, y0);
+						}
+
 					}
 					else {
 						//non-button
 
 						ofFill();
 						ofSetColor(0, alpha_slider);
-						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						ofDrawRectangle(x0, y0, w, h);
 
 						if (drawSliderMode_) {
 							if (selected) {
@@ -815,7 +826,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							}
 							else ofSetColor(128, alpha_slider);
 							ofNoFill();
-							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+							ofDrawRectangle(x0, y0, w, h);
 						}
 
 
@@ -828,14 +839,14 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						if (var.marked) {
 							const float MarkSize = 6;
 							ofFill();
-							ofDrawTriangle(x + cellDx, y + cellDy, x + cellDx, y + cellDy + MarkSize, x + cellDx + MarkSize, y + cellDy);
+							ofDrawTriangle(x0, y0, x0, y0 + MarkSize, x0 + MarkSize, y0);
 						}
 
 						//Slider and smoothed value
 						if (drawSliderMode_) {
 							ofFill();
 							ofSetColor(255, 60.0 / 255.0*alpha_slider);
-							ofDrawRectangle(x + cellDx, y + cellDy, w*var.valueNormalized(), h);
+							ofDrawRectangle(x0, y0, w*var.valueNormalized(), h);
 							if (selected) {
 								if (enabled) ofSetColor(255, 255, 0, alpha_slider);
 								else ofSetColor(0, 200, 200, alpha_slider);
@@ -844,14 +855,14 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							//Slider
 							ofNoFill();
 							float val_pix = w * var.valueNormalized();
-							// ofDrawRectangle(x + cellDx, y + cellDy, val_pix, h);
+							// ofDrawRectangle(x0, y0, val_pix, h);
 
 							ofSetLineWidth(3);
-							float bottomY = y + cellDy + h - 0.5;
+							float bottomY = y0 + h - 0.5;
 							// Bottom line
-							ofDrawLine(x + cellDx, bottomY, x + cellDx + val_pix, bottomY);
+							ofDrawLine(x0, bottomY, x0 + val_pix, bottomY);
 							// Right line
-							ofDrawLine(x + cellDx + val_pix, y + cellDy, x + cellDx + val_pix, bottomY);
+							ofDrawLine(x0 + val_pix, y0, x0 + val_pix, bottomY);
 
 							ofSetLineWidth(1);
 
@@ -860,7 +871,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 								float bottom_val_pix = (var.draw_smoothed_value_) ? w * var.smoothed_value_normalized_ : val_pix;
 								ofFill();
 								const int h1 = 3; //PARAM
-								ofDrawRectangle(x + cellDx, bottomY - h1, bottom_val_pix, h1);
+								ofDrawRectangle(x0, bottomY - h1, bottom_val_pix, h1);
 							}
 						}
 					}
@@ -874,7 +885,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						ofFill();
 						ofSetColor(dummy_back_);
 						//ofSetColor(0, alpha_slider);
-						ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+						ofDrawRectangle(x0, y0, w, h);
 
 						ofSetColor(dummy_color_);
 						draw_string(var.vstring.title, x, y);
@@ -887,7 +898,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							//}
 							//else ofSetColor(100, alpha_slider);
 							ofNoFill();
-							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
+							ofDrawRectangle(x0, y0, w, h);
 						}
 					}
 					

@@ -18,7 +18,9 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 		if (name[0] == '#') continue;	//skip comment
 		ofxKuTextGui::Var *var = gui.findVar(name);
 		if (!var) {
-			cout << "    Warning: not found variable '" << name << "'" << endl;
+			string message = "Error while ofxKuPreset loading " + file_var_list + ": No variable " + name;
+			cout << message << endl;
+			ofSystemAlertDialog(message);
 		}
 		else {
 			// Mark preset variables
