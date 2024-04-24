@@ -10,8 +10,13 @@
 #include "ofxKuPreset.h"
 
 
+struct ofxKuPresetLoaderParams {
+	bool markVars = true;
+};
+
 //function loads to preset system variables listed in file_var_list
-void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &gui, ofxKuPreset &presets);
+void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &gui, ofxKuPreset &presets, 
+	const ofxKuPresetLoaderParams& params);
 
 
 

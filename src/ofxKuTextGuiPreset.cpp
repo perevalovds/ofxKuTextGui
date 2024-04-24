@@ -4,7 +4,8 @@
 
 //------------------------------------------------------------------------
 //function loads to preset system variables listed in file_var_list
-void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &gui, ofxKuPreset &presets) {
+void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &gui, ofxKuPreset &presets, 
+	const ofxKuPresetLoaderParams& params) {
 	cout << "Loading vars to preset system from " << file_var_list << endl;
 	vector<string> vars = ofxKuFileReadStrings(file_var_list);
 	for (int i=0; i<vars.size(); i++) {
@@ -20,6 +21,11 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 			cout << "    Warning: not found variable '" << name << "'" << endl;
 		}
 		else {
+			// Mark preset variables
+			if (params.markVars) {
+				gui.set_var_mark(name, true);
+			}
+
 			if (var->vfloat.var) {
 				presets.add_float(name, var->vfloat.var);
 				//cout << "    added float " << name << endl;

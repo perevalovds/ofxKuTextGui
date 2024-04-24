@@ -84,6 +84,14 @@ void ofxKuTextGui::set_var_editable(const string& var_name, bool editable)
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::set_var_mark(const string& var_name, bool mark) {	// marking elements, for example, used in presets
+	vector<Var*> vars = findVars(var_name);
+	for (int i = 0; i < vars.size(); i++) {
+		vars[i]->marked = mark;
+	}
+}
+
+//------------------------------------------------------------------------
 vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
 	rebuildVars();
 	vector<Var *> vars;
@@ -810,9 +818,18 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							ofDrawRectangle(x + cellDx, y + cellDy, w, h);
 						}
 
+
+						// Name and value text
 						ofColor &color = var.color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name + " " + var.value(), x, y);
+
+						// Mark
+						if (var.marked) {
+							const float MarkSize = 6;
+							ofFill();
+							ofDrawTriangle(x + cellDx, y + cellDy, x + cellDx, y + cellDy + MarkSize, x + cellDx + MarkSize, y + cellDy);
+						}
 
 						//Slider and smoothed value
 						if (drawSliderMode_) {

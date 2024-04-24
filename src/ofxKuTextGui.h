@@ -67,6 +67,7 @@ struct ofxKuTextGui {
 	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
 	void set_var_visibility(const string& var_name, bool visible);
 	void set_var_editable(const string& var_name, bool editable);
+	void set_var_mark(const string& var_name, bool mark);	// marking elements, for example, used in presets
 	void set_pagelist_visibility(bool visible);	// allows to hide pages list
 
     struct Var;
@@ -376,6 +377,7 @@ struct ofxKuTextGui {
 		int index;	//0 - vfloat, 1-vint, 2-string, 3-stringlist, 4-dummy
 		bool visible = true;
 		bool editable = true;	// Can user edit it
+		bool marked = false;	// Special mark, for example, to show the variable controlled from presets
 
 		bool is_editable() const { return visible && editable; }
 
