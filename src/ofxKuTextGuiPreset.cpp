@@ -29,15 +29,15 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 			}
 
 			if (var->vfloat.var) {
-				presets.add_float(name, var->vfloat.var);
+				presets.add_float(name, var->vfloat.var, var->vfloat.def);
 				//cout << "    added float " << name << endl;
 			}
 			if (var->vint.var) {
-				presets.add_int(name, var->vint.var);
+				presets.add_int(name, var->vint.var, var->vint.def);
 				//cout << "    added int " << name << endl;
 			}
 			if (var->vstringlist.var) { 
-				presets.add_int(name, var->vstringlist.var);
+				presets.add_int(name, var->vstringlist.var, var->vstringlist.def);
 				//cout << "    added stringlist " << name << endl;
 			}
 		}
