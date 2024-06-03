@@ -381,7 +381,7 @@ KuUiComponent *ofxKuTextGui::addFloat(string name, float &var, float defV, float
 {
 	if (page_.empty()) addPage("");
 	KuUiComponent var_;
-	var_.index= KuUiComponent::VFloat;
+	var_.index= KuUiType::VFloat;
 	var_.vfloat = KuUiFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
 	return addVar(var_);
 }
@@ -392,7 +392,7 @@ KuUiComponent *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, i
 {
 	if (page_.empty()) addPage("");
 	KuUiComponent var_;
-	var_.index= KuUiComponent::VInt;
+	var_.index= KuUiType::VInt;
 	var_.vint = KuUiInt(name, var, defV, minV, maxV, step1, step2);
 	return addVar(var_);
 }
@@ -401,7 +401,7 @@ KuUiComponent *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, i
 KuUiComponent *ofxKuTextGui::addButton(string name, int &var) {
 	if (page_.empty()) addPage("");
 	KuUiComponent var_;
-	var_.index = KuUiComponent::VInt;
+	var_.index = KuUiType::VInt;
 	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
 	var_.vint.setButton(1);
 	return addVar(var_);
@@ -412,7 +412,7 @@ KuUiComponent* ofxKuTextGui::addCheckbox(string name, int& var)
 {
 	if (page_.empty()) addPage("");
 	KuUiComponent var_;
-	var_.index = KuUiComponent::VInt;
+	var_.index = KuUiType::VInt;
 	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
 	var_.vint.setCheckbox();
 	return addVar(var_);
@@ -422,7 +422,7 @@ KuUiComponent* ofxKuTextGui::addCheckbox(string name, int& var)
 KuUiComponent *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
 	KuUiComponent var_;
-	var_.index= KuUiComponent::VString;
+	var_.index= KuUiType::VString;
 	var_.vstring = KuUiString(name, var, defV);
 	return addVar(var_);
 }
@@ -431,7 +431,7 @@ KuUiComponent *ofxKuTextGui::addString(string name, string &var, const string &d
 KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
     KuUiComponent var_;
-    var_.index= KuUiComponent::VStringList;
+    var_.index= KuUiType::VStringList;
     var_.vstringlist = KuUiStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
     return addVar(var_);
 }
@@ -453,7 +453,7 @@ void ofxKuTextGui::addDummy(string title, int n) {
 	for (int i = 0; i < n; i++) {
 		if (page_.empty()) addPage("");
 		KuUiComponent var_;
-		var_.index = KuUiComponent::VDummy;
+		var_.index = KuUiType::VDummy;
 		var_.vstring.title = title;
 		addVar(var_);
 	}
@@ -740,7 +740,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				float x0 = x + cellDx;
 				float y0 = y + cellDy;
                 
-				bool dummy = (var.index == KuUiComponent::VDummy);
+				bool dummy = (var.index == KuUiType::VDummy);
 
 				if (!dummy) {
 					bool button = var.is_button();
