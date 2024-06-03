@@ -161,7 +161,7 @@ protected:
 	typedef unordered_map<string, vector<KuUiComponent *> > StringVarHash;
 	StringVarHash hash_vars_;	//index of vars - unsorted, multiple, for search and toggle buttons
 
-	KuUiComponent *addVar(KuUiComponent &var);
+	KuUiComponent *addVar(KuUiComponent* var);
 
 	void rebuildVars();
 	bool needRebuild_;

@@ -109,8 +109,8 @@ vector<KuUiComponent*> ofxKuTextGui::getPageVars() {
         for (int i=0; i<page->tab.size(); i++) {
             KuUiTab &tab = page->tab[i];
             for (int j=0; j<tab.var.size(); j++) {
-                KuUiComponent &var = tab.var[j];
-                vars.push_back(&var);
+                KuUiComponent* var = tab.var[j];
+                vars.push_back(var);
             }
         }
     }
@@ -338,7 +338,7 @@ void ofxKuTextGui::addTab(int n) {
 }
 
 //------------------------------------------------------------------------
-KuUiComponent *ofxKuTextGui::addVar(KuUiComponent &var) {
+KuUiComponent *ofxKuTextGui::addVar(KuUiComponent* var) {
 	KuUiComponent *var_ = page_[page_.size()-1].addVar(var);
 	needRebuild_ = true;
     return var_;
@@ -365,9 +365,9 @@ void ofxKuTextGui::rebuildVars() {
 			for (int t=0; t<page.tab.size(); t++) {
 				KuUiTab &tab = page.tab[t];
 				for (int i=0; i<tab.var.size(); i++) {
-					KuUiComponent &var_ = tab.var[i];
-					vars_[var_.name()] = &var_;
-					hash_vars_[var_.name()].push_back(&var_);
+					KuUiComponent* var_ = tab.var[i];
+					vars_[var_->name()] = var_;
+					hash_vars_[var_->name()].push_back(var_);
 				}
 			}
 		}
@@ -380,9 +380,8 @@ KuUiComponent *ofxKuTextGui::addFloat(string name, float &var, float defV, float
 	int numSteps1, int numSteps2) 
 {
 	if (page_.empty()) addPage("");
-	KuUiComponent var_;
-	var_.index= KuUiType::VFloat;
-	var_.vfloat = KuUiFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
+	// TODO need "delete"
+	KuUiComponent* var_ = new KuUiFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
 	return addVar(var_);
 }
 
@@ -391,19 +390,16 @@ KuUiComponent *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, i
 		int step1, int step2) 
 {
 	if (page_.empty()) addPage("");
-	KuUiComponent var_;
-	var_.index= KuUiType::VInt;
-	var_.vint = KuUiInt(name, var, defV, minV, maxV, step1, step2);
+	// TODO need "delete"
+	KuUiComponent* var_ = new KuUiInt(name, var, defV, minV, maxV, step1, step2);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
 KuUiComponent *ofxKuTextGui::addButton(string name, int &var) {
 	if (page_.empty()) addPage("");
-	KuUiComponent var_;
-	var_.index = KuUiType::VInt;
-	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
-	var_.vint.setButton(1);
+	KuUiInt* var_ = new KuUiInt(name, var, 0, 0, 1, 1, 1);
+	var_->setButton(1);
 	return addVar(var_);
 }
 
@@ -411,28 +407,25 @@ KuUiComponent *ofxKuTextGui::addButton(string name, int &var) {
 KuUiComponent* ofxKuTextGui::addCheckbox(string name, int& var)
 {
 	if (page_.empty()) addPage("");
-	KuUiComponent var_;
-	var_.index = KuUiType::VInt;
-	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
-	var_.vint.setCheckbox();
+	// TODO need "delete"
+	KuUiInt* var_ = new KuUiInt(name, var, 0, 0, 1, 1, 1);
+	var_->setCheckbox();
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
 KuUiComponent *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
-	KuUiComponent var_;
-	var_.index= KuUiType::VString;
-	var_.vstring = KuUiString(name, var, defV);
+	// TODO need "delete"
+	KuUiComponent* var_ = new KuUiString(name, var, defV);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
 KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
-    KuUiComponent var_;
-    var_.index= KuUiType::VStringList;
-    var_.vstringlist = KuUiStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
+	// TODO need "delete"
+    KuUiComponent* var_ = new KuUiStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
     return addVar(var_);
 }
 
@@ -453,7 +446,7 @@ void ofxKuTextGui::addDummy(string title, int n) {
 	for (int i = 0; i < n; i++) {
 		if (page_.empty()) addPage("");
 		KuUiComponent var_;
-		var_.index = KuUiType::VDummy;
+		var_.type = KuUiType::VDummy;
 		var_.vstring.title = title;
 		addVar(var_);
 	}
@@ -464,7 +457,7 @@ void ofxKuTextGui::addDummy(string title, int n) {
 KuUiComponent *ofxKuTextGui::addVar(string name) {	//adding existing var
 	KuUiComponent *var = findVar(name);
 	if (var) {
-		addVar(*var);
+		addVar(var);
 	}
 	else {
 		cout << "ERROR ofxKuTextGui::addVar, no variable " << name << endl;
@@ -524,8 +517,6 @@ void ofxKuTextGui::gotoNextTab() {
 		}
 	}
 }
-
-
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::setValue(int index) {
@@ -723,14 +714,14 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 		for (int t=0; t<page.tab.size(); t++) {
 			KuUiTab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
-				KuUiComponent &var = tab.var[i];
+				KuUiComponent* var = tab.var[i];
 
-				if (!var.visible) {
+				if (!var->visible) {
 					continue;
 				}
 
 				bool selected = (/*enabled &&*/ page.selTab==t && tab.selVar==i);
-				string name = var.title();
+				string name = var->title();
 				//if ( selected ) name = ">" + name;
 				//else 
 				name = " " + name;
@@ -740,11 +731,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				float x0 = x + cellDx;
 				float y0 = y + cellDy;
                 
-				bool dummy = (var.index == KuUiType::VDummy);
+				bool dummy = (var->type == KuUiType::VDummy);
 
 				if (!dummy) {
-					bool button = var.is_button();
-					bool checkbox = var.is_checkbox();
+					bool button = var->is_button();
+					bool checkbox = var->is_checkbox();
 					bool buttonLike = button || checkbox;
 					const int button_ind = 8;
 					const float button_round = 10;	//button rounding of corners
@@ -752,8 +743,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 					//button, checkbox
 					if (buttonLike) {
 						// Background
-						bool toggled = var.vint.is_toggled_;
-						float a = ofLerp(toggled ? 0.5 : 0.3, 1, var.vint.button_alpha_);	//NOTE: Parameters for button's background
+						bool toggled = var->is_toggled_;
+						float a = ofLerp(toggled ? 0.5 : 0.3, 1, var.button_alpha_);	//NOTE: Parameters for button's background
 						if (a > 0) {
 							ofSetColor(180 * a, alpha_slider);
 							ofFill();
@@ -782,7 +773,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 								float x1 = x0 + w - 2 * button_ind - h1 - 1;
 								float y1 = y0 + 3;
 
-								if (var.intValue()) {
+								if (var->intValue()) {
 									// Mark
 									ofColor& color = var.color;
 									ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
@@ -798,12 +789,12 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						}
 
 						// Text
-						ofColor& color = var.color;
+						ofColor& color = var->color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 						draw_string(name, x, y);		
 
 						// Mark
-						if (var.marked) {
+						if (var->marked) {
 							const float MarkShift = 12;
 							const float MarkSize = 6;
 							float x1 = x0 + MarkShift;
@@ -831,12 +822,12 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 
 						// Name and value text
-						ofColor &color = var.color;
+						ofColor &color = var->color;
 						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-						draw_string(name + " " + var.value(), x, y);
+						draw_string(name + " " + var->value(), x, y);
 
 						// Mark
-						if (var.marked) {
+						if (var->marked) {
 							const float MarkSize = 6;
 							ofFill();
 							ofDrawTriangle(x0, y0, x0, y0 + MarkSize, x0 + MarkSize, y0);
@@ -846,7 +837,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						if (drawSliderMode_) {
 							ofFill();
 							ofSetColor(255, 60.0 / 255.0*alpha_slider);
-							ofDrawRectangle(x0, y0, w*var.valueNormalized(), h);
+							ofDrawRectangle(x0, y0, w*var->valueNormalized(), h);
 							if (selected) {
 								if (enabled) ofSetColor(255, 255, 0, alpha_slider);
 								else ofSetColor(0, 200, 200, alpha_slider);
@@ -854,7 +845,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							else ofSetColor(200, alpha_slider);
 							//Slider
 							ofNoFill();
-							float val_pix = w * var.valueNormalized();
+							float val_pix = w * var->valueNormalized();
 							// ofDrawRectangle(x0, y0, val_pix, h);
 
 							ofSetLineWidth(3);
@@ -880,7 +871,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 					//Dummy
 
 					//dummy's text
-					if (!var.vstring.title.empty()) {
+					if (!var->title().empty()) {
 						//back
 						ofFill();
 						ofSetColor(dummy_back_);
@@ -888,7 +879,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 						ofDrawRectangle(x0, y0, w, h);
 
 						ofSetColor(dummy_color_);
-						draw_string(var.vstring.title, x, y);
+						draw_string(var->title(), x, y);
 					}
 
 					if (drawSliderMode_) {
