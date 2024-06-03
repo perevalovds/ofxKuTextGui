@@ -320,7 +320,10 @@ int ofxKuTextGui::addPage(const string &pageName) {
     vector<KuUiComponent *> var = findVars(PageVarName);
     for (int i=0; i<var.size(); i++) {
         var[i]->setTitles(titles);
-        var[i]->vstringlist.maxV = int(titles.size())-1;
+		if (var[i]->type != KuUiType::VStringList) {
+			exit_with_message("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
+		}
+        ((KuUiStringList*)var[i])->maxV = int(titles.size())-1;
     }
     selPage = 0;
     return int(page_.size())-1;
@@ -445,9 +448,8 @@ KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, int 
 void ofxKuTextGui::addDummy(string title, int n) {
 	for (int i = 0; i < n; i++) {
 		if (page_.empty()) addPage("");
-		KuUiComponent var_;
-		var_.type = KuUiType::VDummy;
-		var_.vstring.title = title;
+		// TODO delete somethere
+		KuUiDummy* var_ = new KuUiDummy(title);
 		addVar(var_);
 	}
 }
@@ -561,9 +563,9 @@ void ofxKuTextGui::decreaseValue(int speed, int value) {	//0-slow,1-fast
 		if (page.validTab()) {
 			KuUiTab &tab = page.tab[page.selTab];
 			if (tab.validVar()) {
-				bool is_string = tab.var[tab.selVar].is_string();
+				bool is_string = tab.var[tab.selVar]->is_string();
 				if (!is_string || (is_string && editing_strings_)) {
-					tab.var[tab.selVar].inc(-value, speed);
+					tab.var[tab.selVar]->inc(-value, speed);
 				}
 			}
 		}
@@ -577,9 +579,9 @@ void ofxKuTextGui::increaseValue(int speed, int value) {	//0-slow,1-fast
 		if (page.validTab()) {
 			KuUiTab &tab = page.tab[page.selTab];
 			if (tab.validVar()) {
-				bool is_string = tab.var[tab.selVar].is_string();
+				bool is_string = tab.var[tab.selVar]->is_string();
 				if (!is_string || (is_string && editing_strings_)) {
-					tab.var[tab.selVar].inc(+value, speed);
+					tab.var[tab.selVar]->inc(+value, speed);
 				}
 			}
 		}
@@ -592,7 +594,7 @@ void ofxKuTextGui::editStringValue() {
 		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
 			KuUiTab &tab = page.tab[page.selTab];
-			if (tab.validVar()) tab.var[tab.selVar].editStringValue();
+			if (tab.validVar()) tab.var[tab.selVar]->editStringValue();
 		}
 	}
 }
@@ -691,7 +693,7 @@ void ofxKuTextGui::update() {					//for buttons processing
 		for (int j = 0; j<page.tab.size(); j++) {
 			KuUiTab &tab = page.tab[j];
 			for (int k = 0; k<tab.var.size(); k++) {
-				tab.var[k].update_button();				//TODO optimize and check only button variables
+				tab.var[k]->update_button();				//TODO optimize and check only button variables
 			}
 		}
 	}
@@ -743,8 +745,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 					//button, checkbox
 					if (buttonLike) {
 						// Background
-						bool toggled = var->is_toggled_;
-						float a = ofLerp(toggled ? 0.5 : 0.3, 1, var.button_alpha_);	//NOTE: Parameters for button's background
+						bool toggled = var->is_toggled();
+						if (var->type != KuUiType::VInt) {
+							exit_with_message("ofxKuTextGui: it's expected to be int: " + var->title());
+						}
+						float a = ofLerp(toggled ? 0.5 : 0.3, 1, ((KuUiInt*)var)->button_alpha_);	//NOTE: Parameters for button's background
 						if (a > 0) {
 							ofSetColor(180 * a, alpha_slider);
 							ofFill();
@@ -775,7 +780,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 								if (var->intValue()) {
 									// Mark
-									ofColor& color = var.color;
+									ofColor& color = var->color;
 									ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
 									ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
 									ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
@@ -858,8 +863,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 							ofSetLineWidth(1);
 
 							//Almost Bottom line - currently only for smoothed values
-							if (var.draw_smoothed_value_) {	//comment to draw bottom line always
-								float bottom_val_pix = (var.draw_smoothed_value_) ? w * var.smoothed_value_normalized_ : val_pix;
+							if (var->draw_smoothed_value_) {	//comment to draw bottom line always
+								float bottom_val_pix = (var->draw_smoothed_value_) ? w * var->smoothed_value_normalized_ : val_pix;
 								ofFill();
 								const int h1 = 3; //PARAM
 								ofDrawRectangle(x0, bottomY - h1, bottom_val_pix, h1);
@@ -908,14 +913,14 @@ string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected valu
             if (t>0) s += ";";
             KuUiTab &tab = page.tab[t];
             for (int i=0; i<tab.var.size(); i++) {
-                KuUiComponent &var = tab.var[i];
+                KuUiComponent* var = tab.var[i];
                 bool selected = (page.selTab==t && tab.selVar==i);
-                string name = var.name();
+                string name = var->name();
                 if ( selected ) name = ">" + name;
                 else name = " " + name;
                 
                 if (i>0) s+= ",";
-                s += name + "=" + var.value() + "=" + ofToString(var.valueNormalized());
+                s += name + "=" + var->value() + "=" + ofToString(var->valueNormalized());
             }
         }
     }
@@ -1031,37 +1036,47 @@ void ofxKuTextGui::exit_with_message(const string &message) {
 
 //------------------------------------------------------------------------
 float *ofxKuTextGui::findVarFloat(const string &name) {
-	float *v = findVarChecking(name)->vfloat.var;
-	if (!v) exit_with_message("No float " + name);
-    return v;
+	KuUiComponent* v = findVarChecking(name);
+	if (v->type != KuUiType::VFloat) {
+		exit_with_message("ofxKuTextGui: No float " + name);
+	}
+    return ((KuUiFloat*)v)->var;
 }
 
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarInt(const string &name) {
-	int *v = findVarChecking(name)->vint.var;
-	if (!v) exit_with_message("No int " + name);
-	return v;
+	KuUiComponent* v = findVarChecking(name);
+	if (v->type != KuUiType::VInt) {
+		exit_with_message("ofxKuTextGui: No int " + name);
+	}
+	return ((KuUiInt*)v)->var;
 }
 
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarStringList(const string &name) {
-	int *v = findVarChecking(name)->vstringlist.var;
-	if (!v) exit_with_message("No stringlist " + name);
-	return v;
+	KuUiComponent* v = findVarChecking(name);
+	if (v->type != KuUiType::VStringList) {
+		exit_with_message("ofxKuTextGui: No stringlist " + name);
+	}
+	return ((KuUiStringList*)v)->var;
 }
 
 //------------------------------------------------------------------------
 string *ofxKuTextGui::findVarString(const string &name) {
-	string *v = findVarChecking(name)->vstring.var;
-	if (!v) exit_with_message("No string " + name);
-	return v;
+	KuUiComponent* v = findVarChecking(name);
+	if (v->type != KuUiType::VString) {
+		exit_with_message("ofxKuTextGui: No string " + name);
+	}
+	return ((KuUiString*)v)->var;
 }
 
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarButton(const string &name) {
-	int *v = findVarChecking(name)->vint.var;
-	if (!v) exit_with_message("No button " + name);
-	return v;
+	KuUiComponent* v = findVarChecking(name);
+	if (v->type != KuUiType::VInt || !v->is_button()) {
+		exit_with_message("ofxKuTextGui: No button " + name);
+	}
+	return ((KuUiInt*)v)->var;
 }
 
 //------------------------------------------------------------------------
@@ -1124,8 +1139,8 @@ vector<KuUiComponent *> ofxKuTextGui::findVars(const string &name) {   //all ins
         for (int j=0; j<page.tab.size(); j++) {
             KuUiTab &tab = page.tab[j];
             for (int k=0; k<tab.var.size(); k++) {
-                if (tab.var[k].name() == name) {
-                    vars.push_back(&tab.var[k]);
+                if (tab.var[k]->name() == name) {
+                    vars.push_back(tab.var[k]);
                 }
             }
         }
@@ -1161,17 +1176,17 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 					KuUiTab &tab = page->tab[t];
 					if (i >= 0 && i < tab.var.size()) {
 						auto& var = tab.var[i];
-						if (var.is_editable()) {
+						if (var->is_editable()) {
 							page->selTab = t;
 							tab.selVar = i;
 
 							//check button
-							if (tab.validVar() && var.is_button()) {
-								var.setValue("1");
+							if (tab.validVar() && var->is_button()) {
+								var->setValue("1");
 							}
-							else if (tab.validVar() && var.is_checkbox())
+							else if (tab.validVar() && var->is_checkbox())
 							{
-								var.setValueInt(1 - var.intValue());
+								var->setValueInt(1 - var->intValue());
 							}
 							else {
 								mouse_dragging_ = true;

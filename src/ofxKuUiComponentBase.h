@@ -9,8 +9,8 @@ enum class KuUiType : int {
 	VUndefined = -1,
 	VFloat = 0,
 	VInt = 1,
-	VString = 2,
-	VStringList = 3,
+	VStringList = 2,
+	VString = 3,
 	VDummy = 4
 };
 
@@ -34,8 +34,9 @@ public:
 	}
 
 	virtual bool is_string() { return false; }
-	bool is_button() { return false; }
-	bool is_checkbox() { return false; }
+	virtual bool is_button() { return false; }
+	virtual bool is_checkbox() { return false; }
+	virtual bool is_toggled() { return false; }
 
 	ofColor color;
 	void setColor(const ofColor& color0) {
@@ -258,6 +259,10 @@ public:
 	bool is_checkbox() {
 		return is_checkbox_;
 	}
+	bool is_toggled() override {
+		return is_toggled_;
+	}
+
 	void setButton(int b) {	//make int rendered as button
 		is_button_ = b;
 	}
@@ -381,8 +386,6 @@ public:
 //------------------------------------------------------------------------
 class KuUiString: public KuUiComponent {
 public:
-	string name;
-	string title;
 	shared_ptr<string> autovar;
 	string* var = nullptr;
 	string def;
@@ -390,9 +393,9 @@ public:
 	KuUiString() {}
 	KuUiString(const string& name0, string& var0, const string& defV) {
 		type = KuUiType::VString;
-		name = name0;
-		title = name;
-		ofStringReplace(title, "_", " ");
+		name_ = name0;
+		title_ = name0;
+		ofStringReplace(title_, "_", " ");
 
 		if (&var0) var = &var0;
 		else {
@@ -419,10 +422,22 @@ public:
 	}
 
 	void editStringValue() {
-		*var = ofSystemTextBoxDialog(name, *var);
+		*var = ofSystemTextBoxDialog(name_, *var);
 	}
 	bool is_string() override {
 		return true;
+	}
+};
+
+//------------------------------------------------------------------------
+class KuUiDummy : public KuUiComponent {
+public:
+	KuUiDummy() {}
+	KuUiDummy(const string& name0) {
+		type = KuUiType::VDummy;
+		name_ = name0;
+		title_ = name0;
+		ofStringReplace(title_, "_", " ");
 	}
 };
 
