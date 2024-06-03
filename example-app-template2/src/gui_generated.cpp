@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-02-10-10-08-43-578
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-03-18-39-49-247
 
 Parameters params;
 //--------------------------------------------------------------
@@ -7,6 +7,7 @@ Parameters::Parameters() {
 	_FPS_=30;
 	_scr_w_=1024;
 	_scr_h_=768;
+	Enabled=0;
 	fps_=30;
 	Start=0;
 	Enable=0;
@@ -21,6 +22,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addInt("*scr_w",_scr_w_,1024,1,2000,1,10);
 	gui.addInt("*scr_h",_scr_h_,768,1,2000,1,10);
+	gui.addCheckbox("Enabled",Enabled);
 	gui.addFloat("-fps",fps_,30,0,100,100,10);
 	gui.addTab();
 	gui.addDummy("");
@@ -37,6 +39,11 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);
+	applyConstChanges();
+}
+
+//--------------------------------------------------------------
+void Parameters::applyConstChanges() {
 	FPS = _FPS_;
 	scr_w = _scr_w_;
 	scr_h = _scr_h_;

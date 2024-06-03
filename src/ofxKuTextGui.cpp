@@ -54,7 +54,7 @@ void ofxKuTextGui::set_tab_h(float h, float indenty, float cell_dy) {
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {	//sets variable color through all pages
-	vector<Var *> vars = findVars(var_name);
+	vector<KuUiComponent *> vars = findVars(var_name);
 	for (int i = 0; i<vars.size(); i++) {
 		vars[i]->setColor(color);
 	}
@@ -62,7 +62,7 @@ void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_visibility(const string& var_name, bool visible) {
-	vector<Var*> vars = findVars(var_name);
+	vector<KuUiComponent*> vars = findVars(var_name);
 	for (int i = 0; i < vars.size(); i++) {
 		vars[i]->visible = visible;
 	}
@@ -77,7 +77,7 @@ void ofxKuTextGui::set_pagelist_visibility(bool visible)
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_editable(const string& var_name, bool editable)
 {
-	vector<Var*> vars = findVars(var_name);
+	vector<KuUiComponent*> vars = findVars(var_name);
 	for (int i = 0; i < vars.size(); i++) {
 		vars[i]->editable = editable;
 	}
@@ -85,16 +85,16 @@ void ofxKuTextGui::set_var_editable(const string& var_name, bool editable)
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::set_var_mark(const string& var_name, bool mark) {	// marking elements, for example, used in presets
-	vector<Var*> vars = findVars(var_name);
+	vector<KuUiComponent*> vars = findVars(var_name);
 	for (int i = 0; i < vars.size(); i++) {
 		vars[i]->marked = mark;
 	}
 }
 
 //------------------------------------------------------------------------
-vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
+vector<KuUiComponent *> ofxKuTextGui::getVars() {
 	rebuildVars();
-	vector<Var *> vars;
+	vector<KuUiComponent *> vars;
 	for (StringVarMap::const_iterator iter = vars_.begin(); iter != vars_.end(); iter++) {
 		vars.push_back( iter->second );
 	}
@@ -102,14 +102,14 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::getVars() {
 }
 
 //------------------------------------------------------------------------
-vector<ofxKuTextGui::Var *> ofxKuTextGui::getPageVars() {
-    vector<ofxKuTextGui::Var *> vars;
-    ofxKuTextGui::Page *page = currentPagePointer();
+vector<KuUiComponent*> ofxKuTextGui::getPageVars() {
+    vector<KuUiComponent*> vars;
+    KuUiPage *page = currentPagePointer();
     if (page) {
         for (int i=0; i<page->tab.size(); i++) {
-            ofxKuTextGui::Tab &tab = page->tab[i];
+            KuUiTab &tab = page->tab[i];
             for (int j=0; j<tab.var.size(); j++) {
-                ofxKuTextGui::Var &var = tab.var[j];
+                KuUiComponent &var = tab.var[j];
                 vars.push_back(&var);
             }
         }
@@ -120,7 +120,7 @@ vector<ofxKuTextGui::Var *> ofxKuTextGui::getPageVars() {
 //------------------------------------------------------------------------
 string ofxKuTextGui::toString() {
     string s;
-    vector<Var *> vars = getVars();
+    vector<KuUiComponent *> vars = getVars();
     for (int i=0; i<vars.size(); i++) {
         if (i>0) s += " ";
         s += vars[i]->name() + "=" + vars[i]->value();
@@ -130,14 +130,14 @@ string ofxKuTextGui::toString() {
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::setFromString(const string &s) {
-    vector<Var *> vars = getVars();
+    vector<KuUiComponent *> vars = getVars();
     vector<string> lines = ofSplitString(s," ");
     for (int k=0; k<lines.size(); k++) {
         vector<string> item = ofSplitString(lines[k], "=", true, true);
         if (item.size() >= 2) {
             string name		= item[0];
             string value	= item[1];
-            Var *var = findVar(name);
+            KuUiComponent *var = findVar(name);
             if (var) {
                 var->setValue(value);
             }
@@ -165,13 +165,13 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
         }
     }
 	//parse lines
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 	for (int k=0; k<lines.size(); k++) {
 		vector<string> item = ofSplitString(lines[k], "=", true, true);
 		if (item.size() >= 2) {
 			string name		= item[0];
 			string value	= item[1];
-			Var *var = findVar(name);
+			KuUiComponent *var = findVar(name);
 			if (var) {
 				var->setValue(value);
 			}
@@ -183,7 +183,7 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
 //------------------------------------------------------------------------
 void ofxKuTextGui::saveToFile(const string &fileName) {
 	vector<string> file;
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 	for (int i=0; i<vars.size(); i++) {
 		if (vars[i]->need_save()) {
 			string line = vars[i]->name() + "=" + vars[i]->value();
@@ -226,7 +226,7 @@ Saving format:
 string ofxKuTextGui::saveToJSON() {
 	vector<string> file;
 	file.push_back("{");
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 	for (int i = 0; i < vars.size(); i++) {
 		if (vars[i]->need_save()) {
 			string name = vars[i]->name();
@@ -249,11 +249,11 @@ string ofxKuTextGui::saveToJSON() {
 bool ofxKuTextGui::loadFromJSON(const string &s) {
 	nlohmann::json j = nlohmann::json::parse(s);
 
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 
 	for (auto it = j.begin(); it != j.end(); ++it) {
 		//std::cout << it.key() << " : " << it.value() << "\n";
-		Var *var = findVar(it.key());
+		KuUiComponent *var = findVar(it.key());
 		if (var) {
 			var->setValue(it.value());
 		}
@@ -268,7 +268,7 @@ bool ofxKuTextGui::loadFromJSON(const string &s) {
 //Generate names and values separated by separator: x;10;y;20...
 string ofxKuTextGui::saveToLine(const string &separator) {
 	string line;
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 	for (int i = 0; i < vars.size(); i++) {
 		if (vars[i]->need_save()) {
 			string name = vars[i]->name();
@@ -283,13 +283,13 @@ string ofxKuTextGui::saveToLine(const string &separator) {
 
 //------------------------------------------------------------------------
 bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
-	vector<Var *> vars = getVars();
+	vector<KuUiComponent *> vars = getVars();
 
 	vector<string> items = ofSplitString(s, separator);
 	int n = items.size();
 	for (int i = 0; i < n; i+=2) {
 		if (i + 1 < n) {
-			Var *var = findVar(items[i]);
+			KuUiComponent *var = findVar(items[i]);
 			if (var) {
 				var->setValue(items[i + 1]);
 			}
@@ -303,7 +303,7 @@ bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
 
 //------------------------------------------------------------------------
 int ofxKuTextGui::addPage(const string &pageName) {
-	Page page;
+	KuUiPage page;
 	page.name = pageName;
 	page_.push_back(page);
 	addTab();
@@ -317,7 +317,7 @@ int ofxKuTextGui::addPage(const string &pageName) {
         addVar(PageVarName);
     }
     vector<string> titles = pageTitles();
-    vector<Var *> var = findVars(PageVarName);
+    vector<KuUiComponent *> var = findVars(PageVarName);
     for (int i=0; i<var.size(); i++) {
         var[i]->setTitles(titles);
         var[i]->vstringlist.maxV = int(titles.size())-1;
@@ -331,22 +331,22 @@ int ofxKuTextGui::addPage(const string &pageName) {
 void ofxKuTextGui::addTab(int n) {
 	for (int i = 0; i < n; i++) {
 		if (page_.empty()) addPage("");
-		Tab tab;
+		KuUiTab tab;
 		page_[page_.size() - 1].addTab();
 		needRebuild_ = true;
 	}
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addVar(Var &var) {
-	Var *var_ = page_[page_.size()-1].addVar(var);
+KuUiComponent *ofxKuTextGui::addVar(KuUiComponent &var) {
+	KuUiComponent *var_ = page_[page_.size()-1].addVar(var);
 	needRebuild_ = true;
     return var_;
 }
 
 //------------------------------------------------------------------------
 bool ofxKuTextGui::setValue(const string &name, const string &value) {
-	Var *var = findVar(name);
+	KuUiComponent *var = findVar(name);
 	if (var) {
 		var->setValue(value);
 		return true;
@@ -361,11 +361,11 @@ void ofxKuTextGui::rebuildVars() {
 		vars_.clear();
 		hash_vars_.clear();
 		for (int p = 0; p<page_.size(); p++) {
-			Page &page = page_[p];
+			KuUiPage &page = page_[p];
 			for (int t=0; t<page.tab.size(); t++) {
-				Tab &tab = page.tab[t];
+				KuUiTab &tab = page.tab[t];
 				for (int i=0; i<tab.var.size(); i++) {
-					Var &var_ = tab.var[i];
+					KuUiComponent &var_ = tab.var[i];
 					vars_[var_.name()] = &var_;
 					hash_vars_[var_.name()].push_back(&var_);
 				}
@@ -376,68 +376,68 @@ void ofxKuTextGui::rebuildVars() {
 
 //------------------------------------------------------------------------
 //adding to current page
-ofxKuTextGui::Var *ofxKuTextGui::addFloat(string name, float &var, float defV, float minV, float maxV,
+KuUiComponent *ofxKuTextGui::addFloat(string name, float &var, float defV, float minV, float maxV,
 	int numSteps1, int numSteps2) 
 {
 	if (page_.empty()) addPage("");
-	Var var_;
-	var_.index= Var::VFloat;
-	var_.vfloat = VarFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
+	KuUiComponent var_;
+	var_.index= KuUiComponent::VFloat;
+	var_.vfloat = KuUiFloat(name, var, defV, minV, maxV, numSteps1, numSteps2);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, int maxV,
+KuUiComponent *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, int maxV,
 		int step1, int step2) 
 {
 	if (page_.empty()) addPage("");
-	Var var_;
-	var_.index= Var::VInt;
-	var_.vint = VarInt(name, var, defV, minV, maxV, step1, step2);
+	KuUiComponent var_;
+	var_.index= KuUiComponent::VInt;
+	var_.vint = KuUiInt(name, var, defV, minV, maxV, step1, step2);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addButton(string name, int &var) {
+KuUiComponent *ofxKuTextGui::addButton(string name, int &var) {
 	if (page_.empty()) addPage("");
-	Var var_;
-	var_.index = Var::VInt;
-	var_.vint = VarInt(name, var, 0, 0, 1, 1, 1);
+	KuUiComponent var_;
+	var_.index = KuUiComponent::VInt;
+	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
 	var_.vint.setButton(1);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var* ofxKuTextGui::addCheckbox(string name, int& var)
+KuUiComponent* ofxKuTextGui::addCheckbox(string name, int& var)
 {
 	if (page_.empty()) addPage("");
-	Var var_;
-	var_.index = Var::VInt;
-	var_.vint = VarInt(name, var, 0, 0, 1, 1, 1);
+	KuUiComponent var_;
+	var_.index = KuUiComponent::VInt;
+	var_.vint = KuUiInt(name, var, 0, 0, 1, 1, 1);
 	var_.vint.setCheckbox();
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addString(string name, string &var, const string &defV) {
+KuUiComponent *ofxKuTextGui::addString(string name, string &var, const string &defV) {
 	if (page_.empty()) addPage("");
-	Var var_;
-	var_.index= Var::VString;
-	var_.vstring = VarString(name, var, defV);
+	KuUiComponent var_;
+	var_.index= KuUiComponent::VString;
+	var_.vstring = KuUiString(name, var, defV);
 	return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
+KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
-    Var var_;
-    var_.index= Var::VStringList;
-    var_.vstringlist = VarStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
+    KuUiComponent var_;
+    var_.index= KuUiComponent::VStringList;
+    var_.vstringlist = KuUiStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
     return addVar(var_);
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) {
+KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, int count...) {
     vector<string> title(count);
     va_list args;
     va_start(args, count);
@@ -452,8 +452,8 @@ ofxKuTextGui::Var *ofxKuTextGui::addStringList(string name, int &var, int defV, 
 void ofxKuTextGui::addDummy(string title, int n) {
 	for (int i = 0; i < n; i++) {
 		if (page_.empty()) addPage("");
-		Var var_;
-		var_.index = Var::VDummy;
+		KuUiComponent var_;
+		var_.index = KuUiComponent::VDummy;
 		var_.vstring.title = title;
 		addVar(var_);
 	}
@@ -461,8 +461,8 @@ void ofxKuTextGui::addDummy(string title, int n) {
 
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::addVar(string name) {	//adding existing var
-	Var *var = findVar(name);
+KuUiComponent *ofxKuTextGui::addVar(string name) {	//adding existing var
+	KuUiComponent *var = findVar(name);
 	if (var) {
 		addVar(*var);
 	}
@@ -494,7 +494,7 @@ void ofxKuTextGui::gotoNextPage() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::setTab(int index) {
     if (validPage()) {
-        Page &page = page_[selPage];
+        KuUiPage &page = page_[selPage];
         page.selTab = index;
         if (page.selTab >= page.tab.size()) {
             page.selTab = 0;
@@ -506,7 +506,7 @@ void ofxKuTextGui::setTab(int index) {
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoPrevTab() {
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		page.selTab--;
 		if (page.selTab < 0) {
 			page.selTab = int(page.tab.size())-1;
@@ -517,7 +517,7 @@ void ofxKuTextGui::gotoPrevTab() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoNextTab() {
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		page.selTab++;
 		if (page.selTab >= page.tab.size()) {
 			page.selTab = 0;
@@ -530,9 +530,9 @@ void ofxKuTextGui::gotoNextTab() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::setValue(int index) {
     if (validPage()){
-        Page &page = page_[selPage];
+        KuUiPage &page = page_[selPage];
         if (page.validTab()) {
-            Tab &tab = page.tab[page.selTab];
+            KuUiTab &tab = page.tab[page.selTab];
             tab.selVar = index;
             if (tab.selVar<0) tab.selVar = int(tab.var.size())-1;
         }
@@ -542,9 +542,9 @@ void ofxKuTextGui::setValue(int index) {
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoPrevValue() {
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
-			Tab &tab = page.tab[page.selTab];
+			KuUiTab &tab = page.tab[page.selTab];
 			tab.selVar--;
 			if (tab.selVar<0) tab.selVar = int(tab.var.size())-1;
 		}
@@ -554,9 +554,9 @@ void ofxKuTextGui::gotoPrevValue() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoNextValue() {
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
-			Tab &tab = page.tab[page.selTab];
+			KuUiTab &tab = page.tab[page.selTab];
 			tab.selVar++;
 			if (tab.selVar>=tab.var.size()) tab.selVar = 0;
 		}
@@ -566,9 +566,9 @@ void ofxKuTextGui::gotoNextValue() {
 //------------------------------------------------------------------------
 void ofxKuTextGui::decreaseValue(int speed, int value) {	//0-slow,1-fast
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
-			Tab &tab = page.tab[page.selTab];
+			KuUiTab &tab = page.tab[page.selTab];
 			if (tab.validVar()) {
 				bool is_string = tab.var[tab.selVar].is_string();
 				if (!is_string || (is_string && editing_strings_)) {
@@ -582,9 +582,9 @@ void ofxKuTextGui::decreaseValue(int speed, int value) {	//0-slow,1-fast
 //------------------------------------------------------------------------
 void ofxKuTextGui::increaseValue(int speed, int value) {	//0-slow,1-fast
 	if (validPage()){
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
-			Tab &tab = page.tab[page.selTab];
+			KuUiTab &tab = page.tab[page.selTab];
 			if (tab.validVar()) {
 				bool is_string = tab.var[tab.selVar].is_string();
 				if (!is_string || (is_string && editing_strings_)) {
@@ -598,9 +598,9 @@ void ofxKuTextGui::increaseValue(int speed, int value) {	//0-slow,1-fast
 //------------------------------------------------------------------------
 void ofxKuTextGui::editStringValue() {
 	if (validPage() && editing_strings_) {
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		if (page.validTab()) {
-			Tab &tab = page.tab[page.selTab];
+			KuUiTab &tab = page.tab[page.selTab];
 			if (tab.validVar()) tab.var[tab.selVar].editStringValue();
 		}
 	}
@@ -633,7 +633,7 @@ int ofxKuTextGui::pageIndex() {
 //------------------------------------------------------------------------
 int ofxKuTextGui::tabIndex() {
     if (validPage()){
-        Page &page = page_[selPage];
+        KuUiPage &page = page_[selPage];
         if (page.validTab()) {
             return page.selTab;
         }
@@ -644,9 +644,9 @@ int ofxKuTextGui::tabIndex() {
 //------------------------------------------------------------------------
 int ofxKuTextGui::varIndex() {
     if (validPage()){
-        Page &page = page_[selPage];
+        KuUiPage &page = page_[selPage];
         if (page.validTab()) {
-            Tab &tab = page.tab[page.selTab];
+            KuUiTab &tab = page.tab[page.selTab];
             if (tab.validVar()) return tab.selVar;
         }
     }
@@ -665,7 +665,7 @@ bool ofxKuTextGui::validPage() {
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Page *ofxKuTextGui::currentPagePointer() {
+KuUiPage *ofxKuTextGui::currentPagePointer() {
     if (validPage()) { return &page_[selPage]; }
     return 0;
 }
@@ -696,9 +696,9 @@ void ofxKuTextGui::get_cell_by_coords(float x, float y, int &tab, int &i) {
 //------------------------------------------------------------------------
 void ofxKuTextGui::update() {					//for buttons processing
 	for (int i = 0; i<page_.size(); i++) {
-		Page &page = page_[i];
+		KuUiPage &page = page_[i];
 		for (int j = 0; j<page.tab.size(); j++) {
-			Tab &tab = page.tab[j];
+			KuUiTab &tab = page.tab[j];
 			for (int k = 0; k<tab.var.size(); k++) {
 				tab.var[k].update_button();				//TODO optimize and check only button variables
 			}
@@ -719,11 +719,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
         float w = cellW;
         float h = cellH;
         
-		Page &page = page_[selPage];
+		KuUiPage &page = page_[selPage];
 		for (int t=0; t<page.tab.size(); t++) {
-			Tab &tab = page.tab[t];
+			KuUiTab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
-				Var &var = tab.var[i];
+				KuUiComponent &var = tab.var[i];
 
 				if (!var.visible) {
 					continue;
@@ -740,7 +740,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				float x0 = x + cellDx;
 				float y0 = y + cellDy;
                 
-				bool dummy = (var.index == Var::VDummy);
+				bool dummy = (var.index == KuUiComponent::VDummy);
 
 				if (!dummy) {
 					bool button = var.is_button();
@@ -912,12 +912,12 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected value
     string s = "";
     if (validPage()) {
-        Page &page = page_[selPage];
+        KuUiPage &page = page_[selPage];
         for (int t=0; t<page.tab.size(); t++) {
             if (t>0) s += ";";
-            Tab &tab = page.tab[t];
+            KuUiTab &tab = page.tab[t];
             for (int i=0; i<tab.var.size(); i++) {
-                Var &var = tab.var[i];
+                KuUiComponent &var = tab.var[i];
                 bool selected = (page.selTab==t && tab.selVar==i);
                 string name = var.name();
                 if ( selected ) name = ">" + name;
@@ -1012,15 +1012,15 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::findVar(const string &name) {
+KuUiComponent *ofxKuTextGui::findVar(const string &name) {
 	rebuildVars();
 	StringVarHash::iterator p = hash_vars_.find( name );
     return ( p != hash_vars_.end() )? hash_vars_[name][0] : nullptr;
 }
 
 //------------------------------------------------------------------------
-ofxKuTextGui::Var *ofxKuTextGui::findVarChecking(const string &name) {   //one var, exits if no found
-	Var *v = findVar(name);
+KuUiComponent *ofxKuTextGui::findVarChecking(const string &name) {   //one var, exits if no found
+	KuUiComponent *v = findVar(name);
 	if (!v) {	//Note - it shouldn't put checking of v to "exit_with_message" to avoid constructing strings each calling
 		exit_with_message("ofxKuTextGui error in findVarChecking, no var '" + name + "'");
 	}
@@ -1125,13 +1125,13 @@ float ofxKuTextGui::getSmoothedValue(const string name) {
 }
 
 //------------------------------------------------------------------------
-vector<ofxKuTextGui::Var *> ofxKuTextGui::findVars(const string &name) {   //all instances
+vector<KuUiComponent *> ofxKuTextGui::findVars(const string &name) {   //all instances
 	//rebuildVars();
-    vector<ofxKuTextGui::Var *> vars;
+    vector<KuUiComponent *> vars;
     for (int i=0; i<page_.size(); i++) {
-        Page &page = page_[i];
+        KuUiPage &page = page_[i];
         for (int j=0; j<page.tab.size(); j++) {
-            Tab &tab = page.tab[j];
+            KuUiTab &tab = page.tab[j];
             for (int k=0; k<tab.var.size(); k++) {
                 if (tab.var[k].name() == name) {
                     vars.push_back(&tab.var[k]);
@@ -1162,12 +1162,12 @@ void ofxKuTextGui::set_mouse_step(int step) {
 bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 	if (mouse_enabled_) {
 		if (validPage()) {
-			Page *page = currentPagePointer();		
+			KuUiPage *page = currentPagePointer();		
 			if (page) {
 				int t, i;
 				get_cell_by_coords(x, y, t, i);
 				if (t >= 0 && t < page->tab.size()) {
-					Tab &tab = page->tab[t];
+					KuUiTab &tab = page->tab[t];
 					if (i >= 0 && i < tab.var.size()) {
 						auto& var = tab.var[i];
 						if (var.is_editable()) {
