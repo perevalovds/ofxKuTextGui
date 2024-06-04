@@ -1,4 +1,4 @@
-#include "ofxKuUiComponentBase.h"
+#include "ofxKuUiComponent.h"
 
 #include "json.hpp"
 

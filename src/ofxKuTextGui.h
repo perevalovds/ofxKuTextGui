@@ -3,7 +3,7 @@
 // Textual GUI
 #include "ofMain.h"
 #include <cstdarg>
-#include "ofxKuUiComponentBase.h"
+#include "ofxKuUiComponent.h"
 
 struct ofxKuTextGui {
 	ofxKuTextGui();
