@@ -459,6 +459,9 @@ public:
 		title_ = name0;
 		ofStringReplace(title_, "_", " ");
 	}
+
+	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
+
 };
 
 //------------------------------------------------------------------------
