@@ -30,16 +30,11 @@ struct ofxKuTextGui {
 	void set_tab_w(float w, float indentx = 10, float cell_dx = -10.5);
 	void set_tab_h(float h, float indenty = 2, float cell_dy = -14.5);
 
-	ofColor dummy_color_ = ofColor(127);
-	ofColor dummy_back_ = ofColor(0, 0);
-	void set_dummy_color(const ofColor &color) { dummy_color_ = color; }
-	void set_dummy_back(const ofColor &color) { dummy_back_ = color; }
+	void set_dummy_color(const ofColor &color) { dd.dummy_color = color; }
+	void set_dummy_back(const ofColor &color) { dd.dummy_back = color; }
 
 	//using custom font - if not, using ofDrawBitmapString
 	void set_font(ofTrueTypeFont *font, float shift_x, float shift_y);
-	ofTrueTypeFont *custom_font_;
-	float font_shift_x, font_shift_y;
-	void draw_string(const string &s, float x, float y);
 
 
 	//Enable(default) or disable editing string values from keyboard
@@ -95,9 +90,6 @@ struct ofxKuTextGui {
 	string *findVarString(const string &name);
 	int *findVarButton(const string &name);
 	void setToggled(const string& name, int t);		// Call this to toggle buttons (with duplicates)
-
-	void exit_with_message(const string &message);
-
 
 	//short access to vars
 	float &float_(const string &name);
@@ -167,7 +159,8 @@ protected:
 	bool needRebuild_;
     float cellW, cellH, cellDx, cellDy;
     
-    bool drawSliderMode_;    
+	KuUiDrawData dd;
+
 	bool mouse_enabled_;    
 	bool editing_strings_;
 

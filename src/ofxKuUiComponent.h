@@ -4,6 +4,7 @@
 #include "ofMain.h"
 #include <cstdarg>
 
+void KuUiExitWithMessage(const string& message);
 
 enum class KuUiType : int {
 	VUndefined = -1,
@@ -14,8 +15,41 @@ enum class KuUiType : int {
 	VDummy = 4
 };
 
+// General draw parameters
+struct KuUiDrawData {
+	bool drawSliderMode = true;
+
+	bool enabled = true;
+	int alpha_text = 255;
+	int alpha_slider = 255;
+
+	float alpha_text_f = 0;
+
+	ofColor dummy_color = ofColor(127);
+	ofColor dummy_back = ofColor(0, 0);
+
+	ofTrueTypeFont* custom_font = nullptr;
+	float font_shift_x = 0;
+	float font_shift_y = 0;
+};
+
+// Parameters for drawing particular element
+struct KuUiDrawComponentData {
+	bool selected = false;
+
+	float w = 0;
+	float h = 0;
+
+	float x = 0;
+	float y = 0;
+	float x0 = 0;
+	float y0 = 0;
+};
+
 class KuUiComponent {
 public:
+	static void draw_string(const KuUiDrawData& dd, const string& s, float x, float y);
+
 	string name_;
 	string title_;
 
@@ -23,6 +57,8 @@ public:
 	bool visible = true;
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
+
+	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
 
 	bool is_editable() const { return visible && editable; }
 
@@ -78,6 +114,7 @@ public:
 	float getSmoothedValue();
 	//should we draw smoothed value
 	void setDrawSmoothed(bool v);
+
 };
 
 //------------------------------------------------------------------------

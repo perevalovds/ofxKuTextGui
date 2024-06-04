@@ -12,8 +12,6 @@ ofxKuTextGui::ofxKuTextGui() {
 	//set_tab_h(20, 2, -14.5);
 
     
-    drawSliderMode_ = true;
-
 	editing_strings_ = true;
 	mouse_enabled_ = true;
 
@@ -321,7 +319,7 @@ int ofxKuTextGui::addPage(const string &pageName) {
     for (int i=0; i<var.size(); i++) {
         var[i]->setTitles(titles);
 		if (var[i]->type != KuUiType::VStringList) {
-			exit_with_message("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
+			KuUiExitWithMessage("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
 		}
         ((KuUiStringList*)var[i])->maxV = int(titles.size())-1;
     }
@@ -702,203 +700,37 @@ void ofxKuTextGui::update() {					//for buttons processing
 //------------------------------------------------------------------------
 void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alpha_slider) {	//generic draw
 	if (validPage()) {
-		float alpha_text_f = float(alpha_text) / 255.0;
+		dd.enabled = enabled;
+		dd.alpha_text = alpha_text;
+		dd.alpha_text_f = float(alpha_text) / 255.0;
+		dd.alpha_slider = alpha_slider;
 
 		ofEnableAlphaBlending();
         
 		drawn_x_ = X;
 		drawn_y_ = Y;
 
-        float w = cellW;
-        float h = cellH;
+		KuUiDrawComponentData dc;
+        dc.w = cellW;
+		dc.h = cellH;
         
 		KuUiPage &page = page_[selPage];
 		for (int t=0; t<page.tab.size(); t++) {
 			KuUiTab &tab = page.tab[t];
 			for (int i=0; i<tab.var.size(); i++) {
 				KuUiComponent* var = tab.var[i];
-
 				if (!var->visible) {
 					continue;
 				}
 
-				bool selected = (/*enabled &&*/ page.selTab==t && tab.selVar==i);
-				string name = var->title();
-				//if ( selected ) name = ">" + name;
-				//else 
-				name = " " + name;
+				dc.selected = (/*enabled &&*/ page.selTab == t && tab.selVar == i);
                 
-                float x = X + draw_tabW * t;
-                float y = Y + draw_yStep * i;
-				float x0 = x + cellDx;
-				float y0 = y + cellDy;
+                dc.x = X + draw_tabW * t;
+                dc.y = Y + draw_yStep * i;
+				dc.x0 = dc.x + cellDx;
+				dc.y0 = dc.y + cellDy;
                 
-				bool dummy = (var->type == KuUiType::VDummy);
-
-				if (!dummy) {
-					bool button = var->is_button();
-					bool checkbox = var->is_checkbox();
-					bool buttonLike = button || checkbox;
-					const int button_ind = 8;
-					const float button_round = 10;	//button rounding of corners
-
-					//button, checkbox
-					if (buttonLike) {
-						// Background
-						bool toggled = var->is_toggled();
-						if (var->type != KuUiType::VInt) {
-							exit_with_message("ofxKuTextGui: it's expected to be int: " + var->title());
-						}
-						float a = ofLerp(toggled ? 0.5 : 0.3, 1, ((KuUiInt*)var)->button_alpha_);	//NOTE: Parameters for button's background
-						if (a > 0) {
-							ofSetColor(180 * a, alpha_slider);
-							ofFill();
-							ofDrawRectRounded(x0 + button_ind, y0, w - 2 * button_ind, h, button_round);
-						}
-
-						// Contour
-						if (drawSliderMode_) {
-							if (selected) {
-								int c = toggled ? 255 : 220;
-								//if (enabled) ofSetColor(c, c, c, alpha_slider);
-							//	else 
-								ofSetColor(c, c, 0, alpha_slider);
-							}
-							else {
-								int c = toggled ? 255 : 160;
-								ofSetColor(c, alpha_slider);
-							}
-							ofNoFill();
-							ofSetLineWidth(toggled ? 3 : 2);
-							ofDrawRectRounded(x0 + button_ind, y0, w - 2 * button_ind, h, button_round);
-
-							// Checkbox mark and square
-							if (checkbox) {
-								float h1 = h - 6;
-								float x1 = x0 + w - 2 * button_ind - h1 - 1;
-								float y1 = y0 + 3;
-
-								if (var->intValue()) {
-									// Mark
-									ofColor& color = var->color;
-									ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-									ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
-									ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
-								}
-
-								ofSetLineWidth(1);
-								ofDrawRectangle(x1, y1, h1, h1);
-							}
-
-							ofSetLineWidth(1);
-						}
-
-						// Text
-						ofColor& color = var->color;
-						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-						draw_string(name, x, y);		
-
-						// Mark
-						if (var->marked) {
-							const float MarkShift = 12;
-							const float MarkSize = 6;
-							float x1 = x0 + MarkShift;
-							ofFill();
-							ofDrawTriangle(x1, y0, x1, y0 + MarkSize, x1 + MarkSize, y0);
-						}
-
-					}
-					else {
-						//non-button
-
-						ofFill();
-						ofSetColor(0, alpha_slider);
-						ofDrawRectangle(x0, y0, w, h);
-
-						if (drawSliderMode_) {
-							if (selected) {
-								if (enabled) ofSetColor(200, 200, 0, alpha_slider);
-								else ofSetColor(0, 200, 200, alpha_slider);
-							}
-							else ofSetColor(128, alpha_slider);
-							ofNoFill();
-							ofDrawRectangle(x0, y0, w, h);
-						}
-
-
-						// Name and value text
-						ofColor &color = var->color;
-						ofSetColor(color.r, color.g, color.b, color.a * alpha_text_f);
-						draw_string(name + " " + var->value(), x, y);
-
-						// Mark
-						if (var->marked) {
-							const float MarkSize = 6;
-							ofFill();
-							ofDrawTriangle(x0, y0, x0, y0 + MarkSize, x0 + MarkSize, y0);
-						}
-
-						//Slider and smoothed value
-						if (drawSliderMode_) {
-							ofFill();
-							ofSetColor(255, 60.0 / 255.0*alpha_slider);
-							ofDrawRectangle(x0, y0, w*var->valueNormalized(), h);
-							if (selected) {
-								if (enabled) ofSetColor(255, 255, 0, alpha_slider);
-								else ofSetColor(0, 200, 200, alpha_slider);
-							}
-							else ofSetColor(200, alpha_slider);
-							//Slider
-							ofNoFill();
-							float val_pix = w * var->valueNormalized();
-							// ofDrawRectangle(x0, y0, val_pix, h);
-
-							ofSetLineWidth(3);
-							float bottomY = y0 + h - 0.5;
-							// Bottom line
-							ofDrawLine(x0, bottomY, x0 + val_pix, bottomY);
-							// Right line
-							ofDrawLine(x0 + val_pix, y0, x0 + val_pix, bottomY);
-
-							ofSetLineWidth(1);
-
-							//Almost Bottom line - currently only for smoothed values
-							if (var->draw_smoothed_value_) {	//comment to draw bottom line always
-								float bottom_val_pix = (var->draw_smoothed_value_) ? w * var->smoothed_value_normalized_ : val_pix;
-								ofFill();
-								const int h1 = 3; //PARAM
-								ofDrawRectangle(x0, bottomY - h1, bottom_val_pix, h1);
-							}
-						}
-					}
-                }
-				else {
-					//Dummy
-
-					//dummy's text
-					if (!var->title().empty()) {
-						//back
-						ofFill();
-						ofSetColor(dummy_back_);
-						//ofSetColor(0, alpha_slider);
-						ofDrawRectangle(x0, y0, w, h);
-
-						ofSetColor(dummy_color_);
-						draw_string(var->title(), x, y);
-					}
-
-					if (drawSliderMode_) {
-						if (selected) {
-							if (enabled) ofSetColor(150, 150, 0, alpha_slider);
-							else ofSetColor(0, 120, 120, alpha_slider);
-							//}
-							//else ofSetColor(100, alpha_slider);
-							ofNoFill();
-							ofDrawRectangle(x0, y0, w, h);
-						}
-					}
-					
-				}
+				var->draw(dd, dc);
 			}
 		}
 	}
@@ -930,20 +762,10 @@ string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected valu
 //------------------------------------------------------------------------
 //using custom font - if not, using ofDrawBitmapString
 void ofxKuTextGui::set_font(ofTrueTypeFont *font, float shift_x, float shift_y) {
-	custom_font_ = font;
-	font_shift_x = shift_x;
-	font_shift_y = shift_y;
+	dd.custom_font = font;
+	dd.font_shift_x = shift_x;
+	dd.font_shift_y = shift_y;
 
-}
-
-//------------------------------------------------------------------------
-void ofxKuTextGui::draw_string(const string &s, float x, float y) {
-	if (custom_font_) {
-		custom_font_->drawString(s, x + font_shift_x, y + font_shift_y);
-	}
-	else {
-		ofDrawBitmapString(s, x, y);
-	}
 }
 
 //------------------------------------------------------------------------
@@ -967,15 +789,15 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
                 ofFill();
                 ofSetColor(0);
                 ofDrawRectangle(x+cellDx,y+cellDy,w,h);
-                if (drawSliderMode_) {
+                if (dd.drawSliderMode) {
                     if (selected) ofSetColor(200,200,0);
                     else ofSetColor(128);
                     ofNoFill();
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
                 ofSetColor(255);
-				draw_string(name+" "+value, x, y);
-                if (drawSliderMode_) {
+				KuUiComponent::draw_string(dd, name+" "+value, x, y);
+                if (dd.drawSliderMode) {
                     ofFill();
                     ofSetColor(255,60);
                     ofDrawRectangle(x+cellDx,y+cellDy,w*valueNormalized,h);
@@ -1017,28 +839,17 @@ KuUiComponent *ofxKuTextGui::findVar(const string &name) {
 //------------------------------------------------------------------------
 KuUiComponent *ofxKuTextGui::findVarChecking(const string &name) {   //one var, exits if no found
 	KuUiComponent *v = findVar(name);
-	if (!v) {	//Note - it shouldn't put checking of v to "exit_with_message" to avoid constructing strings each calling
-		exit_with_message("ofxKuTextGui error in findVarChecking, no var '" + name + "'");
+	if (!v) {	//Note - it shouldn't put checking of v to "KuUiExitWithMessage" to avoid constructing strings each calling
+		KuUiExitWithMessage("ofxKuTextGui error in findVarChecking, no var '" + name + "'");
 	}
 	return v;
-}
-
-//------------------------------------------------------------------------
-void ofxKuTextGui::exit_with_message(const string &message) {
-	cout << "ofxKuTextGui causes exiting now," << endl;
-	cout << "    Reason: " << message << endl;
-	ofSetFullscreen(false);
-	ofSystemAlertDialog("ofxKuTextGui causes exiting now, reason:\n" + message);
-	__debugbreak();
-	ofSleepMillis(2000);
-	OF_EXIT_APP(0);
 }
 
 //------------------------------------------------------------------------
 float *ofxKuTextGui::findVarFloat(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
 	if (v->type != KuUiType::VFloat) {
-		exit_with_message("ofxKuTextGui: No float " + name);
+		KuUiExitWithMessage("ofxKuTextGui: No float " + name);
 	}
     return ((KuUiFloat*)v)->var;
 }
@@ -1047,7 +858,7 @@ float *ofxKuTextGui::findVarFloat(const string &name) {
 int *ofxKuTextGui::findVarInt(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
 	if (v->type != KuUiType::VInt) {
-		exit_with_message("ofxKuTextGui: No int " + name);
+		KuUiExitWithMessage("ofxKuTextGui: No int " + name);
 	}
 	return ((KuUiInt*)v)->var;
 }
@@ -1056,7 +867,7 @@ int *ofxKuTextGui::findVarInt(const string &name) {
 int *ofxKuTextGui::findVarStringList(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
 	if (v->type != KuUiType::VStringList) {
-		exit_with_message("ofxKuTextGui: No stringlist " + name);
+		KuUiExitWithMessage("ofxKuTextGui: No stringlist " + name);
 	}
 	return ((KuUiStringList*)v)->var;
 }
@@ -1065,7 +876,7 @@ int *ofxKuTextGui::findVarStringList(const string &name) {
 string *ofxKuTextGui::findVarString(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
 	if (v->type != KuUiType::VString) {
-		exit_with_message("ofxKuTextGui: No string " + name);
+		KuUiExitWithMessage("ofxKuTextGui: No string " + name);
 	}
 	return ((KuUiString*)v)->var;
 }
@@ -1074,7 +885,7 @@ string *ofxKuTextGui::findVarString(const string &name) {
 int *ofxKuTextGui::findVarButton(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
 	if (v->type != KuUiType::VInt || !v->is_button()) {
-		exit_with_message("ofxKuTextGui: No button " + name);
+		KuUiExitWithMessage("ofxKuTextGui: No button " + name);
 	}
 	return ((KuUiInt*)v)->var;
 }
@@ -1151,7 +962,7 @@ vector<KuUiComponent *> ofxKuTextGui::findVars(const string &name) {   //all ins
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::setDrawSliderMode(bool value) { //should we draw slider
-    drawSliderMode_ = value;
+    dd.drawSliderMode = value;
 }
 
 //------------------------------------------------------------------------
