@@ -276,6 +276,9 @@ public:
 	}
 
 	void update_button() override {
+		if (!is_button()) {
+			return;
+		}
 		// It's expected gui.update is the last line of the code,
 		// so we cleaning *var here
 		if (*var) {
