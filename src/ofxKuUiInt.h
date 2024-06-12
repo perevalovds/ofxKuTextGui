@@ -37,6 +37,8 @@ public:
 		is_button_ = 0;
 	}
 
+	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
+
 	void setValue(const string& value) override {
 		if (is_checkbox()) {
 			setValueInt((value == "1" || value == "ON") ? 1 : 0);	// Compatibility with old "OFF/ON" checkboxes

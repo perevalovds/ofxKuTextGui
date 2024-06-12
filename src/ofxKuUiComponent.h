@@ -58,7 +58,7 @@ public:
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
 
-	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
+	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {}
 
 	bool is_editable() const { return visible && editable; }
 
@@ -115,6 +115,9 @@ public:
 	//should we draw smoothed value
 	void setDrawSmoothed(bool v);
 
+protected:
+	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
+	void drawButtonLike(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
 };
 
 //------------------------------------------------------------------------

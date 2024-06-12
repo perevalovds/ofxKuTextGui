@@ -35,6 +35,10 @@ public:
 		def = defV;
 		setValueFloat(defV);
 	}
+
+	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
+
+
 	void update_steps() {
 		if (maxV != minV) {
 			step[0] = (maxV - minV) / numSteps1;

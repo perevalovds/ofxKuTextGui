@@ -25,6 +25,9 @@ public:
 		def = defV;
 		setValue(defV);
 	}
+
+	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
+
 	void setValue(const string& v) override {
 		*var = v;
 	}
