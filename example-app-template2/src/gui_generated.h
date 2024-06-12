@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-15-09-45-831
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-16-26-09-287
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"

@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-15-09-45-832
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-16-26-09-288
 
 Parameters params;
 //--------------------------------------------------------------
@@ -28,7 +28,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addDummy("");
 	gui.addButton("Start",Start);
 	gui.addCheckbox("Enabled",Enabled);
-	gui.addStringList("Model",Model,0,2,"Realsense","Azure");
+	gui.addStringList("Model",Model,0,3,"Realsense","KinectOne","Azure");
 	gui.addCheckbox("RGB",RGB);
 	gui.addString("Path",Path,"d:\text.txt");
 	gui.addInt("~hidden_value",hidden_value,0,0,10,1,10);

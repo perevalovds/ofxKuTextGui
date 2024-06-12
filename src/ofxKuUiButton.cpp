@@ -13,13 +13,17 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	bool toggled = is_toggled();
 	bool checkbox = is_checkbox();
 	// Background
-	if (!checkbox) {
-		float a = ofLerp(toggled ? 0.5 : 0.3, 1, button_alpha_);	//NOTE: Parameters for button's background
-		if (a > 0) {
-			ofSetColor(180 * a, dd.alpha_slider);
-			ofFill();
-			ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
-		}
+	float a;
+	if (checkbox) {
+		a = ofLerp(0.2f, 1, button_alpha_);	//NOTE: Parameters for checkbox's background
+	}
+	else {
+		a = ofLerp(0.3f, 1, button_alpha_);	//NOTE: Parameters for button's background
+	}
+	if (a > 0) {
+		ofSetColor(180 * a, dd.alpha_slider);
+		ofFill();
+		ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
 	}
 
 	// Contour

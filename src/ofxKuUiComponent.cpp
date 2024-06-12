@@ -83,7 +83,7 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 
 	// Background
 	ofFill();
-	ofSetColor(0, dd.alpha_slider);
+	ofSetColor(0.1f * 255, dd.alpha_slider);
 	ofDrawRectangle(sliderX, sliderY, sliderW, sliderH);
 
 	// Rectangle contour
