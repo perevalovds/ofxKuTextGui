@@ -5,6 +5,8 @@
 #include "gui_generated.h"
 
 ofTrueTypeFont gui_font;
+ofTrueTypeFont gui_font_bold;
+ofTrueTypeFont gui_font_italics;
 ofxKuTextGui gui;
 float flash_ = -1000;	//flash time
 string Title = "YourApp 1.01";
@@ -22,8 +24,11 @@ void ofApp::setup(){
     cout << "Shift+g - generate code using gui/gui-script.ini" << endl;
     cout << "-----------------------------------------------------------------" << endl;
  
-    gui_font.load("fonts/frabk.ttf", 15);
-    gui.set_font(&gui_font, 0, 0);
+    gui_font.load("fonts/verdana.ttf", 13);
+    gui_font_bold.load("fonts/verdanab.ttf", 13);
+    gui_font_italics.load("fonts/verdanai.ttf", 13);
+    
+    gui.set_fonts(&gui_font, &gui_font_bold, &gui_font_italics, 0, 0);
 
     PRM setup(gui, "settings.ini");
     gui.set_dummy_color(255);
