@@ -1,7 +1,10 @@
 #include "ofxKuUiComponent.h"
 
-#include "json.hpp"
-
+#include "ofxKuUiDummy.h"
+#include "ofxKuUiFloat.h"
+#include "ofxKuUiInt.h"
+#include "ofxKuUiString.h"
+#include "ofxKuUiStringList.h"
 
 //------------------------------------------------------------------------
 void KuUiExitWithMessage(const string& message) {
@@ -53,11 +56,6 @@ void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x
 
 //------------------------------------------------------------------------
 void KuUiComponent::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	string name = title();
-	//if ( selected ) name = ">" + name;
-	//else 
-	name = " " + name;
-
 	bool button = is_button();
 	bool checkbox = is_checkbox();
 	bool buttonLike = button || checkbox;
@@ -116,7 +114,7 @@ void KuUiComponent::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc
 
 		// Text
 		ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-		draw_string(dd, name, dc.x, dc.y);
+		draw_string(dd, " " + title(), dc.x, dc.y);
 
 		// Mark
 		if (marked) {
@@ -148,7 +146,7 @@ void KuUiComponent::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc
 
 		// Name and value text
 		ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-		draw_string(dd, name + " " + value(), dc.x, dc.y);
+		draw_string(dd, " " + title() + " " + value(), dc.x, dc.y);
 
 		// Mark
 		if (marked) {
@@ -188,32 +186,6 @@ void KuUiComponent::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc
 				const int h1 = 3; //PARAM
 				ofDrawRectangle(dc.x0, bottomY - h1, bottom_val_pix, h1);
 			}
-		}
-	}
-}
-
-//------------------------------------------------------------------------
-void KuUiDummy::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	//dummy's text
-	if (!title().empty()) {
-		//back
-		ofFill();
-		ofSetColor(dd.dummy_back);
-		//ofSetColor(0, alpha_slider);
-		ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
-
-		ofSetColor(dd.dummy_color);
-		draw_string(dd, title(), dc.x, dc.y);
-	}
-
-	if (dd.drawSliderMode) {
-		if (dc.selected) {
-			if (dd.enabled) ofSetColor(150, 150, 0, dd.alpha_slider);
-			else ofSetColor(0, 120, 120, dd.alpha_slider);
-			//}
-			//else ofSetColor(100, alpha_slider);
-			ofNoFill();
-			ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
 		}
 	}
 }

@@ -1,5 +1,11 @@
 #include "ofxKuTextGui.h"
 
+#include "ofxKuUiDummy.h"
+#include "ofxKuUiFloat.h"
+#include "ofxKuUiInt.h"
+#include "ofxKuUiString.h"
+#include "ofxKuUiStringList.h"
+
 #include "json.hpp"
 
 //------------------------------------------------------------------------
