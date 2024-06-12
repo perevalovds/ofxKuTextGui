@@ -67,8 +67,9 @@ public:
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
 
-	virtual float cellHeight() { return 1.6f; }
+	float cellHeight() { return 1.6f; }
 	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {}
+	bool mouseInside(const glm::vec2& pos);
 
 	bool is_editable() const { return visible && editable; }
 
@@ -130,6 +131,10 @@ protected:
 	KuUiFontIndex fontIndex_ = KuUiFontIndex::Normal;
 	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc, 
 		bool drawValuePosition, bool drawStringlistTriangle);
+	
+	// Setup area for mouse - after a draw
+	void setInteractiveRect(float x, float y, float w, float h);
+	ofRectangle interactiveRect_ = ofRectangle(-1, -1, -1, -1);
 };
 
 //------------------------------------------------------------------------

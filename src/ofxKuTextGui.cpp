@@ -995,13 +995,14 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 		if (validPage()) {
 			KuUiPage *page = currentPagePointer();		
 			if (page) {
-				int t, i;
-				get_cell_by_coords(x, y, t, i);
+				int t, iNotUse;
+				get_cell_by_coords(x, 0, t, iNotUse);	// get only tab 
 				if (t >= 0 && t < page->tab.size()) {
+					glm::vec2 pos(x, y);
 					KuUiTab &tab = page->tab[t];
-					if (i >= 0 && i < tab.var.size()) {
+					for (int i = 0; i < tab.var.size(); i++) {
 						auto& var = tab.var[i];
-						if (var->is_editable()) {
+						if (var->is_editable() && var->mouseInside(pos)) {
 							page->selTab = t;
 							tab.selVar = i;
 

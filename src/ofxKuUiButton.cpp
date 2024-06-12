@@ -5,7 +5,6 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	bool checkbox = is_checkbox();
 	bool toggled = is_toggled();
 
-
 	const float buttonTopPerc = 0.25f;
 	const float buttonBottomPerc = 1.8f;
 	const float buttonTextShiftPerc = 0.58f;
@@ -17,6 +16,9 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	float buttonY = dc.y0 + dc.h * buttonTopPerc;
 	const float& buttonW = dc.w;
 	float buttonH = dc.h * (buttonBottomPerc - buttonTopPerc);
+
+	// Store for mouse response
+	setInteractiveRect(buttonX, buttonY, buttonW, buttonH);
 
 	// Background
 	float a;

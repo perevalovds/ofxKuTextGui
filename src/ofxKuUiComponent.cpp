@@ -37,6 +37,16 @@ void KuUiComponent::buildTitle() {
 }
 
 //------------------------------------------------------------------------
+void KuUiComponent::setInteractiveRect(float x, float y, float w, float h) {
+	interactiveRect_ = ofRectangle(x, y, w, h);
+}
+
+//------------------------------------------------------------------------
+bool KuUiComponent::mouseInside(const glm::vec2& pos) {
+	return interactiveRect_.inside(pos);
+}
+
+//------------------------------------------------------------------------
 void KuUiComponent::setupSmoothValue() {
 	smoothed_value_normalized_ = valueNormalized();
 	smoothed_value_ = floatValue();
@@ -105,6 +115,9 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 	float sliderY = dc.y0 + dc.h * sliderTopPerc;
 	float sliderW = dc.w;
 	float sliderH = dc.h;
+
+	// Store for mouse response
+	setInteractiveRect(sliderX, sliderY, sliderW, sliderH);
 
 	float textYTitle = dc.y - dc.h * 0.1f;
 	float textYValue = textYTitle + dc.h * 0.95f;
