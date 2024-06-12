@@ -7,10 +7,11 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 
 	float textYTitle = dc.y + dc.h * 0.5f;
 	float buttonY = dc.y0 + dc.h * 0.25f;
+	float buttonW = dc.w - 2 * button_ind;
 	float buttonH = dc.h * 1.4f;
 
-	// Background
 	bool toggled = is_toggled();
+	// Background
 	if (type != KuUiType::VInt) {
 		KuUiExitWithMessage("ofxKuTextGui: it's expected to be int: " + title());
 	}
@@ -35,7 +36,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		}
 		ofNoFill();
 		ofSetLineWidth(toggled ? 3 : 2);
-		ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
+		ofDrawRectRounded(dc.x0 + button_ind, buttonY, buttonW, buttonH, button_round);
 
 		// Checkbox 'V' inside square
 		if (is_checkbox()) {
@@ -59,7 +60,12 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 
 	// Text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-	draw_string(dd, " " + title(), dc.x, textYTitle);
+	if (is_button()) {
+		draw_string_centered(dd, dc, title(), dc.x, textYTitle, buttonW);
+	}
+	if (is_checkbox()) {
+		draw_string(dd, " " + title(), dc.x, textYTitle);
+	}
 
 	// Mark
 	if (marked) {

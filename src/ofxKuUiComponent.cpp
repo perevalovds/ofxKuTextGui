@@ -23,6 +23,7 @@ void KuUiComponent::setupSmoothValue() {
 	smoothed_value_ = floatValue();
 }
 
+//------------------------------------------------------------------------
 void KuUiComponent::updateSmoothedValue(float dt, float time_whole_change) {
 	float v = valueNormalized();
 	if (time_whole_change <= 0.00001) {
@@ -37,17 +38,33 @@ void KuUiComponent::updateSmoothedValue(float dt, float time_whole_change) {
 	smoothed_value_ = normalizedToValue(smoothed_value_normalized_);
 }
 
+//------------------------------------------------------------------------
 float KuUiComponent::getSmoothedValue() {
 	return smoothed_value_;
 }
 
+//------------------------------------------------------------------------
 void KuUiComponent::setDrawSmoothed(bool v) {
 	draw_smoothed_value_ = v;
 }
 
+//------------------------------------------------------------------------
 void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x, float y) {
 	if (dd.custom_font) {
 		dd.custom_font->drawString(s, x + dd.font_shift_x, y + dd.font_shift_y);
+	}
+	else {
+		ofDrawBitmapString(s, x, y);
+	}
+}
+
+//------------------------------------------------------------------------
+void KuUiComponent::draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
+	const string& s, float x, float y, float w) {
+	if (dd.custom_font) {
+		float shiftX = (w - dd.custom_font->getStringBoundingBox(s, 0, 0).getWidth()) / 2.f
+			- 2;	// TODO parameter
+		dd.custom_font->drawString(s, x + shiftX, y + dd.font_shift_y);
 	}
 	else {
 		ofDrawBitmapString(s, x, y);

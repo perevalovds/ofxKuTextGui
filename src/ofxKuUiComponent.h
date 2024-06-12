@@ -49,6 +49,8 @@ struct KuUiDrawComponentData {
 class KuUiComponent {
 public:
 	static void draw_string(const KuUiDrawData& dd, const string& s, float x, float y);
+	static void draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
+		const string& s, float x, float y, float w);
 
 	string name_;
 	string title_;
