@@ -769,10 +769,17 @@ string ofxKuTextGui::drawToString() {  //keeps current page, tabs, selected valu
 //------------------------------------------------------------------------
 //using custom font - if not, using ofDrawBitmapString
 void ofxKuTextGui::set_font(ofTrueTypeFont *font, float shift_x, float shift_y) {
-	dd.custom_font = font;
+	set_fonts(font, font, font, shift_x, shift_y);
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_fonts(ofTrueTypeFont* font, ofTrueTypeFont* fontBold, ofTrueTypeFont* fontItalics, float shift_x, float shift_y)
+{
+	dd.fonts[int(KuUiFontIndex::Normal)] = font;
+	dd.fonts[int(KuUiFontIndex::Bold)] = fontBold;
+	dd.fonts[int(KuUiFontIndex::Italics)] = fontItalics;
 	dd.font_shift_x = shift_x;
 	dd.font_shift_y = shift_y;
-
 }
 
 //------------------------------------------------------------------------
@@ -803,7 +810,7 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
                     ofDrawRectangle(x+cellDx,y+cellDy,w,h);
                 }
                 ofSetColor(255);
-				KuUiComponent::draw_string(dd, name+" "+value, x, y);
+				KuUiComponent::draw_string(dd, name + " " + value, x, y, KuUiFontIndex::Normal);
                 if (dd.drawSliderMode) {
                     ofFill();
                     ofSetColor(255,60);

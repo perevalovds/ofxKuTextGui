@@ -75,10 +75,10 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	// Text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
 	if (checkbox) {
-		draw_string(dd, " " + title(), dc.x, textYTitle);
+		draw_string(dd, " " + title(), dc.x, textYTitle, fontIndex_);
 	}
 	else {
-		draw_string_centered(dd, dc, title(), dc.x0, textYTitle, buttonW);
+		draw_string_centered(dd, dc, title(), dc.x0, textYTitle, buttonW, fontIndex_);
 	}
 
 	// Mark

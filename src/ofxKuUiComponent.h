@@ -16,6 +16,12 @@ enum class KuUiType : int {
 	VDummy = 5
 };
 
+enum class KuUiFontIndex : int {
+	Normal = 0,
+	Bold = 1,
+	Italics = 2
+};
+
 // General draw parameters
 struct KuUiDrawData {
 	bool drawSliderMode = true;
@@ -29,7 +35,7 @@ struct KuUiDrawData {
 	ofColor dummy_color = ofColor(127);
 	ofColor dummy_back = ofColor(0, 0);
 
-	ofTrueTypeFont* custom_font = nullptr;
+	vector<ofTrueTypeFont*> fonts = { nullptr, nullptr, nullptr };
 	float font_shift_x = 0;
 	float font_shift_y = 0;
 };
@@ -49,9 +55,9 @@ struct KuUiDrawComponentData {
 
 class KuUiComponent {
 public:
-	static void draw_string(const KuUiDrawData& dd, const string& s, float x, float y);
+	static void draw_string(const KuUiDrawData& dd, const string& s, float x, float y, KuUiFontIndex fontIndex);
 	static void draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
-		const string& s, float x, float y, float w);
+		const string& s, float x, float y, float w, KuUiFontIndex fontIndex);
 
 	string name_;
 	string title_;
@@ -120,6 +126,8 @@ public:
 	void setDrawSmoothed(bool v);
 
 protected:
+	void buildTitle();
+	KuUiFontIndex fontIndex_ = KuUiFontIndex::Normal;
 	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc, 
 		bool drawValuePosition, bool drawStringlistTriangle);
 };

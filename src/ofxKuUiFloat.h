@@ -19,8 +19,7 @@ public:
 		int numSteps1_0, int numSteps2_0) {
 		type = KuUiType::VFloat;
 		name_ = name0;
-		title_ = name0;
-		ofStringReplace(title_, "_", " ");
+		buildTitle();
 
 		if (&var0) var = &var0;
 		else {

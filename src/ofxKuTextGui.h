@@ -35,6 +35,7 @@ struct ofxKuTextGui {
 
 	//using custom font - if not, using ofDrawBitmapString
 	void set_font(ofTrueTypeFont *font, float shift_x, float shift_y);
+	void set_fonts(ofTrueTypeFont* font, ofTrueTypeFont* fontBold, ofTrueTypeFont* fontItalics, float shift_x, float shift_y);
 
 
 	//Enable(default) or disable editing string values from keyboard
@@ -141,7 +142,7 @@ protected:
 	void storeState();		// for "wasModified"
 	string stateJson_;
 
-	const string PageVarName = "[page]";
+	const string PageVarName = "Page";
 
 	vector<KuUiPage> page_;
 	int selPage;	//selected page

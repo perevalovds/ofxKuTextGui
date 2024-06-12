@@ -17,8 +17,7 @@ public:
 		int step1, int step2, vector<string> titles0) {
 		type = KuUiType::VStringList;
 		name_ = name0;
-		title_ = name0;
-		ofStringReplace(title_, "_", " ");
+		buildTitle();
 
 		if (&var0) var = &var0;
 		else {

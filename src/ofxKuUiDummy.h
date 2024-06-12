@@ -8,8 +8,7 @@ public:
 	KuUiDummy(const string& name0) {
 		type = KuUiType::VDummy;
 		name_ = name0;
-		title_ = name0;
-		ofStringReplace(title_, "_", " ");
+		buildTitle();
 	}
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;

@@ -16,8 +16,7 @@ public:
 		int step1, int step2) {
 		type = KuUiType::VInt;
 		name_ = name0;
-		title_ = name0;
-		ofStringReplace(title_, "_", " ");
+		buildTitle();
 
 		if (&var0) var = &var0;
 		else {

@@ -18,6 +18,25 @@ void KuUiExitWithMessage(const string& message) {
 }
 
 //------------------------------------------------------------------------
+void KuUiComponent::buildTitle() {
+	title_ = name_;
+	ofStringReplace(title_, "_", " ");
+
+	// Change font
+	/*
+	if (!title_.empty()) {
+		if (title_[0] == '*') {	// Const value
+			fontIndex_ = KuUiFontIndex::Bold;
+			title_ = title_.substr(1);
+		}
+		else if (title_[0] == '-') {	// Output value
+			fontIndex_ = KuUiFontIndex::Italics;
+			title_ = title_.substr(1);
+		}
+	}*/
+}
+
+//------------------------------------------------------------------------
 void KuUiComponent::setupSmoothValue() {
 	smoothed_value_normalized_ = valueNormalized();
 	smoothed_value_ = floatValue();
@@ -49,9 +68,12 @@ void KuUiComponent::setDrawSmoothed(bool v) {
 }
 
 //------------------------------------------------------------------------
-void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x, float y) {
-	if (dd.custom_font) {
-		dd.custom_font->drawString(s, x + dd.font_shift_x, y + dd.font_shift_y);
+void KuUiComponent::draw_string(
+	const KuUiDrawData& dd, const string& s, float x, float y,
+	KuUiFontIndex fontIndex) {
+	ofTrueTypeFont* font = dd.fonts[int(fontIndex)];
+	if (font) {
+		font->drawString(s, x + dd.font_shift_x, y + dd.font_shift_y);
 	}
 	else {
 		ofDrawBitmapString(s, x, y);
@@ -59,11 +81,14 @@ void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x
 }
 
 //------------------------------------------------------------------------
-void KuUiComponent::draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
-	const string& s, float x, float y, float w) {
-	if (dd.custom_font) {
-		float shiftX = (w - dd.custom_font->getStringBoundingBox(s, 0, 0).getWidth()) / 2.f;
-		dd.custom_font->drawString(s, x + shiftX, y + dd.font_shift_y);
+void KuUiComponent::draw_string_centered(
+	const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
+	const string& s, float x, float y, float w,
+	KuUiFontIndex fontIndex) {
+	ofTrueTypeFont* font = dd.fonts[int(fontIndex)];
+	if (font) {
+		float shiftX = (w - font->getStringBoundingBox(s, 0, 0).getWidth()) / 2.f;
+		font->drawString(s, x + shiftX, y + dd.font_shift_y);
 	}
 	else {
 		ofDrawBitmapString(s, x, y);
@@ -102,8 +127,8 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 
 	// Title and value text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-	draw_string(dd, title(), dc.x, textYTitle);
-	draw_string(dd, value(), dc.x, textYValue);
+	draw_string(dd, title(), dc.x, textYTitle, fontIndex_);
+	draw_string(dd, value(), dc.x, textYValue, KuUiFontIndex::Normal);
 
 	// Mark
 	if (marked) {

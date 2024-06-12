@@ -13,8 +13,7 @@ public:
 	KuUiString(const string& name0, string& var0, const string& defV) {
 		type = KuUiType::VString;
 		name_ = name0;
-		title_ = name0;
-		ofStringReplace(title_, "_", " ");
+		buildTitle();
 
 		if (&var0) var = &var0;
 		else {

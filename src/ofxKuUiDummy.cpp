@@ -9,10 +9,9 @@ void KuUiDummy::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		ofSetColor(dd.dummy_back.r, dd.dummy_back.g, dd.dummy_back.b, dd.dummy_back.a * dd.alpha_slider);
 		ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
 
-
 		const float dummyTextY = dc.y + dc.h * 0.4f;
 		ofSetColor(dd.dummy_color);
-		draw_string_centered(dd, dc, title(), dc.x0, dummyTextY, dc.w);
+		draw_string_centered(dd, dc, title(), dc.x0, dummyTextY, dc.w, fontIndex_);
 	}
 
 	// Selection
