@@ -12,7 +12,8 @@ enum class KuUiType : int {
 	VInt = 1,
 	VStringList = 2,
 	VString = 3,
-	VDummy = 4
+	VButton = 4,
+	VDummy = 5
 };
 
 // General draw parameters
