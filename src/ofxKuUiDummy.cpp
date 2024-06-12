@@ -2,18 +2,20 @@
 
 //------------------------------------------------------------------------
 void KuUiDummy::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	//dummy's text
+	// Text
 	if (!title().empty()) {
 		//back
 		ofFill();
-		ofSetColor(dd.dummy_back);
-		//ofSetColor(0, alpha_slider);
+		ofSetColor(dd.dummy_back.r, dd.dummy_back.g, dd.dummy_back.b, dd.dummy_back.a * dd.alpha_slider);
 		ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
 
+
+		const float dummyTextY = dc.y + dc.h * 0.4f;
 		ofSetColor(dd.dummy_color);
-		draw_string(dd, title(), dc.x, dc.y);
+		draw_string_centered(dd, dc, title(), dc.x0, dummyTextY, dc.w);
 	}
 
+	// Selection
 	if (dd.drawSliderMode) {
 		if (dc.selected) {
 			if (dd.enabled) ofSetColor(150, 150, 0, dd.alpha_slider);

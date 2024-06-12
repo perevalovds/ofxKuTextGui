@@ -62,8 +62,7 @@ void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x
 void KuUiComponent::draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
 	const string& s, float x, float y, float w) {
 	if (dd.custom_font) {
-		float shiftX = (w - dd.custom_font->getStringBoundingBox(s, 0, 0).getWidth()) / 2.f
-			- 2;	// TODO parameter
+		float shiftX = (w - dd.custom_font->getStringBoundingBox(s, 0, 0).getWidth()) / 2.f;
 		dd.custom_font->drawString(s, x + shiftX, y + dd.font_shift_y);
 	}
 	else {
@@ -75,12 +74,15 @@ void KuUiComponent::draw_string_centered(const KuUiDrawData& dd, const KuUiDrawC
 void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
 	bool drawValuePosition, bool drawStringlistTriangle)
 {
-	float textYTitle = dc.y - dc.h * 0.1f;
-	float textYValue = textYTitle  + dc.h * 0.95f;
+	const float sliderTopPerc = 0.8f;
+
 	float sliderX = dc.x0;
-	float sliderY = dc.y0 + dc.h * 0.8f;
+	float sliderY = dc.y0 + dc.h * sliderTopPerc;
 	float sliderW = dc.w;
 	float sliderH = dc.h;
+
+	float textYTitle = dc.y - dc.h * 0.1f;
+	float textYValue = textYTitle + dc.h * 0.95f;
 
 	// Background
 	ofFill();

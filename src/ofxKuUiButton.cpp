@@ -5,14 +5,18 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	bool checkbox = is_checkbox();
 	bool toggled = is_toggled();
 
-	const int button_ind = (checkbox) ? 0 : 8;
-	const float button_round = 10;	//button rounding of corners
 
-	float textYTitle = dc.y + dc.h * 0.5f;
-	float buttonX = dc.x0 + button_ind;
-	float buttonY = dc.y0 + dc.h * 0.25f;
-	float buttonW = dc.w - 2 * button_ind;
-	float buttonH = dc.h * 1.4f;
+	const float buttonTopPerc = 0.25f;
+	const float buttonBottomPerc = 1.8f;
+	const float buttonTextShiftPerc = 0.58f;
+
+	const float buttonRoundPixels = 10;	//button rounding of corners
+
+	float textYTitle = dc.y + dc.h * buttonTextShiftPerc;
+	const float& buttonX = dc.x0;
+	float buttonY = dc.y0 + dc.h * buttonTopPerc;
+	const float& buttonW = dc.w;
+	float buttonH = dc.h * (buttonBottomPerc - buttonTopPerc);
 
 	// Background
 	float a;
@@ -25,7 +29,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	if (a > 0) {
 		ofSetColor(180 * a, dd.alpha_slider);
 		ofFill();
-		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, button_round);
+		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, buttonRoundPixels);
 	}
 
 	// Contour
@@ -44,7 +48,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		if (!checkbox) {
 			ofSetLineWidth(toggled ? 3 : 2);
 		}
-		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, button_round);
+		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, buttonRoundPixels);
 		if (!checkbox) {
 			ofSetLineWidth(1);
 		}
@@ -74,7 +78,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		draw_string(dd, " " + title(), dc.x, textYTitle);
 	}
 	else {
-		draw_string_centered(dd, dc, title(), dc.x, textYTitle, buttonW);
+		draw_string_centered(dd, dc, title(), dc.x0, textYTitle, buttonW);
 	}
 
 	// Mark

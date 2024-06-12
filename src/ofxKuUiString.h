@@ -26,7 +26,6 @@ public:
 		setValue(defV);
 	}
 
-	float cellHeight() override { return 1.6f; }
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
 	void setValue(const string& v) override {

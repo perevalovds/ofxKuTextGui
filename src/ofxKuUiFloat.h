@@ -36,9 +36,7 @@ public:
 		setValueFloat(defV);
 	}
 
-	float cellHeight() override { return 1.6f; }
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
-
 
 	void update_steps() {
 		if (maxV != minV) {

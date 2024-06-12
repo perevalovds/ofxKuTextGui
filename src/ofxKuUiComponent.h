@@ -41,9 +41,9 @@ struct KuUiDrawComponentData {
 	float w = 0;
 	float h = 0;
 
-	float x = 0;
+	float x = 0;	// fot font draw
 	float y = 0;
-	float x0 = 0;
+	float x0 = 0;	// for rectangle draw
 	float y0 = 0;
 };
 
