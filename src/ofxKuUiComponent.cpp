@@ -56,12 +56,19 @@ void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x
 
 //------------------------------------------------------------------------
 void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	//non-button
 
+	float textY = dc.y - dc.h * 0.2f;
+	float sliderX = dc.x0;
+	float sliderY = dc.y0 + dc.h * 0.7f;
+	float sliderW = dc.w;
+	float sliderH = dc.h;
+
+	// Background
 	ofFill();
 	ofSetColor(0, dd.alpha_slider);
-	ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
+	ofDrawRectangle(sliderX, sliderY, sliderW, sliderH);
 
+	// Rectangle contour
 	if (dd.drawSliderMode) {
 		if (dc.selected) {
 			if (dd.enabled) ofSetColor(200, 200, 0, dd.alpha_slider);
@@ -69,26 +76,26 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 		}
 		else ofSetColor(128, dd.alpha_slider);
 		ofNoFill();
-		ofDrawRectangle(dc.x0, dc.y0, dc.w, dc.h);
+		ofDrawRectangle(sliderX, sliderY, sliderW, sliderH);
 	}
 
 
 	// Name and value text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-	draw_string(dd, " " + title() + " " + value(), dc.x, dc.y);
+	draw_string(dd, title() + " " + value(), dc.x, textY);
 
 	// Mark
 	if (marked) {
 		const float MarkSize = 6;
 		ofFill();
-		ofDrawTriangle(dc.x0, dc.y0, dc.x0, dc.y0 + MarkSize, dc.x0 + MarkSize, dc.y0);
+		ofDrawTriangle(sliderX, sliderY, sliderX, sliderY + MarkSize, sliderX + MarkSize, sliderY);
 	}
 
 	//Slider and smoothed value
 	if (dd.drawSliderMode) {
 		ofFill();
 		ofSetColor(255, 60.0 / 255.0 * dd.alpha_slider);
-		ofDrawRectangle(dc.x0, dc.y0, dc.w * valueNormalized(), dc.h);
+		ofDrawRectangle(sliderX, sliderY, sliderW * valueNormalized(), dc.h);
 		if (dc.selected) {
 			if (dd.enabled) ofSetColor(255, 255, 0, dd.alpha_slider);
 			else ofSetColor(0, 200, 200, dd.alpha_slider);
@@ -100,20 +107,20 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 		// ofDrawRectangle(x0, y0, val_pix, h);
 
 		ofSetLineWidth(3);
-		float bottomY = dc.y0 + dc.h - 0.5;
+		float bottomY = sliderY + sliderH - 0.5;
 		// Bottom line
-		ofDrawLine(dc.x0, bottomY, dc.x0 + val_pix, bottomY);
+		ofDrawLine(sliderX, bottomY, sliderX + val_pix, bottomY);
 		// Right line
-		ofDrawLine(dc.x0 + val_pix, dc.y0, dc.x0 + val_pix, bottomY);
+		ofDrawLine(sliderX + val_pix, sliderY, sliderX + val_pix, bottomY);
 
 		ofSetLineWidth(1);
 
 		//Almost Bottom line - currently only for smoothed values
 		if (draw_smoothed_value_) {	//comment to draw bottom line always
-			float bottom_val_pix = (draw_smoothed_value_) ? dc.w * smoothed_value_normalized_ : val_pix;
+			float bottom_val_pix = (draw_smoothed_value_) ? sliderW * smoothed_value_normalized_ : val_pix;
 			ofFill();
 			const int h1 = 3; //PARAM
-			ofDrawRectangle(dc.x0, bottomY - h1, bottom_val_pix, h1);
+			ofDrawRectangle(sliderX, bottomY - h1, bottom_val_pix, h1);
 		}
 	}
 }

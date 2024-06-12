@@ -723,6 +723,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 		KuUiPage &page = page_[selPage];
 		for (int t=0; t<page.tab.size(); t++) {
 			KuUiTab &tab = page.tab[t];
+			dc.x = X + draw_tabW * t;
+			dc.y = Y;
 			for (int i=0; i<tab.var.size(); i++) {
 				KuUiComponent* var = tab.var[i];
 				if (!var->visible) {
@@ -731,12 +733,11 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 
 				dc.selected = (/*enabled &&*/ page.selTab == t && tab.selVar == i);
                 
-                dc.x = X + draw_tabW * t;
-                dc.y = Y + draw_yStep * i;
 				dc.x0 = dc.x + cellDx;
 				dc.y0 = dc.y + cellDy;
                 
 				var->draw(dd, dc);
+				dc.y += draw_yStep * var->cellHeight();	// Allocate variable space for a components
 			}
 		}
 	}
