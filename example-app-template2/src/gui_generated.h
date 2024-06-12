@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-03-18-39-49-246
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-14-09-55-672
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -7,15 +7,15 @@
 struct Parameters {
 	int FPS;
 	int _FPS_;	// const
-	int scr_w;
-	int _scr_w_;	// const
-	int scr_h;
-	int _scr_h_;	// const
-	int Enabled;
+	int Screen_W;
+	int _Screen_W_;	// const
+	int Screen_H;
+	int _Screen_H_;	// const
 	float fps_;	// output
 	int Start;
-	int Enable;
-	string path;
+	int Enabled;
+	int Model;
+	string Path;
 	int hidden_value;	// hidden
     Parameters();
     void setup(ofxKuTextGui &gui, string fileName);

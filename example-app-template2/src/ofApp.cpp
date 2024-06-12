@@ -28,10 +28,13 @@ void ofApp::setup(){
     PRM setup(gui, "settings.ini");
     gui.set_dummy_color(255);
 
+    gui.set_var_mark("Enabled", true);
+    gui.set_var_mark("Model", true);
+
     //--------------------------------------
    //Screen
     ofSetWindowTitle(Title);
-    ofSetWindowShape(PRM scr_w, PRM scr_h);
+    ofSetWindowShape(PRM Screen_W, PRM Screen_H);
     ofSetFrameRate(PRM FPS);
 }
 

@@ -57,9 +57,10 @@ void KuUiComponent::draw_string(const KuUiDrawData& dd, const string& s, float x
 //------------------------------------------------------------------------
 void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 
-	float textY = dc.y - dc.h * 0.2f;
+	float textYTitle = dc.y - dc.h * 0.1f;
+	float textYValue = textYTitle  + dc.h * 0.95f;
 	float sliderX = dc.x0;
-	float sliderY = dc.y0 + dc.h * 0.7f;
+	float sliderY = dc.y0 + dc.h * 0.8f;
 	float sliderW = dc.w;
 	float sliderH = dc.h;
 
@@ -80,9 +81,10 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 	}
 
 
-	// Name and value text
+	// Title and value text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-	draw_string(dd, title() + " " + value(), dc.x, textY);
+	draw_string(dd, title(), dc.x, textYTitle);
+	draw_string(dd, value(), dc.x, textYValue);
 
 	// Mark
 	if (marked) {
