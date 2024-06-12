@@ -58,7 +58,7 @@ public:
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
 
-	virtual float cellHeight() { return 1.f; }
+	virtual float cellHeight() { return 1.6f; }
 	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {}
 
 	bool is_editable() const { return visible && editable; }

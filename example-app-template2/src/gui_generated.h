@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-14-09-55-672
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-12-15-09-45-831
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -15,6 +15,7 @@ struct Parameters {
 	int Start;
 	int Enabled;
 	int Model;
+	int RGB;
 	string Path;
 	int hidden_value;	// hidden
     Parameters();

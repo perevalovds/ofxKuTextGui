@@ -5,6 +5,10 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	const int button_ind = 8;
 	const float button_round = 10;	//button rounding of corners
 
+	float textYTitle = dc.y + dc.h * 0.5f;
+	float buttonY = dc.y0 + dc.h * 0.25f;
+	float buttonH = dc.h * 1.4f;
+
 	// Background
 	bool toggled = is_toggled();
 	if (type != KuUiType::VInt) {
@@ -14,7 +18,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	if (a > 0) {
 		ofSetColor(180 * a, dd.alpha_slider);
 		ofFill();
-		ofDrawRectRounded(dc.x0 + button_ind, dc.y0, dc.w - 2 * button_ind, dc.h, button_round);
+		ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
 	}
 
 	// Contour
@@ -31,16 +35,16 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		}
 		ofNoFill();
 		ofSetLineWidth(toggled ? 3 : 2);
-		ofDrawRectRounded(dc.x0 + button_ind, dc.y0, dc.w - 2 * button_ind, dc.h, button_round);
+		ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
 
-		// Checkbox mark and square
+		// Checkbox 'V' inside square
 		if (is_checkbox()) {
 			float h1 = dc.h - 6;
 			float x1 = dc.x0 + dc.w - 2 * button_ind - h1 - 1;
 			float y1 = dc.y0 + 3;
 
 			if (intValue()) {
-				// Mark
+				// 'V'
 				ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
 				ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
 				ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
@@ -55,7 +59,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 
 	// Text
 	ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-	draw_string(dd, " " + title(), dc.x, dc.y);
+	draw_string(dd, " " + title(), dc.x, textYTitle);
 
 	// Mark
 	if (marked) {
