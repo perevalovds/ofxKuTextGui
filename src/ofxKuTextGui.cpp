@@ -1,5 +1,6 @@
 #include "ofxKuTextGui.h"
 
+#include "ofxKuUiButton.h"
 #include "ofxKuUiDummy.h"
 #include "ofxKuUiFloat.h"
 #include "ofxKuUiInt.h"
@@ -405,8 +406,7 @@ KuUiComponent *ofxKuTextGui::addInt(string name, int &var, int defV, int minV, i
 //------------------------------------------------------------------------
 KuUiComponent *ofxKuTextGui::addButton(string name, int &var) {
 	if (page_.empty()) addPage("");
-	KuUiInt* var_ = new KuUiInt(name, var, 0, 0, 1, 1, 1);
-	var_->setButton(1);
+	KuUiButton* var_ = new KuUiButton(name, var, 0);
 	return addVar(var_);
 }
 
@@ -415,7 +415,7 @@ KuUiComponent* ofxKuTextGui::addCheckbox(string name, int& var)
 {
 	if (page_.empty()) addPage("");
 	// TODO need "delete"
-	KuUiInt* var_ = new KuUiInt(name, var, 0, 0, 1, 1, 1);
+	KuUiButton* var_ = new KuUiButton(name, var, 0);
 	var_->setCheckbox();
 	return addVar(var_);
 }

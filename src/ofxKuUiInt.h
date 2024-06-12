@@ -10,10 +10,6 @@ public:
 	int minV = 0, maxV = 0;
 	int step[2] = { 0 };
 	int def = 0;
-	int is_button_ = 0;		//buttons are just int values, but rendered specially
-	int is_checkbox_ = 0;	// checkbox is int, which reads 0,1,OFF,ON for older compatibility
-	//Note: Buttons fires only once after pressing, and then set to 0 automatically
-	int is_toggled_ = 0;	// setToggled() should be used to manually toggle the button. This not saves to INI
 
 	KuUiInt() {}
 	KuUiInt(string name0, int& var0, int defV, int minV0, int maxV0,
@@ -34,7 +30,6 @@ public:
 		maxV = maxV0;
 		setValueInt(defV);
 		def = defV;
-		is_button_ = 0;
 	}
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
@@ -79,53 +74,5 @@ public:
 		return (minV != maxV) ? ofMap(*var, minV, maxV, 0, 1) : minV;
 	}
 
-	// button ---------------------
-	int button_fired_ = 0;
-	float button_time_ = 0;
-	float button_alpha_ = 0;
-
-	bool is_button() {
-		return is_button_;
-	}
-	bool is_checkbox() {
-		return is_checkbox_;
-	}
-	bool is_toggled() override {
-		return is_toggled_;
-	}
-
-	void setButton(int b) {	//make int rendered as button
-		is_button_ = b;
-	}
-
-	void setCheckbox() {	// make int as checkbox
-		is_checkbox_ = true;
-	}
-
-	void setToggled(int t) override {
-		is_toggled_ = t;
-	}
-
-	void update_button() override {
-		if (!is_button()) {
-			return;
-		}
-		// It's expected gui.update is the last line of the code,
-		// so we cleaning *var here
-		if (*var) {
-			button_fired_ = 1;
-			button_time_ = ofGetElapsedTimef();
-			button_alpha_ = 1;
-			*var = 0; // reset *var
-		}
-		if (button_fired_) {
-			float delta = ofGetElapsedTimef() - button_time_;
-			const float ButtonFireTimeSec = 0.5f;
-			button_alpha_ = ofMap(delta, 0, ButtonFireTimeSec, 1, 0, true);
-			if (delta >= ButtonFireTimeSec) {
-				button_fired_ = 0;
-			}
-		}
-	}
 };
 
