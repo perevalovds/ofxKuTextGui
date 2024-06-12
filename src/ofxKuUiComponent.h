@@ -120,7 +120,8 @@ public:
 	void setDrawSmoothed(bool v);
 
 protected:
-	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
+	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc, 
+		bool drawValuePosition, bool drawStringlistTriangle);
 };
 
 //------------------------------------------------------------------------

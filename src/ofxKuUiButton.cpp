@@ -2,16 +2,18 @@
 
 //------------------------------------------------------------------------
 void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	const int button_ind = 8;
+	bool checkbox = is_checkbox();
+	bool toggled = is_toggled();
+
+	const int button_ind = (checkbox) ? 0 : 8;
 	const float button_round = 10;	//button rounding of corners
 
 	float textYTitle = dc.y + dc.h * 0.5f;
+	float buttonX = dc.x0 + button_ind;
 	float buttonY = dc.y0 + dc.h * 0.25f;
 	float buttonW = dc.w - 2 * button_ind;
 	float buttonH = dc.h * 1.4f;
 
-	bool toggled = is_toggled();
-	bool checkbox = is_checkbox();
 	// Background
 	float a;
 	if (checkbox) {
@@ -23,7 +25,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	if (a > 0) {
 		ofSetColor(180 * a, dd.alpha_slider);
 		ofFill();
-		ofDrawRectRounded(dc.x0 + button_ind, buttonY, dc.w - 2 * button_ind, buttonH, button_round);
+		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, button_round);
 	}
 
 	// Contour
@@ -42,7 +44,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		if (!checkbox) {
 			ofSetLineWidth(toggled ? 3 : 2);
 		}
-		ofDrawRectRounded(dc.x0 + button_ind, buttonY, buttonW, buttonH, button_round);
+		ofDrawRectRounded(buttonX, buttonY, buttonW, buttonH, button_round);
 		if (!checkbox) {
 			ofSetLineWidth(1);
 		}
@@ -50,7 +52,7 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 		// Checkbox 'V' inside square
 		if (checkbox) {
 			float h1 = dc.h - 6;
-			float x1 = dc.x0 + dc.w - 2 * button_ind - h1 - 1;
+			float x1 = buttonX + buttonW - h1 - 10;
 			float y1 = buttonY + (buttonH - dc.h) / 2 + 3;
 
 			if (intValue()) {
@@ -77,10 +79,10 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 
 	// Mark
 	if (marked) {
-		const float MarkShiftX = 11;
+		const float MarkShiftX = 3;
 		const float MarkShiftY = 1;
 		const float MarkSize = 6;
-		float x1 = dc.x0 + MarkShiftX;
+		float x1 = buttonX + MarkShiftX;
 		float y1 = buttonY + MarkShiftY;
 		ofFill();
 		ofDrawTriangle(x1, y1, x1, y1 + MarkSize, x1 + MarkSize, y1);
