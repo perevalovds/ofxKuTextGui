@@ -55,9 +55,12 @@ struct KuUiDrawComponentData {
 
 class KuUiComponent {
 public:
+	// Static members
 	static void draw_string(const KuUiDrawData& dd, const string& s, float x, float y, KuUiFontIndex fontIndex);
 	static void draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
 		const string& s, float x, float y, float w, KuUiFontIndex fontIndex);
+	static glm::vec2 mousePosition();	// used for stringlist hover
+public:
 
 	string name_;
 	string title_;

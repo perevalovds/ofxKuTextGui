@@ -95,5 +95,12 @@ public:
 	}
 private:
 	bool is_modal_ = false;
-
+	bool modal_inited_ = false;
+	ofRectangle modalRect_;	// rectangle for modal selection
+	ofRectangle modalRectBackground_;
+	float modalItemHeight_ = 1.f;
+	float modalTextYValue_ = 0;
+	void setupModal(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
+	void stopModal();
+	int getModalSelectedIndex(const glm::vec2& mousePos);
 };

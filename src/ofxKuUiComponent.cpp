@@ -106,6 +106,11 @@ void KuUiComponent::draw_string_centered(
 }
 
 //------------------------------------------------------------------------
+glm::vec2 KuUiComponent::mousePosition() {
+	return glm::vec2(ofGetMouseX(), ofGetMouseY());
+}
+
+//------------------------------------------------------------------------
 void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
 	bool drawValuePosition, bool drawStringlistTriangle)
 {
