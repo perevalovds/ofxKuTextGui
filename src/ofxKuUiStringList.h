@@ -35,6 +35,13 @@ public:
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
+	// Can return true if need to be in model mode, and do preparations - for stringlist
+	bool start_modal_on_click() override;
+	bool is_modal() override;
+	void modalKeyPressed(int key) override;
+	void modalMousePressed(int x, int y, int button) override;
+
+
 	void setValue(const string& v) override {
 		setValueString(v);
 	}
@@ -86,5 +93,7 @@ public:
 	void setTitles(vector<string>& titles) {
 		this->titles = titles;
 	}
+private:
+	bool is_modal_ = false;
 
 };

@@ -176,5 +176,10 @@ protected:
 	int mouse_step_;
 	void mouse_reset();
 
+	// Modal mode for stringlist
+	KuUiComponent* modalComponent_ = nullptr;
+	void startModalMode(KuUiComponent* var);
+	void stopModalMode();
+
 };
 

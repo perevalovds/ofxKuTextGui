@@ -84,6 +84,13 @@ public:
 	virtual bool is_button() { return false; }
 	virtual bool is_checkbox() { return false; }
 	virtual bool is_toggled() { return false; }
+	// Can return true if need to be in model mode, and do preparations - for stringlist
+	virtual bool start_modal_on_click() { return false; }
+	virtual bool is_modal() { return false; }
+	virtual void modalKeyPressed(int key) {}
+	virtual void modalMousePressed(int x, int y, int button) {}
+
+
 
 	ofColor color;
 	void setColor(const ofColor& color0) {

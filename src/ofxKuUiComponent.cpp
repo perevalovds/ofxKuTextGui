@@ -116,11 +116,11 @@ void KuUiComponent::drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentDa
 	float sliderW = dc.w;
 	float sliderH = dc.h;
 
-	// Store for mouse response
-	setInteractiveRect(sliderX, sliderY, sliderW, sliderH);
-
 	float textYTitle = dc.y - dc.h * 0.1f;
 	float textYValue = textYTitle + dc.h * 0.95f;
+
+	// Store for mouse response
+	setInteractiveRect(sliderX, sliderY, sliderW, sliderH);
 
 	// Background
 	ofFill();

@@ -827,6 +827,13 @@ void ofxKuTextGui::drawFromString(const string &s, float X, float Y) {
 
 //------------------------------------------------------------------------
 bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
+	if (modalComponent_) {
+		modalComponent_->modalKeyPressed(key);
+		if (!modalComponent_->is_modal()) {
+			stopModalMode();
+		}
+		return true;
+	}
     if (key == '1')             { gotoPrevPage(); return true; }
     if (key == '2')             { gotoNextPage(); return true; }
 	if (key == '!')				{ setPage(0); return true; }
@@ -992,6 +999,14 @@ void ofxKuTextGui::set_mouse_step(int step) {
 //------------------------------------------------------------------------
 bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 	if (mouse_enabled_) {
+		if (modalComponent_) {
+			modalComponent_->modalMousePressed(x, y, button);
+			if (!modalComponent_->is_modal()) {
+				stopModalMode();
+			}
+			return true;
+		}
+
 		if (validPage()) {
 			KuUiPage *page = currentPagePointer();		
 			if (page) {
@@ -1013,6 +1028,10 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 							else if (tab.validVar() && var->is_checkbox())
 							{
 								var->setValueInt(1 - var->intValue());
+							}
+							else if (tab.validVar() && var->start_modal_on_click()) {
+								startModalMode(var);
+								return true;
 							}
 							else {
 								mouse_dragging_ = true;
@@ -1056,6 +1075,16 @@ void ofxKuTextGui::mouseReleased()
 //------------------------------------------------------------------------
 void ofxKuTextGui::mouse_reset() {
 	mouse_dragging_ = false;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::startModalMode(KuUiComponent* var) {
+	modalComponent_ = var;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::stopModalMode() {
+	modalComponent_ = nullptr;
 }
 
 //------------------------------------------------------------------------
