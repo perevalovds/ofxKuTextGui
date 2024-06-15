@@ -4,48 +4,43 @@
 void KuUiStringList::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	drawSlider(dd, dc, false, true);
 
+	// Modal
+	if (is_modal_) {
 
-	const float sliderTopPerc = 0.8f;
+		const float sliderTopPerc = 0.8f;
 
-	float sliderX = dc.x0;
-	float sliderY = dc.y0 + dc.h * sliderTopPerc;
-	float sliderW = dc.w;
-	float sliderH = dc.h;
+		float sliderX = dc.x0;
+		float sliderY = dc.y0 + dc.h * sliderTopPerc;
+		float sliderW = dc.w;
+		float sliderH = dc.h;
 
-	float textYTitle = dc.y - dc.h * 0.1f;
-	float textYValue = textYTitle + dc.h * 0.95f;
+		// Store for mouse response
+		//setInteractiveRect(sliderX, sliderY, sliderW, sliderH);
 
-	// Store for mouse response
-	//setInteractiveRect(sliderX, sliderY, sliderW, sliderH);
+		int n = titles.size();
+		const float indY = 0.2f;
+		float Y = sliderY + sliderH + indY * sliderH;
+		float H = n * sliderH;
+		float border = dc.h * 0.5;
 
-	int n = titles.size();
-	const float indY = 0.2f;
-	float Y = sliderY + sliderH + indY * sliderH;
+		float textYTitle = dc.y - dc.h * 0.1f + sliderH + indY * sliderH;
+		float textYValue = textYTitle + dc.h * 0.95f;
 
-	// Background
-	ofFill();
-	ofSetColor(0.1f * 255, dd.alpha_slider);
-	ofDrawRectangle(sliderX, Y, sliderW, n * sliderH);
+		// Background
+		ofFill();
+		ofSetColor(0.1f * 255, dd.alpha_slider);
+		ofDrawRectangle(sliderX - border, Y, sliderW + 2 * border, H + border);
+		ofNoFill();
+		ofSetColor(255, dd.alpha_slider);
+		ofDrawRectangle(sliderX, Y, sliderW, H);
 
 
-/*	for (int i = 0; i < titles.size(); i++) {
-
-		// Rectangle contour
-		if (dd.drawSliderMode) {
-			if (dc.selected) {
-				if (dd.enabled) ofSetColor(200, 200, 0, dd.alpha_slider);
-				else ofSetColor(0, 200, 200, dd.alpha_slider);
-			}
-			else ofSetColor(128, dd.alpha_slider);
-			ofNoFill();
-			ofDrawRectangle(sliderX, sliderY, sliderW, sliderH);
+		// Values text
+		ofSetColor(255, dd.alpha_slider);
+		for (int i = 0; i < titles.size(); i++) {
+			draw_string(dd, titles[i], dc.x, textYValue + i * sliderH, KuUiFontIndex::Normal);
 		}
-
-		// Title and value text
-		ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-		draw_string(dd, title(), dc.x, textYTitle, fontIndex_);
-		draw_string(dd, value(), dc.x, textYValue, KuUiFontIndex::Normal);
-	}*/
+	}
 	
 }
 

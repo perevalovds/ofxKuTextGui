@@ -717,7 +717,8 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 		drawn_y_ = Y;
 
 		KuUiDrawComponentData dc;
-        dc.w = cellW;
+		KuUiDrawComponentData modalDc;
+		dc.w = cellW;
 		dc.h = cellH;
         
 		KuUiPage &page = page_[selPage];
@@ -730,16 +731,27 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				if (!var->visible) {
 					continue;
 				}
-
 				dc.selected = (/*enabled &&*/ page.selTab == t && tab.selVar == i);
                 
 				dc.x0 = dc.x + cellDx;
 				dc.y0 = dc.y + cellDy;
-                
-				var->draw(dd, dc);
+
+				// Modal component will be drawn after all
+				if (var == modalComponent_) {
+					modalDc = dc;
+				}
+				else {
+					var->draw(dd, dc);
+				}
 				dc.y += draw_yStep * var->cellHeight();	// Allocate variable space for a components
 			}
 		}
+
+		// Draw modal component
+		if (modalComponent_) {
+			modalComponent_->draw(dd, modalDc);
+		}
+
 	}
 }
 
