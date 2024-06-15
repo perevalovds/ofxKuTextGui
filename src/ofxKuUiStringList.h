@@ -35,6 +35,9 @@ public:
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
+	int* intVarPtr() override { return var; }
+	int intDef() override { return def; }
+
 	// Can return true if need to be in model mode, and do preparations - for stringlist
 	bool start_modal_on_click() override;
 	bool is_modal() override;

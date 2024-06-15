@@ -103,8 +103,16 @@ public:
 	virtual void update_button() {}
 
 	void setTitle(const string& title) { title_ = title; }
-
 	virtual void setToggled(int t) {}
+
+	virtual float* floatVarPtr() { return nullptr; }
+	virtual int* intVarPtr() { return nullptr; }
+	virtual string* stringVarPtr() { return nullptr; }
+	virtual float floatDef() { return 0.f; }
+	virtual int intDef() { return 0; }
+	virtual const string& stringDef() { return ""; }
+
+
 	virtual void setValueInt(int v) {}
 	virtual void setValueFloat(float v) {}
 	virtual void setValue(const string& v) {}

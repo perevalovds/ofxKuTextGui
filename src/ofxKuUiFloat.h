@@ -37,6 +37,9 @@ public:
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
+	float* floatVarPtr() override { return var; }
+	float floatDef() override { return def; }
+
 	void update_steps() {
 		if (maxV != minV) {
 			step[0] = (maxV - minV) / numSteps1;

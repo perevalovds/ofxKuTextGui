@@ -27,6 +27,9 @@ public:
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
+	string* stringVarPtr() override { return var; }
+	const string& stringDef() override { return def; }
+
 	void setValue(const string& v) override {
 		*var = v;
 	}

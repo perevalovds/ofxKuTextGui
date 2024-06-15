@@ -30,6 +30,9 @@ public:
 
 	void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) override;
 
+	int* intVarPtr() override { return var; }
+	int intDef() override { return def; }
+
 	void setValue(const string& value) override {
 		if (is_checkbox()) {
 			setValueInt((value == "1" || value == "ON") ? 1 : 0);	// Compatibility with old "OFF/ON" checkboxes
