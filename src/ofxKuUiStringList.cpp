@@ -80,7 +80,7 @@ void KuUiStringList::setupModal(const KuUiDrawData& dd, const KuUiDrawComponentD
 		modalTextYValue_ = dc.y - dc.h * 0.1f + sliderH + indY * sliderH + dc.h * 0.95f;
 
 		modalRect_ = ofRectangle(sliderX, Y, sliderW, H);
-		modalRectBackground_ = ofRectangle(sliderX - border, Y, sliderW + 2 * border, H + border);
+		modalRectBackground_ = ofRectangle(sliderX, Y, sliderW, H + border);
 		modalItemHeight_ = sliderH;
 	}
 }

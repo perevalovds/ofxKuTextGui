@@ -31,7 +31,7 @@ struct ofxKuTextGui {
 	void set_tab_h(float h, float indenty = 2, float cell_dy = -14.5);
 
 	void set_dummy_color(const ofColor &color) { dd.dummy_color = color; }
-	void set_dummy_back(const ofColor &color) { dd.dummy_back = color; }
+	void set_background_color(const ofColor &color) { dd.background_color = color; }
 
 	//using custom font - if not, using ofDrawBitmapString
 	void set_font(ofTrueTypeFont *font, float shift_x, float shift_y);

@@ -726,7 +726,25 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 			KuUiTab &tab = page.tab[t];
 			dc.x = X + draw_tabW * t;
 			dc.y = Y;
-			for (int i=0; i<tab.var.size(); i++) {
+
+			{
+				// Background for the whole tab
+				// Find number of visible components
+				int n = 0;
+				for (int i = 0; i < tab.var.size(); i++) {
+					KuUiComponent* var = tab.var[i];
+					if (var->visible) {
+						n++;
+					}
+				}
+				ofSetColor(dd.background_color);
+				ofFill();
+				float borderX = (draw_tabW - cellW) / 2;
+				ofDrawRectangle(dc.x + cellDx - borderX, dc.y + cellDy - dc.h * 0.1f, dc.w + 2 * borderX, n * (draw_yStep * KuUiComponent::cellHeight()));
+			}
+
+			// Tab
+			for (int i = 0; i < tab.var.size(); i++) {
 				KuUiComponent* var = tab.var[i];
 				if (!var->visible) {
 					continue;
@@ -743,7 +761,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 				else {
 					var->draw(dd, dc);
 				}
-				dc.y += draw_yStep * var->cellHeight();	// Allocate variable space for a components
+				dc.y += draw_yStep * KuUiComponent::cellHeight();	// Allocate variable space for a components
 			}
 		}
 

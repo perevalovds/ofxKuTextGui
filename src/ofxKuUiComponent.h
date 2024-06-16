@@ -32,8 +32,8 @@ struct KuUiDrawData {
 
 	float alpha_text_f = 0;
 
+	ofColor background_color = ofColor(0, 100);
 	ofColor dummy_color = ofColor(127);
-	ofColor dummy_back = ofColor(0, 0);
 
 	vector<ofTrueTypeFont*> fonts = { nullptr, nullptr, nullptr };
 	float font_shift_x = 0;
@@ -60,6 +60,8 @@ public:
 	static void draw_string_centered(const KuUiDrawData& dd, const KuUiDrawComponentData& dc,
 		const string& s, float x, float y, float w, KuUiFontIndex fontIndex);
 	static glm::vec2 mousePosition();	// used for stringlist hover
+
+	static float cellHeight() { return 1.6f; }
 public:
 
 	string name_;
@@ -70,7 +72,6 @@ public:
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
 
-	float cellHeight() { return 1.6f; }
 	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {}
 	bool mouseInside(const glm::vec2& pos);
 
