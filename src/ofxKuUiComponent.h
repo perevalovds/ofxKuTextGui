@@ -32,7 +32,7 @@ struct KuUiDrawData {
 
 	float alpha_text_f = 0;
 
-	ofColor background_color = ofColor(0, 100);
+	ofColor background_color = ofColor(0, 200);
 	ofColor dummy_color = ofColor(127);
 
 	vector<ofTrueTypeFont*> fonts = { nullptr, nullptr, nullptr };
