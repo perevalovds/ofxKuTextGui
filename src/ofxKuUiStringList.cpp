@@ -2,7 +2,6 @@
 
 //------------------------------------------------------------------------
 void KuUiStringList::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
-	drawSlider(dd, dc, false, true);
 
 	// Modal
 	if (is_modal_) {
@@ -12,7 +11,13 @@ void KuUiStringList::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& d
 		ofFill();
 		ofSetColor(0.1f * 255, dd.alpha_slider);
 		ofDrawRectangle(modalRectBackground_);
+	}
 
+
+	drawSlider(dd, dc, false, true);
+
+	// Modal
+	if (is_modal_) {
 		// Current item
 		{
 			ofFill();
@@ -34,12 +39,10 @@ void KuUiStringList::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& d
 			draw_string(dd, titles[i], dc.x, modalTextYValue_ + i * modalItemHeight_, KuUiFontIndex::Normal);
 		}
 
-
 		// Final contour rect
 		ofNoFill();
 		ofSetColor(255, dd.alpha_slider);
 		ofDrawRectangle(modalRect_);
-
 	}
 }
 

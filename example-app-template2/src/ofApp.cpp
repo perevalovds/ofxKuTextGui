@@ -28,7 +28,8 @@ void ofApp::setup(){
     gui_font_bold.load("fonts/verdanab.ttf", 13);
     gui_font_italics.load("fonts/verdanai.ttf", 13);
     
-    gui.set_fonts(&gui_font, &gui_font_bold, &gui_font_italics, 0, 0);
+    // Comment to use system font
+    // gui.set_fonts(&gui_font, &gui_font_bold, &gui_font_italics, 0, 0);
 
     PRM setup(gui, "settings.ini");
     gui.set_dummy_color(255);
@@ -78,7 +79,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofBackground(0);
+    ofBackground(60,100,60);
     float time = ofGetElapsedTimef();
     float W = ofGetWidth();
     float H = ofGetHeight();

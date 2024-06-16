@@ -101,7 +101,8 @@ void KuUiComponent::draw_string_centered(
 		font->drawString(s, x + shiftX, y + dd.font_shift_y);
 	}
 	else {
-		ofDrawBitmapString(s, x, y);
+		float shiftX = (w - s.length() * 8) / 2.f;	// As I see, system font char width is 8 pixels
+		ofDrawBitmapString(s, x + shiftX, y);
 	}
 }
 
