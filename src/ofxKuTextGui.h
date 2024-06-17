@@ -145,7 +145,7 @@ protected:
 	const string PageVarName = "Page";
 
 	vector<KuUiPage> page_;
-	int selPage;	//selected page
+	int selPage = 0;	//selected page
     vector<string> pageTitles();
 
 	typedef map<string, KuUiComponent *> StringVarMap;

@@ -168,12 +168,18 @@ struct KuUiTab {
 
 struct KuUiPage {
 	string name;
+	string title;
 	vector<KuUiTab> tab;
 	int selTab;
 
 	KuUiPage() {
 		selTab = 0;
 	}
+	void setup(const string& name0) {
+		name = name0;
+		buildTitle();
+	}
+
 	void addTab() {
 		tab.push_back(KuUiTab());
 	}
@@ -184,4 +190,11 @@ struct KuUiPage {
 		return vars[vars.size() - 1];
 	}
 	bool validTab() { return selTab >= 0 && selTab < tab.size(); }
+
+private:
+	void buildTitle() {
+		title = name;
+		ofStringReplace(title, "_", " ");
+	}
+
 };

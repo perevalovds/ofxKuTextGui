@@ -309,7 +309,7 @@ bool ofxKuTextGui::loadFromLine(const string &s, const string &separator) {
 //------------------------------------------------------------------------
 int ofxKuTextGui::addPage(const string &pageName) {
 	KuUiPage page;
-	page.name = pageName;
+	page.setup(pageName);
 	page_.push_back(page);
 	addTab();
 	needRebuild_ = true;
@@ -672,7 +672,7 @@ vector<string> ofxKuTextGui::pageTitles() {
     int n = page_.size();
     vector<string> titles(n);
     for (int i=0; i<n; i++) {
-        titles[i] = page_[i].name;
+        titles[i] = page_[i].title;
     }
     return titles;
 }
