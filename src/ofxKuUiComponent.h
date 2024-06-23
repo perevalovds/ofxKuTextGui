@@ -4,6 +4,8 @@
 #include "ofMain.h"
 #include <cstdarg>
 
+using namespace std;
+
 void KuUiExitWithMessage(const string& message);
 
 enum class KuUiType : int {

@@ -12,7 +12,7 @@ void KuUiExitWithMessage(const string& message) {
 	cout << "    Reason: " << message << endl;
 	ofSetFullscreen(false);
 	ofSystemAlertDialog("ofxKuTextGui causes exiting now, reason:\n" + message);
-	__debugbreak();
+	//__debugbreak();
 	ofSleepMillis(2000);
 	OF_EXIT_APP(0);
 }

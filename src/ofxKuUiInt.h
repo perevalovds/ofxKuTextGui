@@ -2,7 +2,6 @@
 
 #include "ofxKuUiComponent.h"
 
-
 class KuUiInt: public KuUiComponent {
 public:
 	shared_ptr<int> autovar;
