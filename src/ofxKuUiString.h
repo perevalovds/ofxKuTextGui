@@ -51,5 +51,11 @@ public:
 	bool is_string() override {
 		return true;
 	}
+
+	// Mouse click
+	bool acceptMouseClick() override { return true; }
+	void mouseClick(int x, int y, int button) override {
+		editStringValue();
+	}
 };
 

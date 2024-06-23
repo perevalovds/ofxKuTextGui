@@ -1052,12 +1052,8 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 							tab.selVar = i;
 
 							//check button
-							if (tab.validVar() && var->is_button()) {
-								var->setValue("1");
-							}
-							else if (tab.validVar() && var->is_checkbox())
-							{
-								var->setValueInt(1 - var->intValue());
+							if (tab.validVar() && var->acceptMouseClick()) {
+								var->mouseClick(x, y, button);
 							}
 							else if (tab.validVar() && var->start_modal_on_click()) {
 								startModalMode(var);

@@ -72,6 +72,18 @@ public:
 		return *var;
 	}
 
+	// Mouse click
+	bool acceptMouseClick() override { return true; }
+	void mouseClick(int x, int y, int button) override {
+		if (is_button()) {
+			setValue("1");
+		}
+		if (is_checkbox())
+		{
+			setValueInt(1 - intValue());
+		}
+	}
+
 	// button ---------------------
 	int button_fired_ = 0;
 	float button_time_ = 0;
