@@ -18,6 +18,42 @@ enum class KuUiType : int {
 	VDummy = 5
 };
 
+
+// KuUiVisibilityConditionStr is a string-valued version of KuUiVisibilityCondition,
+// used for intermediate generation
+struct KuUiVisibilityConditionStr {
+	string valueName;
+	vector<string> values;
+
+	// Serialize to C++ string:
+	// { {valueName, {value1, value2, ...}}, {valueName, {value1, value2,...}} }
+	// "" if empty
+	static string KuUiVisibilityConditionStr::toStr(const vector<KuUiVisibilityConditionStr>& conds) {
+		if (conds.empty()) {
+			return "";
+		}
+		stringstream ss;
+		ss << "{ ";
+		for (int i = 0; i < conds.size(); i++) {
+			if (i > 0) {
+				ss << ", ";
+			}
+			ss << "{\"" << conds[i].valueName
+				<< "\", {\"" << ofJoinString(conds[i].values, "\",\"") << "\"}}";
+		}
+		ss << " }";
+		return ss.str();
+	}
+};
+
+// Single item of component's visibility
+struct KuUiVisibilityCondition {
+	int* valuePtr = nullptr;
+	vector<int> values;
+	KuUiVisibilityConditionStr str;	// Stringed version is used for debugging purposes
+};
+
+
 enum class KuUiFontIndex : int {
 	Normal = 0,
 	Bold = 1,
@@ -70,14 +106,18 @@ public:
 	string title_;
 
 	KuUiType type = KuUiType::VUndefined;
-	bool visible = true;
+	bool isVisible() const;	// Can be time consuming. Is computed from 'visible_' and 'visibilityConditions_'
+	void setVisibility(bool v);
+	void setVisibilityConditions(const vector<KuUiVisibilityCondition>& conds);
+
 	bool editable = true;	// Can user edit it
 	bool marked = false;	// Special mark, for example, to show the variable controlled from presets
+
 
 	virtual void draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {}
 	bool mouseInside(const glm::vec2& pos);
 
-	bool is_editable() const { return visible && editable; }
+	bool is_editable() const { return isVisible() && editable; }
 
 	//Note: dummy's title stored in vstring.title !!!!
 	//So, when we will optimize Vars - check this
@@ -154,6 +194,9 @@ public:
 	void setDrawSmoothed(bool v);
 
 protected:
+	bool visible_ = true;	
+	vector<KuUiVisibilityCondition> visibilityConditions_;
+
 	void buildTitle();
 	KuUiFontIndex fontIndex_ = KuUiFontIndex::Normal;
 	void drawSlider(const KuUiDrawData& dd, const KuUiDrawComponentData& dc, 

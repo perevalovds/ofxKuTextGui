@@ -124,6 +124,9 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 	vector<string> ColorLines;	//setting colors
 	string current_color;	//if not empty - the set to this color
     
+	// Stack of conditions
+	vector<KuUiVisibilityConditionStr> visibilityConditions;
+
     for (int i=0; i<lines.size(); i++) {
         string line = lines[i];
         ofStringReplace(line, "\t", " ");
@@ -141,6 +144,28 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
         Pair range_pair(range_s, ":");
         Pair step_pair(step_s, ",");
         Name name_code(name_pair.a);
+
+		// Conditional visibility
+		if (type_s == "IF") {
+			if (name_s.empty()) {
+				KuUiExitWithMessage("Bad IF, no argument, but must have arguments i.e. Value==1,2");
+			}
+			auto list = ofSplitString(name_s, "==");
+			if (list.size() != 2) {
+				KuUiExitWithMessage("Bad " + line + ", expected arguments i.e.Value==1,2");
+			}
+			KuUiVisibilityConditionStr cond;
+			cond.valueName = list[0];
+			cond.values = ofSplitString(list[1], ",");
+			visibilityConditions.push_back(cond);
+		}
+
+		if (type_s == "ENDIF") {
+			if (visibilityConditions.empty()) {
+				KuUiExitWithMessage("Bad ENDIF");
+			}
+			visibilityConditions.pop_back();
+		}
 
         if (name_code.is_const) {
 			if (make_cpp) put("\t" + name_code.const_name + " = " + name_code.code_name + ";", ApplyConstChanges);
@@ -325,6 +350,16 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 					gui->set_var_visibility(name_code.screen_name, false);
 				}
 			}
+			if (!visibilityConditions.empty()) {
+				if (make_cpp) {
+					put("\tgui.set_var_visibility_conditions(\"" + name_code.screen_name + "\","
+						+ KuUiVisibilityConditionStr::toStr(visibilityConditions) + ");", ColorLines);
+				}
+				if (make_gui) {
+					// TODO
+				}
+			}
+
 			if (!name_code.editable) {
 				if (make_cpp) {
 					put("\tgui.set_var_editable(\"" + name_code.screen_name + "\", false);", ColorLines);
@@ -336,6 +371,11 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		}
     }
     
+	// Check that stack is empty
+	if (!visibilityConditions.empty()) {
+		KuUiExitWithMessage("Number of IFs is greater than number of ENDIFs");
+	}
+
 	//Save files
 	if (make_cpp) {
 		//.H file

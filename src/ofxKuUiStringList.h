@@ -52,17 +52,20 @@ public:
 		if (*var >= 0 && *var <= int(titles.size()) - 1) return titles[*var];
 		return "";
 	}
-	void setValueString(const string& s) {
-		//if (!s.empty()) {
-			//if (s[0]>='0' && s[0]<='9') {  //TODO it's so easy check for is-number
-			//    setValue(ofToInt(s));
-			//    return;
-			//}
+
+	// -1 if s can't be converted into index
+	int stringToIndex(const string& s) {
 		for (int i = 0; i < titles.size(); i++) {
-			if (titles[i] == s) {
-				setValueInt(i);
-				return;
+			if (titles[i] == s) {	// Can be optimized using unordered_map
+				return i;
 			}
+		}
+		return -1;
+	}
+	void setValueString(const string& s) {
+		int i = stringToIndex(s);
+		if (i >= 0) {
+			setValueInt(i);
 		}
 	}
 	void setValueInt(int v) override {

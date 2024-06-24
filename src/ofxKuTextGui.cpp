@@ -69,7 +69,46 @@ void ofxKuTextGui::set_var_color(const string &var_name, const ofColor &color) {
 void ofxKuTextGui::set_var_visibility(const string& var_name, bool visible) {
 	vector<KuUiComponent*> vars = findVars(var_name);
 	for (int i = 0; i < vars.size(); i++) {
-		vars[i]->visible = visible;
+		vars[i]->setVisibility(visible);
+	}
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::set_var_visibility_conditions(const string& var_name, const vector<KuUiVisibilityConditionStr>& condsStr) {
+	// Convert string conditions to optimized conditions
+	int n = condsStr.size();
+	vector<KuUiVisibilityCondition> conds(n);
+	for (int i = 0; i < n; i++) {
+		auto& condStr = condsStr[i];
+		auto& cond = conds[i];
+
+		cond.str = condStr;	// For debugging
+
+		KuUiComponent* var = findVarChecking(condStr.valueName);
+		int* iptr = var->intVarPtr();
+		if (iptr == nullptr) {
+			KuUiExitWithMessage("Only int-valued vars are allowed for visibility condition, but var " + condStr.valueName + " is not");
+		}
+		cond.valuePtr = iptr;
+		for (auto& valueStr: condStr.values) {
+			if (var->type == KuUiType::VStringList) {
+				int index = ((KuUiStringList*)var)->stringToIndex(valueStr);
+				if (index == -1) {
+					KuUiExitWithMessage("Can't convert to index " + valueStr 
+						+ " for variable " + condStr.valueName );
+				}
+				cond.values.push_back(index);
+			}
+			else {
+				cond.values.push_back(ofToInt(valueStr));
+			}
+		}
+	}
+
+	// Set to vars
+	vector<KuUiComponent*> vars = findVars(var_name);	
+	for (auto& var: vars) {
+		var->setVisibilityConditions(conds);
 	}
 }
 
@@ -727,13 +766,15 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 			dc.x = X + draw_tabW * t;
 			dc.y = Y;
 
+			vector<bool> visible(tab.var.size());	// "isVisible" can be time consuming, so caching
 			{
 				// Background for the whole tab
 				// Find number of visible components
 				int n = 0;
 				for (int i = 0; i < tab.var.size(); i++) {
 					KuUiComponent* var = tab.var[i];
-					if (var->visible) {
+					visible[i] = var->isVisible();
+					if (visible[i]) {
 						n++;
 					}
 				}
@@ -746,7 +787,7 @@ void ofxKuTextGui::draw(float X, float Y, bool enabled, int alpha_text, int alph
 			// Tab
 			for (int i = 0; i < tab.var.size(); i++) {
 				KuUiComponent* var = tab.var[i];
-				if (!var->visible) {
+				if (!visible[i]) {
 					continue;
 				}
 				dc.selected = (/*enabled &&*/ page.selTab == t && tab.selVar == i);
@@ -908,10 +949,11 @@ float *ofxKuTextGui::findVarFloat(const string &name) {
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarInt(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
-	if (v->type != KuUiType::VInt) {
+	int* iptr = v->intVarPtr();
+	if (iptr == nullptr) {
 		KuUiExitWithMessage("ofxKuTextGui: No int " + name);
 	}
-	return ((KuUiInt*)v)->var;
+	return iptr;
 }
 
 //------------------------------------------------------------------------
@@ -920,7 +962,7 @@ int *ofxKuTextGui::findVarStringList(const string &name) {
 	if (v->type != KuUiType::VStringList) {
 		KuUiExitWithMessage("ofxKuTextGui: No stringlist " + name);
 	}
-	return ((KuUiStringList*)v)->var;
+	return v->intVarPtr();
 }
 
 //------------------------------------------------------------------------
@@ -935,10 +977,10 @@ string *ofxKuTextGui::findVarString(const string &name) {
 //------------------------------------------------------------------------
 int *ofxKuTextGui::findVarButton(const string &name) {
 	KuUiComponent* v = findVarChecking(name);
-	if (v->type != KuUiType::VInt || !v->is_button()) {
+	if (v->type != KuUiType::VButton) {
 		KuUiExitWithMessage("ofxKuTextGui: No button " + name);
 	}
-	return ((KuUiInt*)v)->var;
+	return v->intVarPtr();
 }
 
 //------------------------------------------------------------------------

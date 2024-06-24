@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-16-12-43-49-190
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-24-22-55-06-693
 
 Parameters params;
 //--------------------------------------------------------------
@@ -14,6 +14,9 @@ Parameters::Parameters() {
 	RGB=0;
 	Path="d:\text.txt";
 	hidden_value=0;
+	option1=0;
+	Enable_AB=0;
+	Enable_C=0;
 }
 
 //--------------------------------------------------------------
@@ -32,12 +35,18 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addCheckbox("RGB",RGB);
 	gui.addString("Path",Path,"d:\text.txt");
 	gui.addInt("~hidden_value",hidden_value,0,0,10,1,10);
+	gui.addPage("CONDITIONS");
+	gui.addStringList("option1",option1,0,3,"UseA","UseB","UseC");
+	gui.addCheckbox("Enable_AB",Enable_AB);
+	gui.addCheckbox("Enable_C",Enable_C);
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*Screen_W", ofColor(255,140,255));
 	gui.set_var_color("*Screen_H", ofColor(255,140,255));
 	gui.set_var_editable("-fps", false);
 	gui.set_var_visibility("~hidden_value", false);
 	gui.set_var_editable("~hidden_value", false);
+	gui.set_var_visibility_conditions("Enable_AB",{ {"option1", {"UseA","UseB"}} });
+	gui.set_var_visibility_conditions("Enable_C",{ {"option1", {"UseC"}} });
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);

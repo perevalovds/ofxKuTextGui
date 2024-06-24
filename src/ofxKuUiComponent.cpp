@@ -18,6 +18,27 @@ void KuUiExitWithMessage(const string& message) {
 }
 
 //------------------------------------------------------------------------
+void KuUiComponent::setVisibility(bool v) {
+	visible_ = v;
+}
+
+//------------------------------------------------------------------------
+bool KuUiComponent::isVisible() const {
+	if (!visible_) return false;
+	for (auto& cond : visibilityConditions_) {
+		if (!ofContains(cond.values, *cond.valuePtr)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+//------------------------------------------------------------------------
+void KuUiComponent::setVisibilityConditions(const vector<KuUiVisibilityCondition>& conds) {
+	visibilityConditions_ = conds;
+}
+
+//------------------------------------------------------------------------
 void KuUiComponent::buildTitle() {
 	title_ = name_;
 	ofStringReplace(title_, "_", " ");

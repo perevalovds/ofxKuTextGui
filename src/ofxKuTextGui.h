@@ -63,6 +63,8 @@ struct ofxKuTextGui {
     void setDrawSliderMode(bool value); //should we draw slider
 	void set_var_color(const string &var_name, const ofColor &color);	//sets variable color through all pages
 	void set_var_visibility(const string& var_name, bool visible);
+	void set_var_visibility_conditions(const string& var_name, const vector<KuUiVisibilityConditionStr>& condsStr);
+
 	void set_var_editable(const string& var_name, bool editable);
 	void set_var_mark(const string& var_name, bool mark);	// marking elements, for example, used in presets
 	void set_pagelist_visibility(bool visible);	// allows to hide pages list
@@ -79,8 +81,6 @@ struct ofxKuTextGui {
 	KuUiComponent *addButton(string name, int &var);
 	KuUiComponent* addCheckbox(string name, int& var);
 	void addDummy(string title = "", int n=1);
-    
-
     
 	KuUiComponent *addVar(string name);	//adding existing var
     KuUiComponent *findVar(const string &name);   //one var
