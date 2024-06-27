@@ -47,6 +47,30 @@ To use it, prepare GUI script, see gui-script.ini,
  dummy Stringlist:
  stringlist list=a [a,b,c]
 
+PAGE Conditions
+# Conditional UI
+# "IF" may contain integers (int, checkbox) and stringlist
+# "IF"s can be nested
+stringlist option1=UseA [UseA,UseB,UseC]
+IF option1==UseA,UseB
+checkbox Enable_AB=0
+ENDIF
+IF option1==UseC
+checkbox Enable_C=0
+ENDIF
+
+PAGE Templates
+
+TEMPLATE ITEM X Y
+dummy {X}{Y}
+int Pos{X}{Y}=0 1:10 1,10
+ENDTEMPLATE
+
+ITEM 1 1
+ITEM 1 2
+ITEM 2 1
+ITEM 2 1
+
  ------
 
 
@@ -84,6 +108,8 @@ struct ofxKuTextGuiGen {
 
 
 protected:
+    static void processTemplates(const vector<string>& lines0, vector<string>& lines);
+
 	//common function which generates both CPP and dynamic GUI
 	static void generate_common(bool make_cpp, bool make_gui,
 		vector<string> &lines,

@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-24-22-55-06-693
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-27-20-45-55-687
 
 Parameters params;
 //--------------------------------------------------------------
@@ -17,11 +17,15 @@ Parameters::Parameters() {
 	option1=0;
 	Enable_AB=0;
 	Enable_C=0;
+	Pos11=0;
+	Pos12=0;
+	Pos21=0;
+	Pos22=0;
 }
 
 //--------------------------------------------------------------
 void Parameters::setup(ofxKuTextGui &gui, string fileName) {
-	gui.addPage("SETTINGS");
+	gui.addPage("Settings");
 	gui.addDummy("SCREEN");
 	gui.addInt("*FPS",_FPS_,30,1,100,1,10);
 	gui.addInt("*Screen_W",_Screen_W_,1024,1,2000,1,10);
@@ -35,10 +39,19 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addCheckbox("RGB",RGB);
 	gui.addString("Path",Path,"d:\text.txt");
 	gui.addInt("~hidden_value",hidden_value,0,0,10,1,10);
-	gui.addPage("CONDITIONS");
+	gui.addPage("Conditions");
 	gui.addStringList("option1",option1,0,3,"UseA","UseB","UseC");
 	gui.addCheckbox("Enable_AB",Enable_AB);
 	gui.addCheckbox("Enable_C",Enable_C);
+	gui.addPage("Templates");
+	gui.addDummy("11");
+	gui.addInt("Pos11",Pos11,0,1,10,1,10);
+	gui.addDummy("12");
+	gui.addInt("Pos12",Pos12,0,1,10,1,10);
+	gui.addDummy("21");
+	gui.addInt("Pos21",Pos21,0,1,10,1,10);
+	gui.addDummy("22");
+	gui.addInt("Pos22",Pos22,0,1,10,1,10);
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*Screen_W", ofColor(255,140,255));
 	gui.set_var_color("*Screen_H", ofColor(255,140,255));

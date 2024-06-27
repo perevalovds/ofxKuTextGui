@@ -95,7 +95,7 @@ A GUI script file looks as the following:
 
 `RESET_COLOR`
 
-`# Conditional UI`
+### Conditional UI
 
 `# "IF" may contain integers (int, checkbox) and stringlist`
 
@@ -115,7 +115,26 @@ A GUI script file looks as the following:
 
 `ENDIF`
 
+### Templates
 
+`TEMPLATE ITEM X Y`
+
+`dummy {X}{Y}`
+
+`int Pos{X}{Y}=0 1:10 1,10`
+
+`ENDTEMPLATE`
+
+`ITEM 1 1`
+
+`ITEM 1 2`
+
+`ITEM 2 1`
+
+`ITEM 2 1`
+
+
+# GUI C++ Usage
 Then in the code you just link it to gui object:
 
 `PRM setup_gui(gui);`

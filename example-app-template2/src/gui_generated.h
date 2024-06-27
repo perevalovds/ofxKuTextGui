@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-24-22-55-06-690
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-27-20-45-55-687
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -21,6 +21,10 @@ struct Parameters {
 	int option1;
 	int Enable_AB;
 	int Enable_C;
+	int Pos11;
+	int Pos12;
+	int Pos21;
+	int Pos22;
     Parameters();
     void setup(ofxKuTextGui &gui, string fileName);
     void applyConstChanges();

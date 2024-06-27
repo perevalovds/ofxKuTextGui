@@ -42,6 +42,8 @@
  sender.setup(P send_host, P send_port);
  */
 
+#include <unordered_map>
+
 //------------------------------------------------------------------------
 void ofxKuTextGuiGen::put(string line, vector<string> &lines) {
     lines.push_back(line);
@@ -75,10 +77,10 @@ vector<string> ofxKuTextGuiGen::loadFile(string fileName, bool trim, bool skip_c
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGuiGen::insert(vector<string> &lines, vector<string> &what_to_insert) {
-    for (int i=0; i<what_to_insert.size(); i++) {
-        lines.push_back(what_to_insert[i]);
-    }
+void ofxKuTextGuiGen::insert(vector<string>& lines, vector<string>& what_to_insert) {
+	for (int i = 0; i < what_to_insert.size(); i++) {
+		lines.push_back(what_to_insert[i]);
+	}
 }
 
 //------------------------------------------------------------------------
@@ -88,27 +90,110 @@ void ofxKuTextGuiGen::generateCPP(string gui_file_in, string c_path, string c_fi
 
 	vector<string> lines = loadFile(gui_file_in);
 
-	generate_common(true, false, lines, 0, c_path, c_file_out, 
+	generate_common(true, false, lines, 0, c_path, c_file_out,
 		class_name, extern_var_name, define_prefix_name);
 }
 
 //------------------------------------------------------------------------
 //Create GUI from GUI script file
-void ofxKuTextGuiGen::createGuiFromFile(ofxKuTextGui &gui, string gui_file_in) {
+void ofxKuTextGuiGen::createGuiFromFile(ofxKuTextGui& gui, string gui_file_in) {
 	vector<string> lines = loadFile(gui_file_in);
-	
+
 	createGuiFromLines(gui, lines);
 }
 
 //------------------------------------------------------------------------
 //Create GUI from list of lines
-void ofxKuTextGuiGen::createGuiFromLines(ofxKuTextGui &gui, vector<string> &lines) {
+void ofxKuTextGuiGen::createGuiFromLines(ofxKuTextGui& gui, vector<string>& lines) {
 	generate_common(false, true, lines, &gui);
 }
 
 //------------------------------------------------------------------------
+struct ofxKuTextGuiGenTemplate {
+	string name;
+	vector<string> params;
+	vector<string> lines;
+};
+
+//------------------------------------------------------------------------
+void ofxKuTextGuiGen::processTemplates(const vector<string>& lines0, vector<string>& lines)
+{
+	/*
+	TEMPLATE ITEM X Y
+	dummy {X}{Y}
+	int Pos{X}{Y}=0 1:10 1,10
+	ENDTEMPLATE
+
+	ITEM 1 1
+	ITEM 1 2
+	ITEM 2 1
+	*/
+
+	vector<ofxKuTextGuiGenTemplate> templates;
+	unordered_map<string, int> nameToIndex;
+	ofxKuTextGuiGenTemplate* templ = nullptr;
+
+	lines.clear();
+	for (auto& line : lines0) {
+		vector<string> list = ofSplitString(line, " ", true);
+		string name = (list.empty()) ? "" : list[0];
+		if (!templ) {
+			if (name == "ENDTEMPLATE") {
+				KuUiExitWithMessage("ENDTEMPLATE without TEMPLATE");
+			}
+			if (name == "TEMPLATE") {
+				if (list.size() < 2) {
+					KuUiExitWithMessage("TEMPLATE must have name");
+				}
+				templates.push_back(ofxKuTextGuiGenTemplate());
+				templ = &templates.back();	// Important! this pointer is temporary - after adding next template it can be invalidated dur vector<> resize
+				templ->name = list[1];
+				nameToIndex[templ->name] = int(templates.size()) - 1;
+
+				for (int i = 2; i < list.size(); i++) {
+					templ->params.push_back("{" + list[i] + "}");
+				}
+			}
+			else {
+				// Check if we need to insert template
+				if (nameToIndex.count(name) > 0) {
+					int index = nameToIndex[name];
+					auto& templ = templates[index];
+					if (templ.params.size() != list.size() - 1) {
+						KuUiExitWithMessage("Template " + name + " expects " + ofToString(templ.params.size())
+							+ " but got " + ofToString(list.size() - 1) + ", at " + line);
+					}
+					for (string L : templ.lines) {
+						for (int i = 0; i < templ.params.size(); i++) {
+							ofStringReplace(L, templ.params[i], list[i + 1]);
+						}
+						lines.push_back(L);
+					}
+				}
+				else {
+					// Just copy original line
+					lines.push_back(line);
+				}
+			}
+		}
+		else {
+			if (name == "TEMPLATE") {
+				KuUiExitWithMessage("TEMPLATE can't be inside other TEMPLATE");
+			}
+			if (name == "ENDTEMPLATE") {
+				templ = nullptr;
+			}
+			else {
+				templ->lines.push_back(line);
+			}
+		}
+	}
+
+}
+
+//------------------------------------------------------------------------
 void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
-	vector<string> &lines,
+	vector<string> &lines0,
 	ofxKuTextGui *gui,
 		string c_path,
 		string c_file_out,
@@ -116,6 +201,9 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		string extern_var_name,
 		string define_prefix_name) {
 
+
+	vector<string> lines;
+	processTemplates(lines0, lines);
 
     vector<string> Decl;  //struct declaration
     vector<string> Constr;  //constructor
