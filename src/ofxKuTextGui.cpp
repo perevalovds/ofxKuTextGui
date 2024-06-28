@@ -488,13 +488,11 @@ KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, int 
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::addDummy(string title, int n) {
-	for (int i = 0; i < n; i++) {
-		if (page_.empty()) addPage("");
-		// TODO delete somethere
-		KuUiDummy* var_ = new KuUiDummy(title);
-		addVar(var_);
-	}
+void ofxKuTextGui::addDummy(string title, string uniqueName) {
+	if (page_.empty()) addPage("");
+	// TODO delete somethere
+	KuUiDummy* var_ = new KuUiDummy(title, uniqueName);
+	addVar(var_);
 }
 
 

@@ -13,6 +13,9 @@ string Title = "YourApp 1.01";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    // Uncomment to generate UI C++ files at start in case of errors during UI development
+    // keyPressed('G');
+
     cout << "-----------------------------------------------------------------" << endl;
     cout << Title << endl;
     cout << "-----------------------------------------------------------------" << endl;

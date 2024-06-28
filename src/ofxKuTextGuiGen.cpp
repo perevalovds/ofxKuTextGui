@@ -283,12 +283,16 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		}
 
 		bool is_dummy = false;
+		string uniqueName = "";	// If will be filled by dummy, use it
 
 		if (type_s == "dummy") {
 			vector<string> title0 = item;
 			title0.erase(title0.begin());
 			string title = ofJoinString(title0, " ");
-			if (make_cpp) put("\tgui.addDummy(\"" + title + "\");", Setup);
+			static int DummyID = 0;	// Unique ID to separate dummies
+			uniqueName = title + "_" + ofToString(DummyID++);
+
+			if (make_cpp) put("\tgui.addDummy(\"" + title + "\", \"" + uniqueName + "\");", Setup);
 			if (make_gui) gui->addDummy(title);
 			is_dummy = true;
 		}
@@ -417,9 +421,11 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			is_var = true;
 		}
 		// Setting color, visibility, editing
-		if (is_dummy || is_var) {
+		if (is_dummy || is_var) {			
+			string name = (uniqueName.empty()) ? name_code.screen_name : uniqueName;
+
 			if (!current_color.empty()) {
-				if (make_cpp) put("\tgui.set_var_color(\"" + name_code.screen_name + "\", ofColor(" + current_color + "));", ColorLines);
+				if (make_cpp) put("\tgui.set_var_color(\"" + name + "\", ofColor(" + current_color + "));", ColorLines);
 				if (make_gui) {
 					vector<string> items_s = ofSplitString(current_color, ",");
 					vector<int> items;
@@ -431,20 +437,20 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 					if (items.size() == 2) color = ofColor(items[0], items[1]);
 					if (items.size() == 3) color = ofColor(items[0], items[1], items[2]);
 					if (items.size() == 4) color = ofColor(items[0], items[1], items[2], items[3]);
-					gui->set_var_color(name_code.screen_name, color);
+					gui->set_var_color(name, color);
 				}
 			}
 			if (!name_code.visible) {
 				if (make_cpp) {
-					put("\tgui.set_var_visibility(\"" + name_code.screen_name + "\", false);", ColorLines);
+					put("\tgui.set_var_visibility(\"" + name + "\", false);", ColorLines);
 				}
 				if (make_gui) {
-					gui->set_var_visibility(name_code.screen_name, false);
+					gui->set_var_visibility(name, false);
 				}
 			}
 			if (!visibilityConditions.empty()) {
 				if (make_cpp) {
-					put("\tgui.set_var_visibility_conditions(\"" + name_code.screen_name + "\","
+					put("\tgui.set_var_visibility_conditions(\"" + name + "\","
 						+ KuUiVisibilityConditionStr::toStr(visibilityConditions) + ");", ColorLines);
 				}
 				if (make_gui) {
@@ -454,10 +460,10 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			if (!name_code.editable) {
 				if (make_cpp) {
-					put("\tgui.set_var_editable(\"" + name_code.screen_name + "\", false);", ColorLines);
+					put("\tgui.set_var_editable(\"" + name + "\", false);", ColorLines);
 				}
 				if (make_gui) {
-					gui->set_var_editable(name_code.screen_name, false);
+					gui->set_var_editable(name, false);
 				}
 			}
 		}

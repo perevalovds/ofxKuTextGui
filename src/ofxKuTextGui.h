@@ -80,7 +80,7 @@ struct ofxKuTextGui {
     KuUiComponent *addStringList(string name, int &var, int defV, int count...);
 	KuUiComponent *addButton(string name, int &var);
 	KuUiComponent* addCheckbox(string name, int& var);
-	void addDummy(string title = "", int n=1);
+	void addDummy(string title = "", string uniqueName = "");
     
 	KuUiComponent *addVar(string name);	//adding existing var
     KuUiComponent *findVar(const string &name);   //one var
