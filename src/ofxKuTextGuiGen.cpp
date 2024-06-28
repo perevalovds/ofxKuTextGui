@@ -281,12 +281,16 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			if (make_cpp) put("\tgui.addVar(\"" + name_code.screen_name + "\");", Setup);
 			if (make_gui) gui->addVar(name_code.screen_name);
 		}
+
+		bool is_dummy = false;
+
 		if (type_s == "dummy") {
 			vector<string> title0 = item;
 			title0.erase(title0.begin());
 			string title = ofJoinString(title0, " ");
 			if (make_cpp) put("\tgui.addDummy(\"" + title + "\");", Setup);
 			if (make_gui) gui->addDummy(title);
+			is_dummy = true;
 		}
         
 		bool is_var = false;
@@ -413,7 +417,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			is_var = true;
 		}
 		// Setting color, visibility, editing
-		if (is_var) {
+		if (is_dummy || is_var) {
 			if (!current_color.empty()) {
 				if (make_cpp) put("\tgui.set_var_color(\"" + name_code.screen_name + "\", ofColor(" + current_color + "));", ColorLines);
 				if (make_gui) {

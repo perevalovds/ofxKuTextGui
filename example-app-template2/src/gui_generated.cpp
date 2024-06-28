@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-27-20-45-55-687
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-28-10-07-33-951
 
 Parameters params;
 //--------------------------------------------------------------
@@ -17,6 +17,7 @@ Parameters::Parameters() {
 	option1=0;
 	Enable_AB=0;
 	Enable_C=0;
+	Item_Setup=0;
 	Pos11=0;
 	Pos12=0;
 	Pos21=0;
@@ -44,6 +45,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addCheckbox("Enable_AB",Enable_AB);
 	gui.addCheckbox("Enable_C",Enable_C);
 	gui.addPage("Templates");
+	gui.addStringList("Item_Setup",Item_Setup,0,4,"Item11","Item12","Item21","Item22");
 	gui.addDummy("11");
 	gui.addInt("Pos11",Pos11,0,1,10,1,10);
 	gui.addDummy("12");
@@ -60,6 +62,14 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.set_var_editable("~hidden_value", false);
 	gui.set_var_visibility_conditions("Enable_AB",{ {"option1", {"UseA","UseB"}} });
 	gui.set_var_visibility_conditions("Enable_C",{ {"option1", {"UseC"}} });
+	gui.set_var_visibility_conditions("11",{ {"Item_Setup", {"Item11"}} });
+	gui.set_var_visibility_conditions("Pos11",{ {"Item_Setup", {"Item11"}} });
+	gui.set_var_visibility_conditions("12",{ {"Item_Setup", {"Item12"}} });
+	gui.set_var_visibility_conditions("Pos12",{ {"Item_Setup", {"Item12"}} });
+	gui.set_var_visibility_conditions("21",{ {"Item_Setup", {"Item21"}} });
+	gui.set_var_visibility_conditions("Pos21",{ {"Item_Setup", {"Item21"}} });
+	gui.set_var_visibility_conditions("22",{ {"Item_Setup", {"Item22"}} });
+	gui.set_var_visibility_conditions("Pos22",{ {"Item_Setup", {"Item22"}} });
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);
