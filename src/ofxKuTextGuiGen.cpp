@@ -206,6 +206,8 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 	processTemplates(lines0, lines);
 
     vector<string> Decl;  //struct declaration
+	vector<string> PageEnum;
+
     vector<string> Constr;  //constructor
     vector<string> Setup;  //setup_gui
     vector<string> ApplyConstChanges;  //applyConstChanges
@@ -262,7 +264,22 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
         }
 
 		if (type_s == "PAGE" && n>=2) {
-			if (make_cpp) put("\tgui.addPage(\"" + name_s + "\");", Setup);
+			if (make_cpp) {
+				put("\tgui.addPage(\"" + name_s + "\");", Setup);
+
+				// Cleanup page name
+				string enumName = name_s;
+				ofStringReplace(enumName, " ", "_");
+				ofStringReplace(enumName, "\t", "_");
+				ofStringReplace(enumName, "-", "_");
+				ofStringReplace(enumName, ".", "_");
+				ofStringReplace(enumName, "&", "_");
+				string line = "        " + enumName + " = " + ofToString(PageEnum.size());
+				if (!PageEnum.empty()) {
+					PageEnum.back() += ",";
+				}
+				PageEnum.push_back(line);
+			}
 			if (make_gui) gui->addPage(name_s);
 		}
         if (type_s == "TAB") {
@@ -486,6 +503,15 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 		put("", f_h);
 		put("struct " + class_name + " {", f_h);
+
+		// Page enum
+		put("    enum PageEnum: int {", f_h);
+		insert(f_h, PageEnum);
+		put("    };", f_h);
+
+		// Getting pageenum
+		put("    PageEnum pageEnum() { return PageEnum(gui_->pageIndex()); } ", f_h);
+
 		insert(f_h, Decl);
 		put("    " + class_name + "();", f_h);
 		put("    void setup(ofxKuTextGui &gui, string fileName);", f_h);

@@ -145,6 +145,22 @@ And for access to parameters use PRM:
 
 `PRM fps_ = ofGetFrameRate();`
 
+Access to page:
+
+`if (PRM pageEnum() == Parameters::PageEnum::Settings) {`
+
+`        ofBackground(100, 60, 60);`
+
+`    }`
+
+`    else {`
+
+`        ofBackground(60, 100, 60);`
+
+`    }`
+
+
+
 Note about constants: you can get access to changed valued of constants by adding "_" at the beginning and end.
 For example, for '*FPS' value, PRM FPS means constant value, not changed after program start, and PRM _FPS_ is value,
 possible changed by user.

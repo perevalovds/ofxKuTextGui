@@ -82,7 +82,14 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofBackground(60,100,60);
+    // Getting UI page and choose background color depending on it
+    if (PRM pageEnum() == Parameters::PageEnum::Settings) {
+        ofBackground(100, 60, 60);
+    }
+    else {
+        ofBackground(60, 100, 60);
+    }
+
     float time = ofGetElapsedTimef();
     float W = ofGetWidth();
     float H = ofGetHeight();

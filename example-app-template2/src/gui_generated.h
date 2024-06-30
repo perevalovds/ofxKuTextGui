@@ -1,10 +1,16 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-28-10-50-44-930
+//Auto-generated GUI file for ofxKuTextGui, 2024-06-30-21-33-38-163
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
 
 struct Parameters {
+    enum PageEnum: int {
+        Settings = 0,
+        Conditions = 1,
+        Templates = 2
+    };
+    PageEnum pageEnum() { return PageEnum(gui_->pageIndex()); } 
 	int FPS;
 	int _FPS_;	// const
 	int Screen_W;
