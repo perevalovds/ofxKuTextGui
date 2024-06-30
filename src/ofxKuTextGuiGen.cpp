@@ -274,6 +274,9 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 				ofStringReplace(enumName, "-", "_");
 				ofStringReplace(enumName, ".", "_");
 				ofStringReplace(enumName, "&", "_");
+				if (!enumName.empty() && enumName[0] >= '0' && enumName[0] <= '9') {
+					enumName = "_" + enumName;
+				}
 				string line = "        " + enumName + " = " + ofToString(PageEnum.size());
 				if (!PageEnum.empty()) {
 					PageEnum.back() += ",";
@@ -505,7 +508,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		put("struct " + class_name + " {", f_h);
 
 		// Page enum
-		put("    enum PageEnum: int {", f_h);
+		put("    enum class PageEnum: int {", f_h);
 		insert(f_h, PageEnum);
 		put("    };", f_h);
 

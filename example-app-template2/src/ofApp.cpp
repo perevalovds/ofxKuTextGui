@@ -71,7 +71,6 @@ void ofApp::flash() {
     flash_ = ofGetElapsedTimef();
 }
 
-
 //--------------------------------------------------------------
 void ofApp::update(){
     //Access to output parameter
