@@ -12,6 +12,10 @@ struct ofxKuTextGui {
 	void loadFromFile(const string &fileName);  //if fileName=="", then do nothing
 	void saveToFile(const string &fileName);
 
+	// Set selected pages for usage
+	void setPagesTitles(const vector<string>& titles);	// local titles
+	vector<string> pageTitles();	// all titles
+
 	bool loadFromJSON(const string &s);
 	string saveToJSON();
 
@@ -23,7 +27,7 @@ struct ofxKuTextGui {
 
 
     bool keyPressed(int key);       //generic keyPressed handler
-	void update();					//for buttons processing
+	void update();					//for page switch and buttons processing
     void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
@@ -123,9 +127,9 @@ struct ofxKuTextGui {
     void setTab(int index);     //select tab
     void setValue(int index);   //select value
     
-	void setPage( const string &name ); //switch to page
-    void setPage( int index ); //switch to page
-    int pageIndex();
+	void setPage( const string &title ); //switch to page
+    void setPage( int indexLocal ); //switch to page
+    int pageIndex();	// global
     int tabIndex();
     int varIndex();
     string pageTitle();
@@ -145,8 +149,10 @@ protected:
 	const string PageVarName = "Page";
 
 	vector<KuUiPage> page_;
-	int selPage = 0;	//selected page
-    vector<string> pageTitles();
+	int selPage = 0;		// selected page
+
+	int selPageUi_ = -1;	// selected page local, connected to UI
+	int selPageUiLast_ = -1;
 
 	typedef map<string, KuUiComponent *> StringVarMap;
 	StringVarMap vars_;	//index of vars - sorted, for saving to file

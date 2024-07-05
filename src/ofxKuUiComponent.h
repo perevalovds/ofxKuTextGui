@@ -177,7 +177,7 @@ public:
 	string title() { return title_; }
 	virtual void reset() {}
 
-	virtual void setTitles(vector<string>& titles) {};
+	virtual void setTitles(const vector<string>& titles) {};
 
 	//Smoothing values 
 	//applicable to float and int vars

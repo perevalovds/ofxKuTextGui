@@ -96,7 +96,7 @@ public:
 		return *var;
 	}
 
-	void setTitles(vector<string>& titles) {
+	void setTitles(const vector<string>& titles) {
 		this->titles = titles;
 	}
 private:

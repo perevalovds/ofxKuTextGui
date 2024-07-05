@@ -353,22 +353,15 @@ int ofxKuTextGui::addPage(const string &pageName) {
 	addTab();
 	needRebuild_ = true;
 
-    //add var "[page]" at the top of the page
+    // Add var "Page" at the top of the page
+	// Changes will be handled using setPage()
     if (page_.size() == 1) {
-        addStringList(PageVarName, selPage, selPage, 0);
+        addStringList(PageVarName, selPageUi_, 0, 0);
     }
     else {
         addVar(PageVarName);
     }
-    vector<string> titles = pageTitles();
-    vector<KuUiComponent *> var = findVars(PageVarName);
-    for (int i=0; i<var.size(); i++) {
-        var[i]->setTitles(titles);
-		if (var[i]->type != KuUiType::VStringList) {
-			KuUiExitWithMessage("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
-		}
-        ((KuUiStringList*)var[i])->maxV = int(titles.size())-1;
-    }
+	setPagesTitles(pageTitles());
     selPage = 0;
     return int(page_.size())-1;
     
@@ -510,21 +503,23 @@ KuUiComponent *ofxKuTextGui::addVar(string name) {	//adding existing var
 
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::setPage( int index ) {
-    if (index >= 0 && index < page_.size()) {
-        selPage = index;
+void ofxKuTextGui::setPage( int indexLocal ) {
+	KuUiStringList* var = (KuUiStringList*) findVar(PageVarName);
+
+    if (indexLocal >= 0 && indexLocal < var->titles.size()) {
+		setPage(var->titles[indexLocal]);
 		mouse_reset();
     }
 }
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoPrevPage() {
-    setPage(selPage-1);
+    setPage(selPageUi_ -1);
 }
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::gotoNextPage() {
-    setPage(selPage+1);
+    setPage(selPageUi_ +1);
 }
 
 //------------------------------------------------------------------------
@@ -650,10 +645,15 @@ void ofxKuTextGui::set_editing_strings(bool v) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::setPage( const string &name ) {
+void ofxKuTextGui::setPage( const string &title ) {
 	for (int i=0; i<page_.size(); i++) {
-		if (name == page_[i].name) {
+		if (title == page_[i].title) {
 			selPage = i;
+			KuUiStringList* var = (KuUiStringList*)findVar(PageVarName);
+			size_t local = ofFind(var->titles, title);
+			if (local >= 0 && local < var->titles.size()) {
+				selPageUi_ = selPageUiLast_ = local;
+			}
 			break;
 		}
 	}
@@ -689,7 +689,7 @@ int ofxKuTextGui::varIndex() {
 
 //------------------------------------------------------------------------
 string ofxKuTextGui::pageTitle() {
-    if (validPage()) return page_[selPage].name;
+    if (validPage()) return page_[selPage].title;
     else return "";
 }
 
@@ -702,6 +702,19 @@ bool ofxKuTextGui::validPage() {
 KuUiPage *ofxKuTextGui::currentPagePointer() {
     if (validPage()) { return &page_[selPage]; }
     return 0;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setPagesTitles(const vector<string>& titles) {
+	vector<KuUiComponent*> var = findVars(PageVarName);
+	for (int i = 0; i < var.size(); i++) {
+		var[i]->setTitles(titles);
+		if (var[i]->type != KuUiType::VStringList) {
+			KuUiExitWithMessage("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
+		}
+		((KuUiStringList*)var[i])->maxV = int(titles.size()) - 1;
+	}
+
 }
 
 //------------------------------------------------------------------------
@@ -728,7 +741,14 @@ void ofxKuTextGui::get_cell_by_coords(float x, float y, int &tab, int &i) {
 }
 
 //------------------------------------------------------------------------
-void ofxKuTextGui::update() {					//for buttons processing
+void ofxKuTextGui::update() {					//for page switch and buttons processing
+	// Page switch
+	if (selPageUi_ != selPageUiLast_) {
+		selPageUiLast_ = selPageUi_;
+		setPage(selPageUi_);
+	}
+	
+	// Buttons
 	for (int i = 0; i<page_.size(); i++) {
 		KuUiPage &page = page_[i];
 		for (int j = 0; j<page.tab.size(); j++) {
@@ -905,8 +925,8 @@ bool ofxKuTextGui::keyPressed(int key) {       //generic keyPressed handler
 	}
     if (key == '1')             { gotoPrevPage(); return true; }
     if (key == '2')             { gotoNextPage(); return true; }
-	if (key == '!')				{ setPage(0); return true; }
-	if (key == '@')				{ setPage(int(page_.size())-1); return true; }
+	//if (key == '!')				{ setPage(0); return true; }
+	//if (key == '@')				{ setPage(int(page_.size())-1); return true; }
     if (key == OF_KEY_LEFT)     { gotoPrevTab(); return true; }
     if (key == OF_KEY_RIGHT)    { gotoNextTab(); return true; }
     if (key == OF_KEY_UP)       { gotoPrevValue(); return true; }
@@ -1096,6 +1116,7 @@ bool ofxKuTextGui::mousePressed(int x, int y, int button) {
 								var->mouseClick(x, y, button);
 							}
 							else if (tab.validVar() && var->start_modal_on_click()) {
+								// stringlist
 								startModalMode(var);
 								return true;
 							}
