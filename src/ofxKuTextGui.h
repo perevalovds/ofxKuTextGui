@@ -10,6 +10,7 @@ struct ofxKuTextGui {
 
 	void clear();
 	void loadFromFile(const string &fileName);  //if fileName=="", then do nothing
+	void loadFromLines(const vector<string>& lines);
 	void saveToFile(const string &fileName);
 
 	// Set selected pages for usage

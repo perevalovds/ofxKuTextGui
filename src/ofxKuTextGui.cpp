@@ -190,6 +190,33 @@ void ofxKuTextGui::setFromString(const string &s) {
 }
 
 //------------------------------------------------------------------------
+void ofxKuTextGui::loadFromLines(const vector<string>& lines) {
+	//parse lines
+	vector<KuUiComponent*> vars = getVars();
+	for (int k = 0; k < lines.size(); k++) {
+		string line = lines[k];
+		if (line == "") continue;
+
+		//remove '\r' for proper reading windows-files in linux
+		while (line[line.length() - 1] == '\r') {
+			line = line.substr(0, line.length() - 1);
+		}
+
+		vector<string> item = ofSplitString(lines[k], "=", true, true);
+		if (item.size() >= 2) {
+			string name = item[0];
+			string value = item[1];
+			KuUiComponent* var = findVar(name);
+			if (var) {
+				var->setValue(value);
+			}
+		}
+	}
+	storeState();	
+}
+
+
+//------------------------------------------------------------------------
 void ofxKuTextGui::loadFromFile(const string &fileName) {
 	if (fileName.empty()) {
 		return;
@@ -199,29 +226,9 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
     ifstream f(ofToDataPath(fileName).c_str(),ios::in | ios::binary);
     string line;
     while (getline(f,line)) {
-        if (line=="") continue;
-        else {
-            //remove '\r' for proper reading windows-files in linux
-			while ( line[line.length()-1] == '\r' ) {
-                line = line.substr( 0, line.length() - 1 );
-            }
-            lines.push_back( line );
-        }
+		lines.push_back( line );
     }
-	//parse lines
-	vector<KuUiComponent *> vars = getVars();
-	for (int k=0; k<lines.size(); k++) {
-		vector<string> item = ofSplitString(lines[k], "=", true, true);
-		if (item.size() >= 2) {
-			string name		= item[0];
-			string value	= item[1];
-			KuUiComponent *var = findVar(name);
-			if (var) {
-				var->setValue(value);
-			}
-		}
-	}
-	storeState();
+	loadFromLines(lines);
 }
 
 //------------------------------------------------------------------------
