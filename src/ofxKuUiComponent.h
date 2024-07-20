@@ -28,7 +28,7 @@ struct KuUiVisibilityConditionStr {
 	// Serialize to C++ string:
 	// { {valueName, {value1, value2, ...}}, {valueName, {value1, value2,...}} }
 	// "" if empty
-	static string KuUiVisibilityConditionStr::toStr(const vector<KuUiVisibilityConditionStr>& conds) {
+	static string toStr(const vector<KuUiVisibilityConditionStr>& conds) {
 		if (conds.empty()) {
 			return "";
 		}
