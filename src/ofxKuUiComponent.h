@@ -7,6 +7,8 @@
 using namespace std;
 
 void KuUiExitWithMessage(const string& message);
+void KuUiWarningMessage(const string& message);
+#define KuUiAssertWarning(v, message) { if (!(v)) KuUiWarningMessage(message); }
 
 enum class KuUiType : int {
 	VUndefined = -1,

@@ -223,7 +223,12 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
 	}
 	//read lines
 	vector<string> lines;
-    ifstream f(ofToDataPath(fileName).c_str(),ios::in | ios::binary);
+	ifstream f(ofToDataPath(fileName).c_str(), ios::in);// | ios::binary);
+	if (!f.is_open()) {
+		KuUiAssertWarning(false, "Can't load from " + fileName);
+		return;
+	}
+
     string line;
     while (getline(f,line)) {
 		lines.push_back( line );
@@ -231,18 +236,31 @@ void ofxKuTextGui::loadFromFile(const string &fileName) {
 	loadFromLines(lines);
 }
 
+
 //------------------------------------------------------------------------
-void ofxKuTextGui::saveToFile(const string &fileName) {
+vector<string> ofxKuTextGui::saveToLines() {
 	vector<string> file;
-	vector<KuUiComponent *> vars = getVars();
-	for (int i=0; i<vars.size(); i++) {
+	vector<KuUiComponent*> vars = getVars();
+	for (int i = 0; i < vars.size(); i++) {
 		if (vars[i]->need_save()) {
 			string line = vars[i]->name() + "=" + vars[i]->value();
 			file.push_back(line);
 			//cout << "SAVE PARAM " << line << endl;
 		}
 	}
+	return file;
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::saveToFile(const string &fileName) {
+	vector<string> file = saveToLines();
+
 	ofstream f(ofToDataPath(fileName).c_str(),ios::out);
+	if (!f.is_open()) {
+		KuUiAssertWarning(false, "Can't save to " + fileName);
+		return;
+	}
+
     for ( size_t i=0; i<file.size(); i++ ) {
         f << file[i] << endl;
     }
@@ -660,6 +678,7 @@ void ofxKuTextGui::setPage( const string &title ) {
 			size_t local = ofFind(var->titles, title);
 			if (local >= 0 && local < var->titles.size()) {
 				selPageUi_ = selPageUiLast_ = local;
+				var->setValueInt(selPageUi_);
 			}
 			break;
 		}

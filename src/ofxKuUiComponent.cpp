@@ -18,6 +18,13 @@ void KuUiExitWithMessage(const string& message) {
 }
 
 //------------------------------------------------------------------------
+void KuUiWarningMessage(const string& message) {
+	cout << "ofxKuTextGui: " << message << endl;
+	ofSystemAlertDialog("ofxKuTextGui:\n" + message);
+	//__debugbreak();
+}
+
+//------------------------------------------------------------------------
 void KuUiComponent::setVisibility(bool v) {
 	visible_ = v;
 }
