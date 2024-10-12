@@ -32,9 +32,18 @@ void ofxKuPreset_load_vars_to_preset_system(string file_var_list, ofxKuTextGui &
 				presets.add_float(name, var->floatVarPtr(), var->floatDef());
 				//cout << "    added float " << name << endl;
 			}
-			if (var->intVarPtr()) {
+			else if (var->intVarPtr()) {
 				presets.add_int(name, var->intVarPtr(), var->intDef());
 				//cout << "    added int " << name << endl;
+			}
+			else if (var->stringVarPtr()) {
+				presets.add_string(name, var->stringVarPtr(), var->stringDef());
+			}
+			else {
+				string message = "Can't add variable '" + name + "' to presets, ofxKuPreset_load_vars_to_preset_system, " + file_var_list;
+				cout << message << endl;
+				ofSystemAlertDialog(message);
+
 			}
 		}
 	}
