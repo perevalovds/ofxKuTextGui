@@ -6,14 +6,12 @@ struct KuUiStringList : public KuUiComponent {
 public:
 	shared_ptr<int> autovar;
 	int* var = nullptr;
-	int minV = 0;
-	int maxV = 0;
 	int step[2] = { 0 };
 	int def = 0;
 	vector<string> titles;
 
 	KuUiStringList() {}
-	KuUiStringList(string name0, int& var0, int defV, int minV0, int maxV0,
+	KuUiStringList(string name0, int& var0, int defV,
 		int step1, int step2, vector<string> titles0) {
 		type = KuUiType::VStringList;
 		name_ = name0;
@@ -26,8 +24,6 @@ public:
 		}
 		step[0] = step1;
 		step[1] = step2;
-		minV = minV0;
-		maxV = maxV0;
 		setValueInt(defV);
 		def = defV;
 		titles = titles0;
@@ -69,7 +65,7 @@ public:
 		}
 	}
 	void setValueInt(int v) override {
-		*var = min(max(v, minV), maxV);
+		*var = min(max(v, 0), maxV());
 		setupSmoothValue();
 	}
 	void inc(int dir, int speed) override { //speed=0,1
@@ -81,11 +77,11 @@ public:
 	}
 	
 	float valueNormalized() {
-		return (minV != maxV) ? ofMap(*var, minV, maxV, 0, 1) : minV;
+		return (maxV() > 0) ? ofMap(*var, 0, maxV(), 0, 1) : 0;
 	}
 
 	float normalizedToValue(float normalizedValue) override {
-		return ofMap(normalizedValue, 0, 1, minV, maxV);
+		return ofMap(normalizedValue, 0, 1, 0, maxV());
 	}
 
 	int intValue() override {
@@ -109,4 +105,6 @@ private:
 	void setupModal(const KuUiDrawData& dd, const KuUiDrawComponentData& dc);
 	void stopModal();
 	int getModalSelectedIndex(const glm::vec2& mousePos);
+
+	int maxV() { return int(titles.size()) - 1; }
 };
