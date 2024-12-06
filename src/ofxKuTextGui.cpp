@@ -489,7 +489,7 @@ KuUiComponent *ofxKuTextGui::addString(string name, string &var, const string &d
 KuUiComponent *ofxKuTextGui::addStringList(string name, int &var, int defV, const vector<string> &title) {
     if (page_.empty()) addPage("");
 	// TODO need "delete"
-    KuUiComponent* var_ = new KuUiStringList(name, var, defV, 0, int(title.size())-1, 1, 10, title);
+    KuUiComponent* var_ = new KuUiStringList(name, var, defV, 1, 10, title);
     return addVar(var_);
 }
 
@@ -738,7 +738,6 @@ void ofxKuTextGui::setPagesTitles(const vector<string>& titles) {
 		if (var[i]->type != KuUiType::VStringList) {
 			KuUiExitWithMessage("ofxKuTextGui: expected it's stringlist: " + var[i]->name());
 		}
-		((KuUiStringList*)var[i])->maxV = int(titles.size()) - 1;
 	}
 
 }
