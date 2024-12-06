@@ -93,17 +93,7 @@ public:
 	}
 
 	void setTitles(const vector<string>& titles) {
-		if (!titles.empty()) {
-			this->titles = titles;
-			maxV = int(titles.size()) - 1;
-		}
-		else {
-			this->titles = { "" };
-			maxV = 0;
-		}
-		if (*var >= maxV) {
-			setValueInt(0);	// Ставим в 0, если ушло за границы
-		}
+		this->titles = titles;
 	}
 private:
 	bool is_modal_ = false;
