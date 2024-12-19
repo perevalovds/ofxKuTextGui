@@ -46,7 +46,7 @@ public:
 	}
 
 	void editStringValue() {
-		*var = ofSystemTextBoxDialog(name_, *var);
+		*var = textBoxDialog(name_, *var);
 	}
 	bool is_string() override {
 		return true;
@@ -57,5 +57,8 @@ public:
 	void mouseClick(int x, int y, int button) override {
 		editStringValue();
 	}
+
+	// Improvement of ofSystemTextBoxDialog for Windows
+	string textBoxDialog(string question, string text);
 };
 
