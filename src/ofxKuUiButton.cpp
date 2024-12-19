@@ -55,17 +55,26 @@ void KuUiButton::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 			ofSetLineWidth(1);
 		}
 
-		// Checkbox 'V' inside square
+		// Checkbox 'V' (or filled square in case of radiobutton) inside square
 		if (checkbox) {
 			float h1 = dc.h - 6;
 			float x1 = buttonX + buttonW - h1 - 10;
 			float y1 = buttonY + (buttonH - dc.h) / 2 + 3;
 
 			if (intValue()) {
-				// 'V'
-				ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
-				ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
-				ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
+				if (radiobutton_mark) {
+					// Square
+					ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
+					ofFill();
+					ofDrawRectangle(x1 + 4, y1 + 4, h1 - 8, h1 - 8);
+					ofNoFill();
+				}
+				else {
+					// 'V'
+					ofSetColor(color.r, color.g, color.b, color.a * dd.alpha_text_f);
+					ofDrawLine(x1 + 4, y1 + 6, x1 + h1 / 2, y1 + h1 - 3);
+					ofDrawLine(x1 + h1 / 2, y1 + h1 - 3, x1 + h1 - 3, y1 + 3);
+				}
 			}
 
 			ofDrawRectangle(x1, y1, h1, h1);

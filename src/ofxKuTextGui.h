@@ -5,6 +5,41 @@
 #include <cstdarg>
 #include "ofxKuUiComponent.h"
 
+// Structure maintaining group of checkboxes working as a radiogroup
+// TODO add to .gui language
+struct ofxKuUiRadioGroup {
+	void setup(const vector<int*>& values) { values_ = values; selected_ = -1; update(); }
+	void update() {		
+		for (int i = 0; i < values_.size(); i++) {
+			if (*values_[i] && i != selected_) {
+				selected_ = i;
+				for (int j = 0; j < values_.size(); j++) {
+					if (j != selected_) {
+						*values_[j] = 0;
+					}
+				}
+				return;
+			}
+		}
+		if (selected_ >= 0) {
+			if (selected_ >= values_.size()) {
+				selected_ = -1;
+			}
+			else {
+				// force restore selected even if user deselected it
+				*values_[selected_] = 1;
+			}
+		}
+	}
+	int selected() { return selected_; }
+	int* selectedPtr() { return &selected_; }
+private:
+	int selected_ = -1;
+	vector<int*> values_;
+
+};
+
+
 struct ofxKuTextGui {
 	ofxKuTextGui();
 
@@ -87,6 +122,12 @@ struct ofxKuTextGui {
 	KuUiComponent *addButton(string name, int &var);
 	KuUiComponent* addCheckbox(string name, int& var);
 	void addDummy(string title = "", string uniqueName = "");
+
+	// Add radio group - it will be maintained automatically;
+	// function returns resulted value selected()
+	int* addRadioGroup(const vector<int*>& values);
+	void setRadioButtonMark(int* var);	// Scan values and set mark for a given value
+
     
 	KuUiComponent *addVar(string name);	//adding existing var
     KuUiComponent *findVar(const string &name);   //one var
@@ -188,6 +229,10 @@ protected:
 	KuUiComponent* modalComponent_ = nullptr;
 	void startModalMode(KuUiComponent* var);
 	void stopModalMode();
+
+	// Radiogroups - must be pointers to avoid invalidating selectedPtr()
+	// TODO not cleaned
+	vector<ofxKuUiRadioGroup*> radioGroups_;
 
 };
 

@@ -526,6 +526,31 @@ KuUiComponent *ofxKuTextGui::addVar(string name) {	//adding existing var
     return var;
 }
 
+//------------------------------------------------------------------------
+int* ofxKuTextGui::addRadioGroup(const vector<int*>& values) {
+	ofxKuUiRadioGroup* group = new ofxKuUiRadioGroup();
+	group->setup(values);
+	radioGroups_.push_back(group);
+
+	// Marking
+	for (auto& v : values) {
+		setRadioButtonMark(v);
+	}
+
+	return group->selectedPtr();
+}
+
+//------------------------------------------------------------------------
+void ofxKuTextGui::setRadioButtonMark(int* var) {	// Scan values and set mark for a given value
+	// TODO not optimal, need to have hashmap from int* to checkboxes
+	for (auto& V : hash_vars_) {
+		for (auto& v : V.second) {
+			if (v->is_checkbox() && v->intVarPtr() == var) {
+				((KuUiButton*)(v))->setRadioButtonMark();
+			}
+		}
+	}
+}
 
 //------------------------------------------------------------------------
 void ofxKuTextGui::setPage( int indexLocal ) {
@@ -782,6 +807,11 @@ void ofxKuTextGui::update() {					//for page switch and buttons processing
 				tab.var[k]->update_button();				//TODO optimize and check only button variables
 			}
 		}
+	}
+
+	// Radiogroups
+	for (auto& group : radioGroups_) {
+		group->update();
 	}
 }
 

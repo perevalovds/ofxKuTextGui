@@ -9,7 +9,8 @@ public:
 	int* var = nullptr;
 	int def = 0;
 	int is_checkbox_ = 0;	// checkbox is int, which reads 0,1,OFF,ON for older compatibility
-	//Note: Buttons fires only once after pressing, and then set to 0 automatically
+							//Note: Buttons fires only once after pressing, and then set to 0 automatically
+	bool radiobutton_mark = 0;
 	int is_toggled_ = 0;	// setToggled() should be used to manually toggle the button. This not saves to INI
 
 	KuUiButton() {}
@@ -102,6 +103,10 @@ public:
 
 	void setCheckbox() {	// make int as checkbox
 		is_checkbox_ = true;
+	}
+
+	void setRadioButtonMark() {	// additional property for checkbox to show as radiobutton
+		radiobutton_mark = true;
 	}
 
 	void setToggled(int t) override {
