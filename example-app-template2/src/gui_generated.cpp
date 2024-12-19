@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-30-21-33-38-164
+//Auto-generated GUI file for ofxKuTextGui, 2024-12-19-20-09-30-763
 
 Parameters params;
 //--------------------------------------------------------------
@@ -39,6 +39,10 @@ Parameters::Parameters() {
 	Floor_X1_CM=0;
 	Floor_Y_CM=0;
 	Floor_SclY=0;
+	radio_1=0;
+	radio_2=0;
+	radio_3=0;
+	radio_value_=-1;
 }
 
 //--------------------------------------------------------------
@@ -91,6 +95,13 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addInt("Floor_X1_CM",Floor_X1_CM,0,-1000,1000,1,10);
 	gui.addInt("Floor_Y_CM",Floor_Y_CM,0,-1000,1000,1,10);
 	gui.addInt("Floor_SclY",Floor_SclY,0,-1000,1000,1,10);
+	gui.addTab();
+	gui.addDummy("Radio_Group", "Radio_Group_8");
+	gui.addCheckbox("radio_1",radio_1);
+	gui.addCheckbox("radio_2",radio_2);
+	gui.addCheckbox("radio_3",radio_3);
+	gui.addDummy("Test_Radio_Value", "Test_Radio_Value_9");
+	gui.addInt("-radio_value",radio_value_,-1,-1,2,1,10);
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*Screen_W", ofColor(255,140,255));
 	gui.set_var_color("*Screen_H", ofColor(255,140,255));
@@ -127,6 +138,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.set_var_visibility_conditions("Floor_X1_CM",{ {"Projection", {"FLOOR"}} });
 	gui.set_var_visibility_conditions("Floor_Y_CM",{ {"Projection", {"FLOOR"}} });
 	gui.set_var_visibility_conditions("Floor_SclY",{ {"Projection", {"FLOOR"}} });
+	gui.set_var_editable("-radio_value", false);
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);

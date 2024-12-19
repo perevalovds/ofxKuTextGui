@@ -5,7 +5,8 @@
 #include <cstdarg>
 #include "ofxKuUiComponent.h"
 
-// Structure maintaining group of checkboxes working as a radiogroup
+// Structure for maintaining radiogroup, which is a set of checkboxes
+// For enabling radio group, call gui.addRadioGroup(...) in C++ code
 // TODO add to .gui language
 struct ofxKuUiRadioGroup {
 	void setup(const vector<int*>& values) { values_ = values; selected_ = -1; update(); }

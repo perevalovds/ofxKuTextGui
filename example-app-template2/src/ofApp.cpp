@@ -40,8 +40,17 @@ void ofApp::setup(){
     gui.set_var_mark("Enabled", true);
     gui.set_var_mark("Model", true);
 
+    // Adding radiogroup
+    // radioGroupIndex_ will be used to set radio_value_
+    radioGroupIndex_ =
+        gui.addRadioGroup({
+        &PRM radio_1,
+        &PRM radio_2,
+        &PRM radio_3
+            });
+
     //--------------------------------------
-   //Screen
+    //Screen
     ofSetWindowTitle(Title);
     ofSetWindowShape(PRM Screen_W, PRM Screen_H);
     ofSetFrameRate(PRM FPS);
@@ -77,6 +86,7 @@ void ofApp::update(){
     PRM fps_ = ofGetFrameRate();		//"-fps" value is defined as fps_, meaning it's output value
 
     gui.update();
+    PRM radio_value_ = *radioGroupIndex_;    
 }
 
 //--------------------------------------------------------------

@@ -1,11 +1,11 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-06-30-21-33-38-163
+//Auto-generated GUI file for ofxKuTextGui, 2024-12-19-20-09-30-762
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
 
 struct Parameters {
-    enum PageEnum: int {
+    enum class PageEnum: int {
         Settings = 0,
         Conditions = 1,
         Templates = 2
@@ -49,6 +49,10 @@ struct Parameters {
 	int Floor_X1_CM;
 	int Floor_Y_CM;
 	int Floor_SclY;
+	int radio_1;
+	int radio_2;
+	int radio_3;
+	int radio_value_;	// output
     Parameters();
     void setup(ofxKuTextGui &gui, string fileName);
     void applyConstChanges();
