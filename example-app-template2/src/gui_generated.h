@@ -1,5 +1,5 @@
 #pragma once
-//Auto-generated GUI file for ofxKuTextGui, 2024-12-20-20-01-43-211
+//Auto-generated GUI file for ofxKuTextGui, 2024-12-20-21-29-10-328
 
 #include "ofMain.h"
 #include "ofxKuTextGui.h"
@@ -56,7 +56,7 @@ struct Parameters {
 	int Value_1;
 	int Value_2;
 	int Value_3;
-	vector<int *> ValuesArray;  // array
+	vector<int*> ValuesArray;  // array
 	string Values_Str_;	// output
     Parameters();
     void setup(ofxKuTextGui &gui, string fileName);

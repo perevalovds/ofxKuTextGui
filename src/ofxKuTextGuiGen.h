@@ -83,7 +83,7 @@ int Value_2=3 1:10 1,10
 int Value_3=5 1:10 1,10
 
 # Creates C++ variable vector<int*> ValuesArray = {&Value_1, &Value_2, &Value_3}:
-    array ValuesArray=Value_1,Value_2,Value_3
+array int ValuesArray=Value_1,Value_2,Value_3
 
 # And usage:
     string s;

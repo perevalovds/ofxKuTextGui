@@ -413,15 +413,19 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		// array
 		if (type_s == "array") {
 			if (make_cpp) {
-				put("\tvector<int *> " + name_code.code_name + ";  // array", Decl);
+				string type = name_s;
+				Pair name_values_pair(range_s, "=");
+				string& name = name_values_pair.a;
+				string& list_s = name_values_pair.b;
+				put("\tvector<" + type + "*> " + name + ";  // array", Decl);
 
-				vector<string> list = ofSplitString(name_pair.b, ",", true, true);
+				vector<string> list = ofSplitString(list_s, ",", true, true);
 				string s;
 				for (auto& var : list) {
 					if (!s.empty()) s += ", ";
 					s += "&" + var;
 				}
-				put("\t" + name_code.code_name + " = {" + s + "};", Setup);
+				put("\t" + name + " = {" + s + "};", Setup);
 			}
 			
 		}
