@@ -1,12 +1,15 @@
 #include "ofxKuUiString.h"
 
+// For _T
+#include <tchar.h>
+
+
 //------------------------------------------------------------------------
 void KuUiString::draw(const KuUiDrawData& dd, const KuUiDrawComponentData& dc) {
 	drawSlider(dd, dc, false, false);
 }
 
 //------------------------------------------------------------------------
-
 #ifdef TARGET_WIN32
 LRESULT CALLBACK KuUiString_WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -24,6 +27,24 @@ LRESULT CALLBACK KuUiString_WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
 }
 #endif
 
+// Stuff for implementing KuUiString::textBoxDialog
+// depending on UNICODE settings in Windows
+#ifdef UNICODE
+
+inline std::wstring KuUiString_stringToWstringWindows(const std::string& str) {
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), nullptr, 0);
+	std::wstring wstr(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstr[0], size_needed);
+	return wstr;
+}
+
+typedef std::wstring KuUiString_String_Type;
+#define KuUiString_WIDEN_STRING(str) (KuUiString_stringToWstringWindows(str))
+#else
+typedef std::string KuUiString_String_Type;
+#define KuUiString_WIDEN_STRING(str) (str)
+#endif
+
 
 string KuUiString::textBoxDialog(string question, string text) {
 // Improved ofSystemTextBoxDialog for Windows:
@@ -38,7 +59,11 @@ string KuUiString::textBoxDialog(string question, string text) {
 
 	HWND hw = WindowFromDC(wglGetCurrentDC());
 
-	const char* g_szClassName = "myWindowClass\0";
+	// If UNICODE is defined, WIDEN_STRING(myString) returns a wchar_t*,
+	// otherwise it returns a const char*.
+	KuUiString_String_Type classNameStr = KuUiString_WIDEN_STRING("KuUiString_TextBoxDialog_WindowClass");
+	KuUiString_String_Type questionStr = KuUiString_WIDEN_STRING(question);
+	KuUiString_String_Type textStr = KuUiString_WIDEN_STRING(text);
 
 	//Step 1: Registering the Window Class
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -47,7 +72,7 @@ string KuUiString::textBoxDialog(string question, string text) {
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = GetModuleHandle(0);
-	wc.lpszClassName = "myWindowClass";
+	wc.lpszClassName = classNameStr.c_str();
 	wc.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
 	wc.lpszMenuName = nullptr;
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -60,7 +85,7 @@ string KuUiString::textBoxDialog(string question, string text) {
 			// http://stackoverflow.com/questions/5791996/re-registering-user-defined-window-class-c
 		}
 		else {
-			MessageBox(nullptr, "Window Registration Failed!\0", "Error!\0",
+			MessageBox(nullptr, _T("Window Registration Failed!"), _T("Error!"),
 				MB_ICONEXCLAMATION | MB_OK);
 			return text;
 		}
@@ -71,10 +96,13 @@ string KuUiString::textBoxDialog(string question, string text) {
 
 	int x = ofGetMouseX();
 	int y = ofGetMouseY();
+	
+
+
 
 	HWND dialog = CreateWindowEx(WS_EX_DLGMODALFRAME,
-		g_szClassName,
-		question.c_str(),
+		classNameStr.c_str(),
+		questionStr.c_str(),
 		WS_POPUP | WS_CAPTION | DS_MODALFRAME | WS_SYSMENU,
 		x, y, 300, 140,
 		hw, nullptr, GetModuleHandle(0), nullptr);
@@ -82,23 +110,23 @@ string KuUiString::textBoxDialog(string question, string text) {
 	if (dialog == nullptr)
 	{
 
-		MessageBox(nullptr, "Window Creation Failed!\0", "Error!\0",
+		MessageBox(nullptr, _T("Window Creation Failed!"), _T("Error!"),
 			MB_ICONEXCLAMATION | MB_OK);
 		return text;
 
 	}
 
 	//EnableWindow(WindowFromDC(wglGetCurrentDC()), FALSE);
-	HWND hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT\0", text.c_str(),
+	HWND hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, _T("EDIT"), textStr.c_str(),
 		WS_CHILD | WS_VISIBLE | WS_TABSTOP,
 		10, 10, 210, 40, dialog, (HMENU)101, GetModuleHandle(nullptr), nullptr);
 
 
-	HWND okButton = CreateWindowEx(WS_EX_CLIENTEDGE, "BUTTON\0", "OK\0",
+	HWND okButton = CreateWindowEx(WS_EX_CLIENTEDGE, _T("BUTTON"), _T("OK"),
 		WS_CHILD | WS_VISIBLE | WS_TABSTOP,
 		10, 60, 60, 30, dialog, (HMENU)IDOK, GetModuleHandle(nullptr), nullptr);
 
-	HWND cancelButton = CreateWindowEx(WS_EX_CLIENTEDGE, "BUTTON\0", "Cancel\0",
+	HWND cancelButton = CreateWindowEx(WS_EX_CLIENTEDGE, _T("BUTTON"), _T("Cancel"),
 		WS_CHILD | WS_VISIBLE,
 		80, 60, 60, 30, dialog, (HMENU)IDCANCEL, GetModuleHandle(nullptr), nullptr);
 
@@ -169,5 +197,6 @@ string KuUiString::textBoxDialog(string question, string text) {
 #endif
 }
 
+#undef KuUiString_WIDEN_STRING
 
 //------------------------------------------------------------------------
