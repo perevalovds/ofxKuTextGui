@@ -1,5 +1,5 @@
 #include "gui_generated.h"
-//Auto-generated GUI file for ofxKuTextGui, 2024-12-19-20-09-30-763
+//Auto-generated GUI file for ofxKuTextGui, 2024-12-20-20-01-43-212
 
 Parameters params;
 //--------------------------------------------------------------
@@ -43,6 +43,10 @@ Parameters::Parameters() {
 	radio_2=0;
 	radio_3=0;
 	radio_value_=-1;
+	Value_1=1;
+	Value_2=3;
+	Value_3=5;
+	Values_Str_="";
 }
 
 //--------------------------------------------------------------
@@ -102,6 +106,13 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.addCheckbox("radio_3",radio_3);
 	gui.addDummy("Test_Radio_Value", "Test_Radio_Value_9");
 	gui.addInt("-radio_value",radio_value_,-1,-1,2,1,10);
+	gui.addTab();
+	gui.addDummy("Array_Test", "Array_Test_10");
+	gui.addInt("Value_1",Value_1,1,1,10,1,10);
+	gui.addInt("Value_2",Value_2,3,1,10,1,10);
+	gui.addInt("Value_3",Value_3,5,1,10,1,10);
+	ValuesArray = {&Value_1, &Value_2, &Value_3};
+	gui.addString("-Values_Str",Values_Str_,"");
 	gui.set_var_color("*FPS", ofColor(255,140,255));
 	gui.set_var_color("*Screen_W", ofColor(255,140,255));
 	gui.set_var_color("*Screen_H", ofColor(255,140,255));
@@ -139,6 +150,7 @@ void Parameters::setup(ofxKuTextGui &gui, string fileName) {
 	gui.set_var_visibility_conditions("Floor_Y_CM",{ {"Projection", {"FLOOR"}} });
 	gui.set_var_visibility_conditions("Floor_SclY",{ {"Projection", {"FLOOR"}} });
 	gui.set_var_editable("-radio_value", false);
+	gui.set_var_editable("-Values_Str", false);
 	fileName_ = fileName;
 	gui_ = &gui;
 	gui.loadFromFile(fileName);

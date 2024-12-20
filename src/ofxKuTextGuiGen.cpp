@@ -1,47 +1,5 @@
 ﻿#include "ofxKuTextGuiGen.h"
 
-/*C++ code generator for ofxKuTextGui addon
- You preparing text description of the GUI, see gui-script.ini,
- and this algorithm generates .H and .CPP files, which implements this gui in the C++ code.
- 
- Example of GUI script:
- 
- ------
- PAGE screen
- int *FPS=30 1:100 1,10
- int *w=1024 1:2000 1,10
- int *h=768 1:2000 1,10
- TAB
- float -fps=30 0:100 100,10
- 
- PAGE osc
- string send_host=localhost
- int send_port=12345 1:65535 1,10
- 
- PAGE all
- # "var" used to duplicate values declared before
- var -fps
- dummy
- dummy Stringlist:
- stringlist list=a [a,b,c]
- button render
- #button - it's int variable, which is set when button is pressed, needs to set to 0 after reading
-
- ------
- Here
- "*" means constant parameter used at start, "*FPS" is "FPS",
- but changes only after restart
- "-" means read-only parameter, so user changes will affect nothing, "-fps" is "fps_" in code
-
-
- Example of generator calling:
- generateCPP("../../src/gui-script.ini", "../src/params",
- "Parameters", "params",
- "P");
- "P" is the abbreviation of the parameters, you can use them in such a way:
- sender.setup(P send_host, P send_port);
- */
-
 #include <unordered_map>
 
 //------------------------------------------------------------------------
@@ -297,6 +255,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 			current_color = "";
 		}
         
+		// var
 		if (type_s == "var") {
 			if (make_cpp) put("\tgui.addVar(\"" + name_code.screen_name + "\");", Setup);
 			if (make_gui) gui->addVar(name_code.screen_name);
@@ -305,6 +264,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 		bool is_dummy = false;
 		string uniqueName = "";	// If will be filled by dummy, use it
 
+		// dummy
 		if (type_s == "dummy") {
 			vector<string> title0 = item;
 			title0.erase(title0.begin());
@@ -319,6 +279,7 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
         
 		bool is_var = false;
 
+		// int, float
 		if (type_s == "int" || type_s == "float") {
             if (name_code.is_const) {
 				if (make_cpp) put("\t" + type_s + " " + name_code.const_name + ";", Decl);
@@ -357,6 +318,8 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
             }
 			is_var = true;
         }
+
+		// string
         if (type_s == "string") {
             if (name_code.is_const) {
 				if (make_cpp) put("\t" + type_s + " " + name_code.const_name + ";", Decl);
@@ -375,6 +338,8 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			is_var = true;
         }
+
+		// stringlist
         if (type_s == "stringlist") {
             if (name_code.is_const) {
 				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
@@ -406,6 +371,8 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			is_var = true;
         }
+
+		// button
 		if (type_s == "button") {
 			if (name_code.is_const) {			//...but of course for buttons "const" value is meaningless :)
 				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
@@ -423,6 +390,8 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			is_var = true;
 		}
+
+		// checkbox
 		if (type_s == "checkbox") {
 			if (name_code.is_const) {			
 				if (make_cpp) put("\tint " + name_code.const_name + ";", Decl);
@@ -440,6 +409,23 @@ void ofxKuTextGuiGen::generate_common(bool make_cpp, bool make_gui,
 
 			is_var = true;
 		}
+
+		// array
+		if (type_s == "array") {
+			if (make_cpp) {
+				put("\tvector<int *> " + name_code.code_name + ";  // array", Decl);
+
+				vector<string> list = ofSplitString(name_pair.b, ",", true, true);
+				string s;
+				for (auto& var : list) {
+					if (!s.empty()) s += ", ";
+					s += "&" + var;
+				}
+				put("\t" + name_code.code_name + " = {" + s + "};", Setup);
+			}
+			
+		}
+
 		// Setting color, visibility, editing
 		if (is_dummy || is_var) {			
 			string name = (uniqueName.empty()) ? name_code.screen_name : uniqueName;

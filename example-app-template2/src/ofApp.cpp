@@ -86,7 +86,14 @@ void ofApp::update(){
     PRM fps_ = ofGetFrameRate();		//"-fps" value is defined as fps_, meaning it's output value
 
     gui.update();
+    // Radiogroup
     PRM radio_value_ = *radioGroupIndex_;    
+    // Array
+    string s;
+    for (auto& v : PRM ValuesArray) {
+        s += " " + ofToString(*v);
+    }
+    PRM Values_Str_ = s;
 }
 
 //--------------------------------------------------------------

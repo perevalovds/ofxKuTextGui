@@ -72,14 +72,34 @@ ITEM 2 1
 ITEM 2 1
 
  ------
+# Radiogroup:
+# For enabling radio group, call gui.addRadioGroup(...) in C++ code
 
+ ------
+# Array:
+dummy Array_Test
+int Value_1=1 1:10 1,10
+int Value_2=3 1:10 1,10
+int Value_3=5 1:10 1,10
+
+# Creates C++ variable vector<int*> ValuesArray = {&Value_1, &Value_2, &Value_3}:
+    array ValuesArray=Value_1,Value_2,Value_3
+
+# And usage:
+    string s;
+    for (auto& v : PRM ValuesArray) {
+        s += " " + ofToString(*v);
+    }
+
+ ------
 
 Example of generator calling:
- generateCPP("../../src/gui-script.ini", "../src/params",
+    generateCPP("../../src/gui-script.ini", "../src/params",
                         "Parameters", "params",
-                         "PRMQD");
-"P" is the abbreviation of the parameters, you can use them in such a way:
-  sender.setup(PRMQD send_host, PRMQD send_port);
+                        "PRM");
+
+Here "PRM" is the abbreviation of the parameters, you can use them in such a way:
+    sender.setup(PRM send_host, PRM send_port);
  
 */
 
