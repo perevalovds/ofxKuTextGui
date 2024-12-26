@@ -527,7 +527,7 @@ KuUiComponent *ofxKuTextGui::addVar(string name) {	//adding existing var
 }
 
 //------------------------------------------------------------------------
-int* ofxKuTextGui::addRadioGroup(const vector<int*>& values) {
+int* ofxKuTextGui::addRadioGroup(const vector<int*>& values, ofxKuUiRadioGroup** createdGroup) {
 	ofxKuUiRadioGroup* group = new ofxKuUiRadioGroup();
 	group->setup(values);
 	radioGroups_.push_back(group);
@@ -535,6 +535,10 @@ int* ofxKuTextGui::addRadioGroup(const vector<int*>& values) {
 	// Marking
 	for (auto& v : values) {
 		setRadioButtonMark(v);
+	}
+
+	if (createdGroup) {
+		*createdGroup = group;
 	}
 
 	return group->selectedPtr();

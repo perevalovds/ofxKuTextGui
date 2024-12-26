@@ -32,6 +32,16 @@ struct ofxKuUiRadioGroup {
 			}
 		}
 	}
+	void setValue(int v) {
+		if (v < 0) v = 0;
+		if (v >= values_.size()) {
+			v = int(values_.size()) - 1;
+		}
+		for (int i = 0; i < values_.size(); i++) {
+			*values_[i] = (i == v) ? 1 : 0;
+		}
+		selected_ = v;
+	}
 	int selected() { return selected_; }
 	int* selectedPtr() { return &selected_; }
 private:
@@ -64,9 +74,9 @@ struct ofxKuTextGui {
 	bool loadFromLine(const string &s, const string &separator);
 
 
-    bool keyPressed(int key);       //generic keyPressed handler
-	void update();					//for page switch and buttons processing
-    void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
+    bool keyPressed(int key);       // generic keyPressed handler
+	void update();					// for page switch and buttons processing
+	void draw(float X, float Y, bool enabled=true, int alpha_text=255, int alpha_slider=255);	//generic draw
     float draw_tabW;	//Distance between tabs
     float draw_yStep;	//Distance between lines
 	void set_tab_w(float w, float indentx = 10, float cell_dx = -10.5);
@@ -126,7 +136,7 @@ struct ofxKuTextGui {
 
 	// Add radio group - it will be maintained automatically;
 	// function returns resulted value selected()
-	int* addRadioGroup(const vector<int*>& values);
+	int* addRadioGroup(const vector<int*>& values, ofxKuUiRadioGroup** createdGroup = nullptr);
 	void setRadioButtonMark(int* var);	// Scan values and set mark for a given value
 
     
